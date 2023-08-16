@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pendaftaran Hotel</title>
+</head>
+
+<body>
+  <h1>Pendaftaran Hotel</h1>
+  <form action="todolist.html" method="POST">
+    <ul>
+      <li>
+        <h2>Informasi Pribadi</h2>
+        <label for="nama">Nama:</label>
+        <input type="text" id="nama" name="nama" required placeholder="Masukkan nama anda"><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="Masukkan email anda"><br><br>
+
+        <label for="Alamat">Alamat</label>
+        <input type="text" id="Alamat" name="Alamat" required placeholder="Masukkan alamat anda"><br><br>
+
+        <label for="Tanggal Lahir">Tanggal Lahir:</label>
+        <input type="date" id="TanggalLahir" name="TanggalLahir" required><br><br>
+
+        <label for="NoTelepon">No Telepon</label>
+        <input type="text" id="notlp" name="notlp" required placeholder="Masukkan no telpon anda"><br><br>
+
+      </li>
+
+      <label>Jenis Kelamin:</label><br>
+      <input type="radio" id="laki" name="jenis_kelamin" value="Laki-laki" required>
+      <label for="laki">Laki-laki</label><br>
+      <input type="radio" id="perempuan" name="jenis_kelamin" value="Perempuan">
+      <label for="perempuan">Perempuan</label><br><br>
+
+      <label for="tamu">Kewarganegaraan:</label><br>
+      <input type="radio" id="WargaLokal" name="kwg">Warga Lokal
+      <input type="radio" id="WargaAsing" name="kwg">Warga Asing
+      <br><br>
+
+      <label for="Negara">Negara:</label>
+      <input type="text" id="negara" name="negara" required placeholder="Masukkan negara anda"><br><br>
+
+      <li>
+        <h2>Tanggal Check-in dan Check-out</h2>
+        <label for="checkin">Tanggal Check-in:</label>
+        <input type="date" id="checkin" name="checkin" required><br><br>
+
+        <label for="checkout">Tanggal Check-out:</label>
+        <input type="date" id="checkout" name="checkout" required><br><br>
+      </li>
+
+      <li>
+        <h2>Pilihan Kamar % Fasilitas Tambahan</h2>
+        <label for="kamar">Jenis Kamar:</label>
+        <select id="kamar" name="kamar">
+          <option value="single">Single</option>
+          <option value="double">Double</option>
+          <option value="suite">Suite</option>
+        </select><br><br>
+
+        <label for="jumlah_tamu">Jumlah Tamu:</label>
+        <input type="number" id="jumlah_tamu" name="jumlah_tamu" min="1" required><br><br>
+      </li>
+
+      <label for="kategori">Kategori:</label>
+      <select id="kategori" name="kategori">
+        <option value="vvip">VVIP</option>
+        <option value="vip">VIP</option>
+        <option value="biasa">Biasa</option>
+      </select><br><br>
+
+      <label for="fasilitas">Fasilitas Tambahan</label>
+      <input type="checkbox" id="fasilitasBantal" name="fasilitass" onclick="limitChekBox(this)">Bantal
+      <input type="checkbox" id="fasilitasAcara" name="fasilitass" onclick="limitChekBox(this)">Acara Spesial <br><br>
+
+      <li>
+        <h2>Pembayaran</h2>
+          <label for="metode_pembayaran">Metode Pembayaran:</label>
+          <select id="metode_pembayaran" name="metode_pembayaran">
+            <option value="credit_card">Kartu Kredit</option>
+            <option value="bank_transfer">Transfer Bank</option>
+            <option value="cash">Tunai</option>
+          </select><br><br>
+      </li>
+
+      <label for="nomor_kartu">Nomor Kartu Kredit:</label>
+      <input type="text" id="nomor_kartu" name="nomor_kartu" required placeholder="Masukkan no kartu"><br><br>
+
+      <label for="expiry">Tanggal Kadaluarsa:</label>
+      <input type="date" id="expiry" name="expiry" placeholder="MM/YY" required><br><br>
+
+      <li>
+        <h2>Pesan Tambahan</h2>
+        <label for="pesan">Pesan Tambahan:</label><br>
+        <textarea id="pesan" name="pesan" rows="4" cols="50"></textarea><br><br>
+        <button>Kirim</button>
+      </li>
+    </ul>
+  </form>
+  <ul>
+    <button onclick="resetForm()">Ulang</button>
+  </ul>
+  <script src="input.js"></script>
+</body>
+
+</html>
