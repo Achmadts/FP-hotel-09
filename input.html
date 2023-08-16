@@ -9,7 +9,7 @@
 
 <body>
   <h1>Pendaftaran Hotel</h1>
-  <form action="todolist.html" method="POST">
+  <form action="todolist.html" method="POST" id="id-form">
     <ul>
       <li>
         <h2>Informasi Pribadi</h2>
@@ -104,7 +104,11 @@
   <ul>
     <button onclick="resetForm()">Ulang</button>
   </ul>
-  <script src="input.js"></script>
+  <script>
+    function resetForm(){
+      document.getElementById("id-form").reset();
+    }
+  </script>
 </body>
 
 </html>
