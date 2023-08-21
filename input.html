@@ -9,7 +9,7 @@
 
 <body>
   <h1>Pendaftaran Hotel</h1>
-  <form action="todolist.html" method="POST" id="id-form">
+  <form action="list.html" method="POST" id="id-form">
     <ul>
       <li>
         <h2>Informasi Pribadi</h2>
@@ -39,10 +39,7 @@
       <label for="tamu">Kewarganegaraan:</label><br>
       <input type="radio" id="WargaLokal" name="kwg">Warga Lokal
       <input type="radio" id="WargaAsing" name="kwg">Warga Asing
-      <br><br>
-
-      <label for="Negara">Negara:</label>
-      <input type="text" id="negara" name="negara" required placeholder="Masukkan negara anda"><br><br>
+      <br>
 
       <li>
         <h2>Tanggal Check-in dan Check-out</h2>
@@ -102,6 +99,7 @@
     </ul>
   </form>
   <ul>
+    <a href="welcome.html"><button>Kembali</button></a>
     <button onclick="resetForm()">Ulang</button>
   </ul>
   <script>
