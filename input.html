@@ -5,10 +5,78 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pendaftaran Hotel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #bcfff9d7;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(226, 223, 226, 0.1);
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: rgb(44, 153, 255);
+    color: rgb(0, 0, 0);
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #888888;
+}
+
+a {
+    text-decoration: none;
+    color: #000000;
+}
+
+a:hover {
+    color: #000000;
+}
+
+  </style>
 </head>
 
 <body>
-  <h1>Pendaftaran Hotel</h1>
+  <h1 style="padding: 20px; text-align: center; color: #000000;">Pendaftaran Hotel</h1>
   <form action="list.html" method="POST" id="id-form">
     <ul>
       <li>
@@ -94,19 +162,17 @@
         <h2>Pesan Tambahan</h2>
         <label for="pesan">Pesan Tambahan:</label><br>
         <textarea id="pesan" name="pesan" rows="4" cols="50"></textarea><br><br>
-        <button>Kirim</button>
+        <br>
+        <div class="button-container">
+          <button>Kirim</button>
+          <a href="login.html">
+            <button type="button">Batal</button>
+          </a>
+          <button class="button-secondary" onclick="resetFrom()">Ulang</button>
+        </div>
       </li>
     </ul>
   </form>
-  <ul>
-    <a href="welcome.html"><button>Kembali</button></a>
-    <button onclick="resetForm()">Ulang</button>
-  </ul>
-  <script>
-    function resetForm(){
-      document.getElementById("id-form").reset();
-    }
-  </script>
 </body>
 
 </html>
