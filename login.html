@@ -1,22 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="external.css">
+    <style>
+        .container{
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+        h2 {
+            font-size: 24px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007Bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transition: .5s;
+        }
+    </style>
 </head>
+
 <body>
     <form action="welcome.html" method="post">
-        <label for="nama">Username</label>
-        <input type="text" name="username"required>
-        <br>
-        <label for="password">Password</label>
-        <input type="password" name="pass"required>
-        <br><br>
-        <button>login</button>
-        
+        <div class="container">
+            <h2>Login</h2>
+            <label for="nama" style="display: block; margin-bottom: 10px;">Username</label>
+            <input type="text" name="username" required>
+            <br>
+            <label for="password" style="display: block; margin-bottom: 10px;">Password</label>
+            <input type="password" name="pass" required>
+            <br><br>
+            <button>login</button>
+        </div>
 
     </form>
 
 </body>
+
 </html>
