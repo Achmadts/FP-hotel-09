@@ -1,37 +1,8 @@
-/* styles.css */
 body {
     font-family: Arial, sans-serif;
-    background-color: #ffffff;
+    background-color: #45c5d6;
     margin: 0;
     padding: 0;
-}
-
-h1 {
-    color: #000000;
-    text-align: center;
-    padding: 20px;
-}
-
-form {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: rgba(95, 94, 90, 0.842);
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(163, 50, 144, 0.1);
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    margin-bottom: 20px;
-}
-
-label {
-    font-weight: bold;
 }
 
 input[type="text"],
@@ -49,22 +20,17 @@ select {
 
 button {
     padding: 10px 20px;
-    background-color: #a7def8;
+    background-color: rgb(44, 153, 255);
     color: rgb(0, 0, 0);
     border: none;
     cursor: pointer;
     border-radius: 4px;
+    transition: .5s;
+    margin: 0 10px 0 0;
 }
 
 button:hover {
-    background-color: #000000;
-}
-
-a {
-    text-decoration: none;
-    color: #000000;
-}
-
-a:hover {
-    color: #000000;
+    background-color: #606366;
+    color: white;
+    transition: .5s;
 }
