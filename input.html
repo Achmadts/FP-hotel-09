@@ -5,16 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pendaftaran Hotel</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="input.css">
   <style>
-    /* styles.css */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
-    margin: 0;
-    padding: 0;
-}
-
 form {
     max-width: 600px;
     margin: 0 auto;
@@ -35,32 +27,6 @@ li {
 
 label {
     font-weight: bold;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="date"],
-input[type="number"],
-textarea,
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #000000;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: rgb(44, 153, 255);
-    color: rgb(0, 0, 0);
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-button:hover {
-    background-color: #888888;
 }
 
 a {
@@ -165,10 +131,10 @@ a:hover {
         <br>
         <div class="button-container">
           <button>Kirim</button>
-          <a href="login.html">
+          <a href="welcome.html">
             <button type="button">Batal</button>
           </a>
-          <button class="button-secondary" onclick="resetFrom()">Ulang</button>
+          <button class="button-secondary" type="reset">Ulang</button>
         </div>
       </li>
     </ul>
