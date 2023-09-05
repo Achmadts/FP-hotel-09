@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
   <title>Pendaftaran Hotel</title>
   <link rel="stylesheet" href="input.css">
   <style>
@@ -11,9 +12,9 @@ form {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #e7dac4;
+    background-color:mediumturquoise;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(36, 187, 149, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 ul {
@@ -61,21 +62,28 @@ a:hover {
 
         <label for="NoTelepon">No Telepon</label>
         <input type="number" id="notlp" name="notlp" required placeholder="Masukkan no telpon anda"><br><br>
-
       </li>
 
-      <label>Jenis Kelamin:</label><br>
-      <input type="radio" id="laki" name="jenis_kelamin" value="Laki-laki" required>
-      <label for="laki">Laki-laki</label><br>
-      <input type="radio" id="perempuan" name="jenis_kelamin" value="Perempuan">
-      <label for="perempuan">Perempuan</label><br><br>
+      <label for="jenis_kelamin" class="mb-2">Jenis Kelamin</label><br>
+      <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="jenis_kelamin" id="btnradio1" value="Laki-laki" autocomplete="off" checked>
+        <label class="btn btn-outline-secondary" for="btnradio1">Laki-laki</label>
+      
+        <input type="radio" class="btn-check" name="jenis_kelamin" id="btnradio2" value="Perempuan" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="btnradio2">Perempuan</label>
+      </div><br><br>
 
-      <label for="tamu">Kewarganegaraan:</label><br>
-      <input type="radio" id="WargaLokal" name="kwg">Warga Lokal
-      <input type="radio" id="WargaAsing" name="kwg">Warga Asing
-      <br>
+      <label for="jenis_kelamin" class="mb-2">Kewarganegaraan</label><br>
+      <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="kwg" id="btnradio3" value="Warga Lokal" autocomplete="off" checked>
+        <label class="btn btn-outline-secondary" for="btnradio3">Warga Lokal</label>
+      
+        <input type="radio" class="btn-check" name="kwg" id="btnradio4" value="Warga Asing" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="btnradio4">Warga Asing</label>
+      </div><br><br>
 
       <li>
+        <br>
         <h2>Tanggal Check-in dan Check-out</h2>
         <label for="checkin">Tanggal Check-in:</label>
         <input type="date" id="checkin" name="checkin" required><br><br>
@@ -86,23 +94,27 @@ a:hover {
 
       <li>
         <h2>Pilihan Kamar % Fasilitas Tambahan</h2>
-        <label for="kamar">Jenis Kamar:</label>
-        <select id="kamar" name="kamar">
-          <option value="single">Single</option>
-          <option value="double">Double</option>
-          <option value="suite">Suite</option>
-        </select><br><br>
+        <div class="input-group mb-4 mt-4">
+          <label class="input-group-text" for="inputGroupSelect01">Jenis</label>
+          <select class="form-select" id="inputGroupSelect01">
+            <option value="single">Single</option>
+            <option value="double">Double</option>
+            <option value="suite">Suite</option>
+          </select>
+        </div>
 
         <label for="jumlah_tamu">Jumlah Tamu:</label>
-        <input type="number" id="jumlah_tamu" name="jumlah_tamu" min="1" required><br><br>
+        <input type="number" id="jumlah_tamu" name="jumlah_tamu" min="1" required>
       </li>
 
-      <label for="kategori">Kategori:</label>
-      <select id="kategori" name="kategori">
-        <option value="vvip">VVIP</option>
-        <option value="vip">VIP</option>
-        <option value="biasa">Biasa</option>
-      </select><br><br>
+      <div class="input-group mb-4 mt-4">
+        <label class="input-group-text" for="inputGroupSelect01">Kategori</label>
+        <select class="form-select" id="inputGroupSelect01">
+          <option value="vvip">VVIP</option>
+          <option value="vip">VIP</option>
+          <option value="biasa">Biasa</option>
+        </select>
+      </div>
 
       <label for="fasilitas">Fasilitas Tambahan</label>
       <input type="checkbox" id="fasilitasBantal">Bantal
@@ -110,12 +122,14 @@ a:hover {
 
       <li>
         <h2>Pembayaran</h2>
-          <label for="metode_pembayaran">Metode Pembayaran:</label>
-          <select id="metode_pembayaran" name="metode_pembayaran">
-            <option value="credit_card">Kartu Kredit</option>
-            <option value="bank_transfer">Transfer Bank</option>
-            <option value="cash">Tunai</option>
-          </select><br><br>
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupSelect01">Metode Pembayaran</label>
+          <select class="form-select" id="inputGroupSelect01">
+            <option selected>Kartu Kredit</option>
+            <option value="1">Tunai</option>
+            <option value="2">Transfer Bank</option>
+          </select>
+        </div>
       </li>
 
       <label for="nomor_kartu">Nomor Kartu Kredit:</label>
@@ -126,9 +140,10 @@ a:hover {
 
       <li>
         <h2>Pesan Tambahan</h2>
-        <label for="pesan">Pesan Tambahan:</label><br>
-        <textarea id="pesan" name="pesan" rows="4" cols="50"></textarea><br><br>
-        <br>
+        <div class="input-group">
+          <span class="input-group-text">Pesan Tambahan</span>
+          <textarea class="form-control" aria-label="With textarea"></textarea>
+        </div><br><br>
         <div class="button-container">
           <button>Kirim</button>
           <a href="welcome.html">
@@ -138,7 +153,7 @@ a:hover {
         </div>
       </li>
     </ul>
-  </form>
+  </form><br><br>
 </body>
 
 </html>
