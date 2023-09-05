@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+    
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <title>Login</title>
     <link rel="stylesheet" href="external.css">
     <style>
         .container{
-            background-color: #fff;
+            background-color: mediumturquoise;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.1);
@@ -19,17 +21,10 @@
         h2 {
             font-size: 24px;
         }
-        input[type="text"],
-        input[type="password"] {
-            width: 90%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+        
         button {
             background-color: #007Bff;
-            color: #fff;
+            color: #45c5d6;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
@@ -47,13 +42,15 @@
     <form action="welcome.html" method="post">
         <div class="container">
             <h2>Login</h2>
-            <label for="nama" style="display: block; margin-bottom: 10px;">Username</label>
-            <input type="text" name="username" required>
-            <br>
-            <label for="password" style="display: block; margin-bottom: 10px;">Password</label>
-            <input type="password" name="pass" required>
-            <br><br>
-            <button>login</button>
+            <div class="form-floating mb-4 mt-4">
+                <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com" autocomplete="off">
+                <label for="floatingInput" style="font-size: 14px;">Nama</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingInput" placeholder="name@example.com" autocomplete="off">
+                <label for="floatingInput" style="font-size: 14px;">Password</label>
+              </div>
+            <button type="button" class="btn btn-outline-primary">login</button>
         </div>
 
     </form>
