@@ -1,0 +1,22 @@
+function ulang() {
+    document.getElementById('nama').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('Alamat').value = '';
+    document.getElementById('TanggalLahir').value = '';
+    document.getElementById('notlp').value = '';
+    document.getElementById('laki').checked = false;
+    document.getElementById('perempuan').checked = false;
+    document.getElementById('btnradio3').checked = false;
+    document.getElementById('btnradio4').checked = false;
+    document.getElementById('checkin').value = '';
+    document.getElementById('checkout').value = '';
+    document.getElementById('kamar').selectedIndex = -1;
+    document.getElementById('jumlah_tamu').value = '';
+    document.getElementById('kategori').selectedIndex = -1;
+    document.getElementById('btn-check1').checked = false;
+    document.getElementById('btn-check2').checked = false;
+    document.getElementById('metode_pembayaran').selectedIndex = -1;
+    document.getElementById('nomor_kartu').value = '';
+    document.getElementById('expiry').value = '';
+    document.getElementById('pesan').value = '';
+  }
