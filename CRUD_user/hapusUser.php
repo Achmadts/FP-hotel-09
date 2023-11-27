@@ -5,7 +5,7 @@ header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
 if(!isset($_SESSION["login"])){
-    header("Location: ../login.php");
+    header("Location: ../index.php");
     exit;
 }
 

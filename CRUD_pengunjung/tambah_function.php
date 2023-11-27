@@ -1,10 +1,14 @@
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+</html>
 <?php
 require_once '../connection/conn.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
 if (!isset($_SESSION["login"])) {
-  header("Location: ../login.php");
+  header("Location: ../index.php");
   exit;
 }
 
@@ -44,7 +48,16 @@ if (isset($_POST["submit"])) {
   $result = mysqli_query($con, $query);
 
   if ($result) {
-    echo '<script>alert("Data berhasil ditambahkan!"); window.location.href = "../list.php";</script>';
+    echo '<script>
+    Swal.fire({
+        icon: "success",
+        title: "Data berhasil ditambahkan",
+        showConfirmButton: false,
+        timer: 1500
+    }).then(function() {
+        window.location.href = "../list.php";
+    });
+    </script>';
   } else {
     echo '<script>alert("Data gagal ditambahkan!"); window.location.href = "input.php";</script>';
   }

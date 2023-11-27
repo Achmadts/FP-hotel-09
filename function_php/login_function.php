@@ -1,6 +1,22 @@
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+</html>
 <?php
+session_start();
 if (isset($_SESSION["login"])) {
     header("Location: welcome.php");
+    exit;
+}
+
+if (isset($_SESSION["email_verification"]["code"])) {
+    header("Location: email_verification.php");
+    exit;
+}
+
+if (isset($_SESSION["email_verification_telat"]["email"])) {
+    header("Location: email_verification_telat.php");
     exit;
 }
 
@@ -11,7 +27,7 @@ if (isset($_POST["submit"])) {
     $password = $_POST["password"];
 
     if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-        $error[] = "Format email tidak valid!";
+        $error[] = "Email tidak valid!";
     }
 
     $email = mysqli_real_escape_string($con, $email);
@@ -26,16 +42,44 @@ if (isset($_POST["submit"])) {
         if (mysqli_num_rows($hasil) > 0) {
             $row = mysqli_fetch_assoc($hasil);
 
-            if (!password_verify($password, $row["password"])) {
-                $error[] = "Password salah!";
+            // Kalau checkbox remember me di check
+            if (isset($_POST['remember-me']) && $_POST['remember-me'] == 'on') {
+                $email_cookie = mysqli_real_escape_string($con, $email);
+                $password_cookie = mysqli_real_escape_string($con, $password);
+
+                setcookie('email', $email_cookie, time() + (86400 * 30), "/");
+                setcookie('password', $password_cookie, time() + (86400 * 30), "/");
             } else {
-                $nama_pengguna = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
-                $_SESSION["login"] = $nama_pengguna;
-                header("Location: welcome.php");
-                exit();
+                // Kalau checkbox remember me tidak di check
+                if (!isset($_SESSION["remember-me"]) || $_SESSION["remember-me"] !== true) {
+                    setcookie('password', '', time() - 3600, "/");
+                    setcookie('email', '', time() - 3600, "/");
+                }
+            }
+            if ($row["verifiedEmail"] == 0) {
+                $error[] = "Email belum diverifikasi! Silahkan verifikasi";
+                } else {
+                if (!password_verify($password, $row["password"])) {
+                    $error[] = "Password salah!";
+                } else {
+                    $nama_pengguna = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
+                    $_SESSION["login"] = $nama_pengguna;
+                    echo '<script>
+                    Swal.fire({
+                        icon: "success",
+                        title: "Login berhasil!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function() {
+                        window.location.href = "./welcome.php";
+                    });
+                    </script>';
+                    exit();
+                }
             }
         } else {
             $error[] = "Email salah atau belum terdaftar!";
         }
     }
 }
+?>

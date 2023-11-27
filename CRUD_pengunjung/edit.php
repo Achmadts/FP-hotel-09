@@ -70,15 +70,17 @@ header("X-Frame-Options: DENY");
 
             </li>
 
-            <label style="font-size: 20px; margin-bottom: 10px; margin-top: 5px">Jenis Kelamin:</label><br>
-            <input type="radio" class="btn-check" id="laki" name="jenis_kelamin" value="Laki-laki" <?= ($jkel_pengunjung == "Laki-laki") ? "checked" : "" ?> required>
-            <label for="laki" class="btn btn-outline-primary">Laki-laki</label>
-            <input type="radio" class="btn-check" id="perempuan" name="jenis_kelamin" value="Perempuan" <?= ($jkel_pengunjung == "Perempuan") ? "checked" : "" ?>>
-            <label for="perempuan" class="btn btn-outline-primary">Perempuan</label><br><br>
+            <label for="jkel" style="font-size: 20px; margin-bottom: 10px; margin-top: 5px">Jenis Kelamin:</label>
+            <div class="jenis_kelamin d-flex" style="width: 200px;">
+                <input type="radio" class="btn-check" id="laki" name="jenis_kelamin" value="Laki-laki" <?= ($jkel_pengunjung == "Laki-laki") ? "checked" : "" ?> required>
+                <label for="laki" class="btn btn-outline-primary me-1">Laki-laki</label>
+                <input type="radio" class="btn-check" id="perempuan" name="jenis_kelamin" value="Perempuan" <?= ($jkel_pengunjung == "Perempuan") ? "checked" : "" ?>>
+                <label for="perempuan" class="btn btn-outline-primary">Perempuan</label><br><br>
+            </div>
 
 
             <label for="tamu" class="mb-2" style="font-size: 20px;">Kewarganegaraan:</label><br>
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="width: 250px;">
                 <input type="radio" class="btn-check" id="btnradio3" name="kwg" value="Warga Lokal" <?= ($region_pengunjung == "Warga Lokal") ? "checked" : "" ?>>
                 <label class="btn btn-outline-primary" for="btnradio3">Warga Lokal</label>
 
@@ -104,7 +106,7 @@ header("X-Frame-Options: DENY");
                 <h4>Pilihan Kamar % Fasilitas Tambahan</h4><br>
                 <div class="form-floating">
                     <select class="form-select" id="kamar" name="kamar">
-                        <option value=""></option>
+                        <option value="" disabled></option>
                         <option value="single" <?= ($jenis_kamar == "Single") ? "selected" : "" ?>>Single</option>
                         <option value="double" <?= ($jenis_kamar == "Double") ? "selected" : "" ?>>Double</option>
                         <option value="suite" <?= ($jenis_kamar == "Suite") ? "selected" : "" ?>>Suite</option>
@@ -120,7 +122,7 @@ header("X-Frame-Options: DENY");
 
             <div class="form-floating">
                 <select class="form-select" id="kategori" name="kategori">
-                    <option value=""></option>
+                    <option value="" disabled></option>
                     <option value="vvip" <?= ($kategori == "VVIP") ? "selected" : "" ?>>VVIP</option>
                     <option value="vip" <?= ($kategori == "VIP") ? "selected" : "" ?>>VIP</option>
                     <option value="biasa" <?= ($kategori == "Biasa") ? "selected" : "" ?>>Biasa</option>
@@ -129,17 +131,19 @@ header("X-Frame-Options: DENY");
             </div><br>
 
             <label for="jenis_kelamin" class="mb-2" style="font-size: 20px;">Fasilitas Tambahan:</label><br>
-            <input type="checkbox" class="btn-check" id="btn-check1" name="fasilitasBantal" <?= (strpos($fasilitas_tambahan, "Bantal") !== false) ? "checked" : "" ?>>
-            <label class="btn btn-outline-primary" for="btn-check1">Bantal</label>
-
-            <input type="checkbox" class="btn-check" id="btn-check2" name="fasilitasAcara" <?= (strpos($fasilitas_tambahan, "Acara Spesial") !== false) ? "checked" : "" ?>>
-            <label class="btn btn-outline-primary" for="btn-check2">Acara Spesial</label><br><br><br>
+            <div class="fasilitas_tambahan d-flex mb-4" style="width: 255px;">
+                <input type="checkbox" class="btn-check" id="btn-check1" name="fasilitasBantal" <?= (strpos($fasilitas_tambahan, "Bantal") !== false) ? "checked" : "" ?>>
+                <label class="btn btn-outline-primary me-1" for="btn-check1">Bantal</label>
+    
+                <input type="checkbox" class="btn-check" id="btn-check2" name="fasilitasAcara" <?= (strpos($fasilitas_tambahan, "Acara Spesial") !== false) ? "checked" : "" ?>>
+                <label class="btn btn-outline-primary" for="btn-check2">Acara Spesial</label><br><br>
+            </div>
 
             <li>
                 <h4>Pembayaran</h4><br>
                 <div class="form-floating">
                     <select id="metode_pembayaran" class="form-select" name="metode_pembayaran" onchange="toggleNomorKartu()">
-                        <option value=""></option>
+                        <option value="" disabled></option>
                         <option value="Kartu Kredit" <?= ($metode_pembayaran == "Kartu Kredit") ? "selected" : "" ?>>Kartu Kredit</option>
                         <option value="Tunai" <?= ($metode_pembayaran == "Tunai") ? "selected" : "" ?>>Tunai</option>
                         <option value="Transfer Bank" <?= ($metode_pembayaran == "Transfer Bank") ? "selected" : "" ?>>Transfer Bank</option>
@@ -166,12 +170,12 @@ header("X-Frame-Options: DENY");
                     <label for="pesan">Pesan Tambahan</label>
                 </div><br>
 
-                <div class="button-container">
-                    <input type="submit" name="submit" class="btn btn-primary" value="Ubah" onclick="return toggleNomorKartu();">
+                <div class="button-container d-flex" style="width: 200px;">
+                    <input type="submit" name="submit" class="btn btn-primary mx-1" value="Ubah" onclick="return toggleNomorKartu();">
                     <a href="../list.php">
                         <button type="button" class="btn btn-primary">Batal</button>
                     </a>
-                    <button class="btn btn-primary" style="margin-left: -10px;" type="button" onclick="ulang()">Ulang</button>
+                    <button class="btn btn-primary mx-1" style="margin-left: -10px;" type="button" onclick="ulang()">Ulang</button>
                 </div>
             </li>
         </ul>

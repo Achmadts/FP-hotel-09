@@ -4,6 +4,18 @@ require_once "../connection/conn.php";
 require_once "editUser_function.php";
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
+
+$error = array();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $error = editUser($_POST);
+
+    if (count($error) == 0) {
+        header("Location: ../user_list.php");
+        die;
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,6 +24,7 @@ header("X-Frame-Options: DENY");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/register.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <title>Edit data user</title>
 
@@ -26,18 +39,19 @@ header("X-Frame-Options: DENY");
 
 <body>
     <form action="" method="POST">
-        <div class="form-container"style="width: 350px;">
+        <div class="form-container" style="width: 350px;">
             <h1>Edit user</h1>
             <?php
             if (isset($error)) {
                 foreach ($error as $error) {
-                    echo '<span class="error-msg" style="color:red; font-size: 100%;">' . $error . '</span>';
-                    echo '<br><br>';
+                    echo "<div class='error-msg' style='background-color: #ffe3e5; text-align: center; min-height: 40px; border-radius: 5px;'>";
+                    echo '<span class="error-msg" style="color: #851923; font-size: 90%; margin-top: 7px; display: inline-block;">' . $error . '</span>';
+                    echo "</div><br>";
                 };
             };
             ?>
             <div class="form-floating mt-4">
-                <input type="text" class="form-control w-100" name="name" value="<?= $name;?>" required placeholder="Masukkan nama kamu" autocomplete="off">
+                <input type="text" class="form-control w-100" name="name" value="<?= $name; ?>" required placeholder="Masukkan nama kamu" autocomplete="off">
                 <label for="nama">Masukkan nama anda</label>
             </div>
 
@@ -47,32 +61,39 @@ header("X-Frame-Options: DENY");
             </div>
 
             <div class="form-floating mt-3">
-                <input type="password" class="form-control w-100" id="pw" value="<?= $password; ?>" name="password" required placeholder="Masukkan password">
+                <input type="password" class="form-control w-100" id="pw" value="<?= $password; ?>" name="password" required placeholder="Masukkan password" readonly>
                 <label for="password">Masukkan password</label>
             </div>
 
-            <div class="form-floating mt-3">
-                <input type="password" class="form-control w-100" value="<?= $password; ?>" id="cpw" name="cpassword" required placeholder="Konfirmasi password" style="margin-bottom: -5px;">
+            <div class="form-floating mt-3 position-relative">
+                <input type="password" class="form-control w-100" value="<?= $password; ?>" id="cpw" name="cpassword" required placeholder="Konfirmasi password" style="margin-bottom: -5px;" readonly>
                 <label for="cpassword">Masukkan konfirmasi password</label>
-            </div>
-
-            <div class="checkbox-container mt-3">
-                <input type="checkbox" id="chk">
-                <label for="checkbox">Show Password</label>
-            </div>
+                <span style="right: 20px; top: 50%; transform: translateY(-45%); cursor: pointer; position: absolute; font-size: 20px;">
+                    <i class="bi bi-eye" id="icon"></i>
+                </span>
+            </div><br>
 
             <input type="submit" class="btn btn-primary mb-2" name="submit" value="Ubah!"><br>
     </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const pw = document.getElementById("pw");
-        const cpw = document.getElementById("cpw");
-        const chk = document.getElementById("chk");
+        const password = document.getElementById('pw');
+        const cpassword = document.getElementById('cpw');
+        const toggler = document.getElementById('icon');
 
-        chk.onchange = function() {
-            pw.type = chk.checked ? "text" : "password";
-            cpw.type = chk.checked ? "text" : "password";
-        }
+        const showHidePassword = () => {
+            if (password.type == "password" && cpassword.type == "password") {
+                password.setAttribute('type', 'text');
+                cpassword.setAttribute('type', 'text');
+            } else {
+                password.setAttribute('type', 'password');
+                cpassword.setAttribute('type', 'password');
+            }
+            toggler.classList.toggle('bi-eye');
+            toggler.classList.toggle('bi-eye-slash');
+        };
+        toggler.addEventListener('click', showHidePassword);
     </script>
 </body>
 

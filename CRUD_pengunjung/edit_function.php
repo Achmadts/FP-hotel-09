@@ -1,10 +1,13 @@
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</html>
 <?php
 require_once '../connection/conn.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
 if (!isset($_SESSION["login"])) {
-    header("Location: ../login.php");
+    header("Location: ../index.php");
     exit;
 };
 
@@ -79,6 +82,15 @@ if (isset($_POST["submit"])) {
     if (mysqli_stmt_affected_rows($update_stmt) < 0) {
         echo "Terjadi kesalahan dalam perbaruan data: " . mysqli_error($con);
     } else {
-        echo '<script>alert("Data berhasil diperbarui"); window.location.href = "../list.php";</script>';
+        echo '<script>
+        Swal.fire({
+            icon: "success",
+            title: "Data berhasil diperbarui",
+            showConfirmButton: false,
+            timer: 1500
+        }).then(function() {
+            window.location.href = "../list.php";
+        });
+        </script>';
     }
 }

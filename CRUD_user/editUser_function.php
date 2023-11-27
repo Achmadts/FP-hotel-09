@@ -1,3 +1,7 @@
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+</html>
 <?php
 $id = $_GET['editid'];
 $query = "SELECT * FROM user WHERE id=?";
@@ -18,9 +22,32 @@ $cpassword = $row["password"];
 
 
 if (!isset($_SESSION["login"])) {
-    header("Location: ../login.php");
+    header("Location: ../index.php");
     exit;
 };
+
+function editUser($data)
+{
+    $error = array();
+
+    // validasi
+    if (!preg_match('/^[a-zA-Z\s]+$/', $data["name"])) {
+        $error[] = "Nama harus berupa huruf";
+    }
+
+    if (!filter_var($data["email"], FILTER_VALIDATE_EMAIL)) {
+        $error[] = "Masukkan email yang valid";
+    }
+
+    if (strlen(trim($data["password"])) < 6) {
+        $error[] = "Password minimal harus 6 karakter";
+    }
+
+    if ($data["password"] !== $data["cpassword"]) {
+        $error[] = "Password tidak sesuai!";
+    }
+    return $error;
+}
 
 if (isset($_POST["submit"])) {
     $error = [];
@@ -30,26 +57,41 @@ if (isset($_POST["submit"])) {
     $password = $_POST['password'];
     $cpassword = $_POST['cpassword'];
 
-    $select = "SELECT * FROM user WHERE email = '$email' || name = '$name' ";
+    $error = editUser($_POST);
 
-    $result = mysqli_query($con, $select);
+    // Cek apakah terdapat kesalahan
+    if (empty($error)) {
+        $select = "SELECT * FROM user WHERE email = '$email' OR name = '$name' ";
 
-    if (mysqli_num_rows($result) > 1) {
-        $error[] = 'Pengguna sudah ada!';
-    } else {
-        if ($password !== $cpassword) {
-            $error[] = 'Password tidak sesuai!';
+        $result = mysqli_query($con, $select);
+
+        if (mysqli_num_rows($result) > 1) {
+            $error[] = 'Pengguna sudah ada!';
         } else {
-            $pass = password_hash($password, PASSWORD_DEFAULT);
-            $update_query = "UPDATE user SET name=?, email=?, password=? WHERE id=?";
-            $update_stmt = mysqli_prepare($con, $update_query);
-            mysqli_stmt_bind_param($update_stmt, "sssi", $name, $email, $password, $id);
-            mysqli_stmt_execute($update_stmt);
-
-            if (mysqli_stmt_affected_rows($update_stmt) < 0) {
-                echo "Terjadi kesalahan dalam perbaruan data: " . mysqli_error($con);
+            if ($password !== $cpassword) {
+                $error[] = 'Password tidak sesuai!';
             } else {
-                echo '<script>alert("Data berhasil diperbarui"); window.location.href = "../user_list.php";</script>';
+                $pass = password_hash($password, PASSWORD_DEFAULT);
+                $update_query = "UPDATE user SET name=?, email=?, password=? WHERE id=?";
+                $update_stmt = mysqli_prepare($con, $update_query);
+                mysqli_stmt_bind_param($update_stmt, "sssi", $name, $email, $pass, $id);
+                mysqli_stmt_execute($update_stmt);
+
+                if (mysqli_stmt_affected_rows($update_stmt) < 0) {
+                    echo "Data user gagal diedit: " . mysqli_error($con);
+                } else {
+                    echo '<script>
+                    Swal.fire({
+                        icon: "success",
+                        title: "Data berhasil diperbarui",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function() {
+                        window.location.href = "../user_list.php";
+                    });
+                    </script>';
+                    exit;
+                }
             }
         }
     }
