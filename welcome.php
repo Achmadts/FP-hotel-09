@@ -1,13 +1,86 @@
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+</html>
 <?php
 session_start();
 require_once 'connection/conn.php';
+require_once 'vendor/autoload.php';
+require_once "connection/google_config.php";
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
-if (!isset($_SESSION["login"])) {
-    header('Location: login.php');
+if(isset($_SESSION["email_verification"]["code"])){
+    header("Location: email_verification.php");
     exit;
-};
+}
+
+if (isset($_GET['code'])) {
+    // Ambil token kalau belum ada di sesi
+    if (!isset($_SESSION['access_token'])) {
+        $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+        $_SESSION['access_token'] = $token;
+    }
+
+    if (isset($_SESSION['access_token']['access_token'])) {
+        $client->setAccessToken($_SESSION['access_token']['access_token']);
+        echo '<script>
+        Swal.fire({
+            icon: "success",
+            title: "Login berhasil!",
+            showConfirmButton: false,
+            timer: 1000
+        }).then(function() {
+            window.location.href = "' . filter_var("welcome.php", FILTER_SANITIZE_URL) . '";
+        });
+        </script>';
+        // header('Location: ' . filter_var("welcome.php", FILTER_SANITIZE_URL));
+
+        $google_oauth = new Google\Service\Oauth2($client);
+        $google_account_info = $google_oauth->userinfo->get();
+        $userinfo = [
+            'email' => $google_account_info['email'],
+            'name' => $google_account_info['name'],
+            'verifiedEmail' => $google_account_info['verifiedEmail'],
+            'token' => $google_account_info['id'],
+        ];
+    } else {
+        echo 'Gagal mendapatkan access token. Pesan Kesalahan: Kunci "access_token" tidak ditemukan di session.';
+        die();
+    }
+    // Cek apakah user sudah ada di db
+    $sql = "SELECT * FROM user  WHERE email = '{$userinfo['email']}'";
+    $result = mysqli_query($con, $sql);
+
+    if (mysqli_num_rows($result) > 0) {
+        $userinfo = mysqli_fetch_assoc($result);
+        $token = $userinfo["token"];
+    } else {
+        $sql = "INSERT INTO user (name, email, verifiedEmail, token) VALUES ('{$userinfo['name']}', '{$userinfo['email']}', '{$userinfo['verifiedEmail']}', '{$userinfo['token']}')";
+        $result = mysqli_query($con, $sql);
+
+        if ($result) {
+            $token = $userinfo['token'];
+        } else {
+            echo "Pengguna tidak dibuat!";
+            die();
+        }
+    }
+    $_SESSION['login'] = $token;
+} else {
+    if (!isset($_SESSION["login"])) {
+        header("Location: index.php");
+        die();
+    };
+    // Cek apakah user sudah ada di db
+    $sql = "SELECT * FROM user  WHERE token = '{$_SESSION['login']}'";
+    $result = mysqli_query($con, $sql);
+
+    if (mysqli_num_rows($result) > 0) {
+        $userinfo = mysqli_fetch_assoc($result);
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +90,8 @@ if (!isset($_SESSION["login"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" href="welcome.css">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <link rel="stylesheet" href="assets/css/welcome.css">
     <title>Welcome</title>
     <style>
         /* button {
@@ -43,10 +117,10 @@ if (!isset($_SESSION["login"])) {
     </style>
 </head>
 
-<body>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
     <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
         <div class="container">
-            <a href="#"><img src="WhatsApp_Image_2023-09-05_at_15.02.25-removebg-preview.png.png" alt="Logo" width="26" height="25" class="d-inline-block align-text-top m-2 mt-3 mb-3"></a>
+            <a href="#"><img src="./assets/img/WhatsApp_Image_2023-09-05_at_15.02.25-removebg-preview.png.png" alt="Logo" width="26" height="25" class="d-inline-block align-text-top m-2 mt-3 mb-3"></a>
             <a class="navbar-brand" href="#">Hotel PPLG</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -66,27 +140,29 @@ if (!isset($_SESSION["login"])) {
                         </ul>
                     </li>
                 </ul>
-                <a href="https://www.instagram.com/neskar.story/"><img src="WhatsApp_Image_2023-09-05_at_15.02.31-removebg-preview.png.png" width="41" height="40" class="me-0"></a>
+                <a href="https://www.instagram.com/rpl2_59/?igshid=OGQ5ZDc2ODk2ZA%3D%3D"><img src="assets/img/logo_pplg.png" width="41" height="40" class="ms-5 me-0" style="margin-top: -5px;"></a>
             </div>
         </div>
     </nav>
     <center>
-        <div class="container1 justify-content-center align-items-center" style="margin-top: 30vh;">
-            <h1>Selamat Datang <span style="background: #0074d9; color: #fff; border-radius: 5px; padding: 0 10px;"><?php echo $_SESSION["login"] ?></span> di Hotel PPLG!</h1>
-            <p>Tempat Kenyamanan dan Keramahan Berpadu😊.</p>
-            <div class="row mt-2" style="width: 135px;">
-                <div class="col-6">
-                    <a href="input.php"><button class="btn btn-primary">Input</button></a>
-                </div>
-                <div class="col-6">
-                    <form action="logout.php" onsubmit="return confirmLogout();">
-                        <input type="submit" class="btn btn-primary" value="Logout">
-                    </form>
+        <div style="flex-grow: 1;">
+            <div class="container1 justify-content-center align-items-center" style="margin-top: 30vh;">
+                <h1>Selamat Datang <span style="background: #0074d9; color: #fff; border-radius: 5px; padding: 0 10px;"><?= isset($userinfo['name']) ? $userinfo['name'] : $_SESSION["login"]; ?></span> di Hotel PPLG!</h1>
+                <p>Tempat Kenyamanan dan Keramahan Berpadu😊.</p>
+                <div class="row mt-2" style="width: 135px;">
+                    <div class="col-6">
+                        <a href="input.php"><button class="btn btn-primary">Input</button></a>
+                    </div>
+                    <div class="col-6">
+                        <form action="logout.php" onsubmit="return confirmLogout();">
+                            <input type="submit" class="btn btn-primary" value="Logout">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </center>
-    <footer class="p-1 text-center" style="margin-top: 32.3vh;">
+    <footer class="p-1 text-center" style="margin-top: 29.7vh;">
         <p class="fw-bold mt-3">fountaine project &COPY; 2023</p>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>

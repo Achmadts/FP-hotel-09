@@ -4,6 +4,11 @@ require_once 'connection/conn.php';
 require_once 'function_php/input_function.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
+
+if(isset($_SESSION["email_verification"]["code"])){
+  header("Location: email_verification.php");
+  exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -29,11 +34,10 @@ header("X-Frame-Options: DENY");
 </head>
 
 <body>
-  <h1 style="padding: 20px; text-align: center; color: #000000;">Pendaftaran Hotel</h1>
-  <form action="" method="POST" id="id-form" onsubmit="return toggleNomorKartu();">
+  <form action="" method="POST" id="id-form" onsubmit="return toggleNomorKartu();" class="mt-5 mb-5" style="width: 95%;">
     <ul>
       <li>
-        <h2>Informasi Pribadi</h2><br>
+        <h2 class="text-center">Pendaftaran Hotel</h2><br>
         <div class="form-floating">
           <input type="text" class="form-control" id="nama" name="nama_pengunjung" required placeholder="Masukkan nama anda" autocomplete="off"><br><br>
           <label for="nama">Nama</label>
@@ -61,15 +65,17 @@ header("X-Frame-Options: DENY");
 
       </li>
 
-      <label for="jkel" style="font-size: 20px; margin-bottom: 10px; margin-top: 5px">Jenis Kelamin:</label><br>
-      <input type="radio" class="btn-check" id="laki" name="jenis_kelamin" value="Laki-laki" required autocomplete="off">
-      <label for="laki" class="btn btn-outline-primary">Laki-laki</label>
+      <label for="jkel" style="font-size: 20px; margin-bottom: 10px; margin-top: 5px">Jenis Kelamin:</label>
+      <div class="jenis_kelamin d-flex" style="width: 200px;">
+        <input type="radio" class="btn-check" id="laki" name="jenis_kelamin" value="Laki-laki" required autocomplete="off">
+        <label for="laki" class="btn btn-outline-primary me-1">Laki-laki</label>
 
-      <input type="radio" class="btn-check" id="perempuan" name="jenis_kelamin" value="Perempuan">
-      <label for="perempuan" class="btn btn-outline-primary">Perempuan</label><br><br>
+        <input type="radio" class="btn-check" id="perempuan" name="jenis_kelamin" value="Perempuan">
+        <label for="perempuan" class="btn btn-outline-primary">Perempuan</label><br><br>
+      </div>
 
       <label for="tamu" class="mb-2" style="font-size: 20px;">Kewarganegaraan:</label><br>
-      <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+      <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="width: 250px;">
         <input type="radio" class="btn-check" name="kwg" id="btnradio3" value="Warga Lokal" autocomplete="off">
         <label class="btn btn-outline-primary" for="btnradio3">Warga Lokal</label>
 
@@ -78,7 +84,6 @@ header("X-Frame-Options: DENY");
       </div><br><br>
 
       <li>
-        <h4>Tanggal Check-in dan Check-out</h4><br>
         <div class="form-floating">
           <input type="date" class="form-control" id="checkin" name="checkin" required><br><br>
           <label for="checkinlbl">Tanggal Check-in</label>
@@ -91,7 +96,6 @@ header("X-Frame-Options: DENY");
       </li>
 
       <li>
-        <h4>Pilihan Kamar dan Fasilitas Tambahan</h4><br>
         <div class="form-floating">
           <select class="form-select" id="kamar" name="kamar">
             <option value="single">Single</option>
@@ -118,14 +122,15 @@ header("X-Frame-Options: DENY");
       </div><br>
 
       <label for="jenis_kelamin" class="mb-2" style="font-size: 20px;">Fasilitas Tambahan:</label><br>
-      <input type="checkbox" class="btn-check" id="btn-check1" name="fasilitasBantal">
-      <label class="btn btn-outline-primary" for="btn-check1">Bantal</label>
+      <div class="fasilitas_tambahan d-flex mb-4" style="width: 255px;">
+        <input type="checkbox" class="btn-check" id="btn-check1" name="fasilitasBantal">
+        <label class="btn btn-outline-primary me-1" for="btn-check1">Bantal</label>
 
-      <input type="checkbox" class="btn-check" id="btn-check2" name="fasilitasAcara">
-      <label class="btn btn-outline-primary" for="btn-check2">Acara Spesial</label><br><br>
+        <input type="checkbox" class="btn-check" id="btn-check2" name="fasilitasAcara">
+        <label class="btn btn-outline-primary" for="btn-check2">Acara Spesial</label><br><br>
+      </div>
 
       <li>
-        <h2>Pembayaran</h2><br>
         <div class="form-floating">
           <select class="form-select" id="metode_pembayaran" name="metode_pembayaran" onchange="toggleNomorKartu()">
             <option value="Kartu Kredit">Kartu Kredit</option>
@@ -154,17 +159,17 @@ header("X-Frame-Options: DENY");
           <label for="pesan">Pesan Tambahan</label>
         </div>
         <br>
-        
-        <div class="button-container">
-          <input type="submit" name="submit" class="btn btn-primary" value="Kirim" onclick="return toggleNomorKartu();">
+
+        <div class="button-container d-flex" style="width: 200px;">
+          <input type="submit" name="submit" class="btn btn-primary mx-1" value="Kirim" onclick="return toggleNomorKartu();">
           <a href="welcome.php">
             <button type="button" class="btn btn-primary">Batal</button>
           </a>
-          <button class="btn btn-primary" type="reset" style="margin-left: -10px;">Ulang</button>
+          <button class="btn btn-primary mx-1" type="reset" style="margin-left: -10px;">Ulang</button>
         </div>
       </li>
     </ul>
-  </form><br><br>
+  </form>
   <script src="js/script.js"></script>
 </body>
 
