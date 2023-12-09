@@ -114,7 +114,7 @@ if (isset($_SESSION["email_verification"]["code"])) {
       <label for="kategorilbl">Kategori</label>
     </div><br>
 
-    <label for="jenis_kelamin" class="mb-2" style="font-size: 20px;">Fasilitas Tambahan:</label><br>
+    <label for="fasilitas_tambahan" class="mb-2" style="font-size: 20px;">Fasilitas Tambahan:</label><br>
     <div class="fasilitas_tambahan d-flex mb-4" style="width: 255px;">
       <input type="checkbox" class="btn-check" id="btn-check1" name="fasilitasBantal">
       <label class="btn btn-outline-primary me-1" for="btn-check1">Bantal</label>

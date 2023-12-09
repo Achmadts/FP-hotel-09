@@ -5,7 +5,7 @@ require_once 'function_php/input_function.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
-if(isset($_SESSION["email_verification"]["code"])){
+if (isset($_SESSION["email_verification"]["code"])) {
   header("Location: email_verification.php");
   exit;
 }
@@ -39,22 +39,22 @@ if(isset($_SESSION["email_verification"]["code"])){
       <li>
         <h2 class="text-center">Pendaftaran Hotel</h2><br>
         <div class="form-floating">
-          <input type="text" class="form-control" id="nama" name="nama_pengunjung" required placeholder="Masukkan nama anda" autocomplete="off"><br><br>
+          <input type="text" class="form-control" id="nama" name="nama_pengunjung" required placeholder="Masukkan nama anda" autocomplete="off"><br>
           <label for="nama">Nama</label>
         </div>
 
         <div class="form-floating">
-          <input type="email" class="form-control" id="email" name="email_pengunjung" required placeholder="Masukkan email anda" autocomplete="off"><br><br>
+          <input type="email" class="form-control" id="email" name="email_pengunjung" required placeholder="Masukkan email anda" autocomplete="off"><br>
           <label for="email">Email</label>
         </div>
 
         <div class="form-floating">
-          <input type="text" class="form-control" id="Alamat" name="alamat_pengunjung" required placeholder="Masukkan alamat anda" autocomplete="off"><br><br>
+          <input type="text" class="form-control" id="Alamat" name="alamat_pengunjung" required placeholder="Masukkan alamat anda" autocomplete="off"><br>
           <label for="Alamat">Alamat</label>
         </div>
 
         <div class="form-floating">
-          <input type="date" class="form-control" id="TanggalLahir" name="tgllahir" required><br><br>
+          <input type="date" class="form-control" id="TanggalLahir" name="tgllahir" required><br>
           <label for="Tanggal Lahir">Tanggal Lahir</label>
         </div>
 
@@ -74,7 +74,7 @@ if(isset($_SESSION["email_verification"]["code"])){
         <label for="perempuan" class="btn btn-outline-primary">Perempuan</label><br><br>
       </div>
 
-      <label for="tamu" class="mb-2" style="font-size: 20px;">Kewarganegaraan:</label><br>
+      <label for="tamu" class="mb-2 mt-3" style="font-size: 20px;">Kewarganegaraan:</label><br>
       <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="width: 250px;">
         <input type="radio" class="btn-check" name="kwg" id="btnradio3" value="Warga Lokal" autocomplete="off">
         <label class="btn btn-outline-primary" for="btnradio3">Warga Lokal</label>
@@ -85,13 +85,13 @@ if(isset($_SESSION["email_verification"]["code"])){
 
       <li>
         <div class="form-floating">
-          <input type="date" class="form-control" id="checkin" name="checkin" required><br><br>
+          <input type="date" class="form-control" id="checkin" name="checkin" required><br>
           <label for="checkinlbl">Tanggal Check-in</label>
         </div>
 
         <div class="form-floating">
           <input type="date" class="form-control" id="checkout" name="checkout" required>
-          <label for="checkoutlbl">Tanggal Check-out</label><br>
+          <label for="checkoutlbl">Tanggal Check-out</label>
         </div>
       </li>
 
@@ -102,7 +102,7 @@ if(isset($_SESSION["email_verification"]["code"])){
             <option value="double">Double</option>
             <option value="suite">Suite</option>
           </select>
-          <label for="kamarlbl">Jenis Kamar</label><br><br>
+          <label for="kamarlbl">Jenis Kamar</label><br>
         </div>
 
         <div class="form-floating">
@@ -142,12 +142,12 @@ if(isset($_SESSION["email_verification"]["code"])){
       </li>
 
       <div class="form-floating" id="nomor_kartu_div">
-        <input type="text" class="form-control" id="nomor_kartu" name="nomor_kartu" placeholder="Masukkan no kartu kredit"><br><br>
+        <input type="text" class="form-control" id="nomor_kartu" name="nomor_kartu" placeholder="Masukkan no kartu kredit"><br>
         <label for="nomor_kartulbl">Nomor Kartu Kredit</label>
       </div>
 
       <div class="form-floating" id="tgl_expired_div">
-        <input type="date" class="form-control" id="expiry" name="expiry" placeholder="MM/YY"><br><br>
+        <input type="date" class="form-control" id="expiry" name="expiry" placeholder="MM/YY"><br>
         <label for="expiry">Tanggal Kadaluarsa</label>
       </div>
 

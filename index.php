@@ -1,9 +1,17 @@
 <?php
+
+use Dotenv\Dotenv;
+
 require_once "connection/conn.php";
 require_once "connection/google_config.php";
 require_once "function_php/login_function.php";
+require_once "vendor/autoload.php";
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
+
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 ?>
 
 <!DOCTYPE html>
@@ -36,13 +44,19 @@ header("X-Frame-Options: DENY");
             transition: .5s;
         }
 
-        .text-center a {
-            transition: .5s;
-        }
-
         #login {
             transition: .5s;
         }
+
+        /* tambahin ini kalau icon mata gak mau tabrakan sama password ketika password yang dimasukkan panjang */
+        /* #pw {
+            padding-right: 40px;
+        }
+
+        #icon-container {
+            z-index: 2;
+        } */
+        /* sampai sini */
     </style>
 </head>
 
@@ -52,17 +66,17 @@ header("X-Frame-Options: DENY");
             <h2>Login</h2>
             <div class="justify-content-center align-items-center my-1">
                 <div class="row">
-                    <div class="col-md-12 my-1"> <!-- ubah ke col-md-6 kalau mau displit / di flex -->
+                    <div class="col-md-6 my-1"> <!-- ubah ke col-md-6 kalau mau displit / di flex -->
                         <div class="text-center">
                             <a href='<?php echo $client->createAuthUrl(); ?>' class='btn btn-outline-primary d-grid gap-1 p-3' style="font-size: 15px;"><i class='bi bi-google'></i></a>
                         </div>
                     </div>
-                    <!-- <div class="col-md-4 my-1">
+                    <div class="col-md-6 my-1">
                         <div class="text-center">
-                            <a href='#' class='btn btn-outline-primary d-grid gap-1 p-3' style="font-size: 15px;"><i class='bi bi-twitter'></i></a>
+                            <a href="https://github.com/login/oauth/authorize?client_id=<?= $_ENV['GITHUB_CLIENT_ID'] ?>&scope=user:read" class='btn btn-outline-primary d-grid gap-1 p-3' style="font-size: 15px;"><i class='bi bi-github'></i></a>
                         </div>
                     </div>
-                    <div class="col-md-4 my-1">
+                    <!-- <div class="col-md-4 my-1">
                         <div class="text-center">
                             <a href='#' class='btn btn-outline-primary d-grid gap-1 p-3' style="font-size: 15px;"><i class='bi bi-facebook'></i></a>
                         </div>
@@ -106,7 +120,7 @@ header("X-Frame-Options: DENY");
             <div class="form-floating mt-3 position-relative">
                 <input type="password" class="form-control w-100" name="password" required id="pw" placeholder="Masukkan password kamu" value="<?= isset($_COOKIE['password']) ? htmlspecialchars($_COOKIE['password']) : '' ?>" autocomplete="off">
                 <label for="password">password</label>
-                <span style="right: 20px; top: 50%; transform: translateY(-45%); cursor: pointer; position: absolute; font-size: 20px;">
+                <span style="right: 20px; top: 50%; transform: translateY(-45%); cursor: pointer; position: absolute; font-size: 20px;"> <!-- kasih z-index: 2; dan id="icon-container" kalau mau icon mata tidak tabrakan dengan password ketika password yang dimasukkan panjang-->
                     <i class="bi bi-eye" id="icon"></i>
                 </span>
             </div>

@@ -35,15 +35,15 @@ if ($result->num_rows > 0) {
         echo "<td>" . $row['jenis_kamar'] . "</td>";
         echo "<td>" . $row['jumlah_tamu'] . "</td>";
         echo '<div class="container">
-    <td class="d-flex text-center justify-content-center align-items-center mb-4" style="border: none;">
-        <a href="crud_pengunjung/edit.php?editid=' . $row["id"] . '" style="margin-bottom: -10px;" class="justify-content-center"><button class="btn btn-primary mx-2 mt-0"><i class="bi bi-pencil-square text-white"></i></button></a>
-        <button class="btn btn-danger mx-2 mt-0 tombol-hapus" data-id="' . $row["id"] . '" style="margin-bottom: -30px;"><i class="bi bi-trash text-white"></i></button>
-    </td>
-</div>';
+                <td class="d-flex text-center justify-content-center align-items-center mb-4" style="border: none;">
+                    <a href="crud_pengunjung/edit.php?editid=' . $row["id"] . '" style="margin-bottom: -10px;" class="justify-content-center"><button class="btn btn-primary mx-2 mt-0"><i class="bi bi-pencil-square text-white"></i></button></a>
+                    <button class="btn btn-danger mx-2 mt-0 tombol-hapus" data-id="' . $row["id"] . '" style="margin-bottom: -30px;"><i class="bi bi-trash text-white"></i></button>
+                </td>
+            </div>';
         echo "</tr>";
     }
 } else {
-    echo "<tr><td colspan='8'>Tidak ada data pengunjung.</td></tr>";
+    echo "<tr><td colspan='9' style='border: none; text-align: center;'>Tidak ada data pengunjung.</td></tr>";
 }
 ?>
 

@@ -14,7 +14,7 @@ if (isset($_SESSION["email_verification"]["code"])) {
     exit;
 }
 
-if (isset($_SESSION["login"])) {
+if (isset($_SESSION["login"]) || isset($_COOKIE["fp_hotel_access_token"])) {
     header("Location: welcome.php");
     exit;
 }

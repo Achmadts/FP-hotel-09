@@ -38,11 +38,10 @@ header("X-Frame-Options: DENY");
 </head>
 
 <body>
-    <h1 style="padding: 20px; text-align: center; color: #000000;">Edit Information</h1>
-    <form action="" method="POST" id="id-form" onsubmit="return toggleNomorKartu();">
+    <form action="" method="POST" id="id-form" onsubmit="return toggleNomorKartu();" class="mt-5 mb-5" style="width: 95%;">
         <ul>
             <li>
-                <h2>Informasi Pribadi</h2><br>
+                <h2 class="text-center">Edit Data</h2><br>
                 <div class="form-floating">
                     <input type="text" class="form-control" id="nama" name="nama_pengunjung" value="<?php echo $nama_pengunjung; ?>" required placeholder="Masukkan nama anda" autocomplete="off"><br>
                     <label for="nama">Nama</label>
@@ -179,7 +178,7 @@ header("X-Frame-Options: DENY");
                 </div>
             </li>
         </ul>
-    </form><br><br><br>
+    </form>
     <script src="js/ulang.js"></script>
     <script src="js/script.js"></script>
 </body>

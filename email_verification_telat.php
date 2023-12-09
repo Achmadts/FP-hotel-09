@@ -9,6 +9,11 @@ require_once "mail.php";
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
+if (isset($_SESSION["login"]) || isset($_COOKIE["fp_hotel_access_token"])) {
+    header("Location: welcome.php");
+    exit;
+}
+
 if (!isset($_SESSION['timer'])) {
     unset($_SESSION['timer']);
 }
