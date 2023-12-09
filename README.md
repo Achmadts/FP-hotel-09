@@ -14,5 +14,5 @@ composer dump-autoload <br>
 composer install <br>
 composer self-update <br>
 
-UNTUK BISA MENGGUNAKAN FITUR LOGIN DENGAN Google DAN LOGIN DENGAN GitHub **ANDA HARUS MEMBUAT OAuth Apps GitHub dan OAuth Apps Google.** UNTUK CARANYA SILAHKAN KALIAN CARI SENDIRI DI INTERNET! <br>
-Setelah kalian membuat GitHub OAuth Apps & Google OAuth Apps **kaian harus konfigurasi ulang CLIENT_SECRET dan CLIENT_ID yang ada di file 'google_config.php' (untuk Google) dan file '.env' (untuk GitHub).**
+UNTUK BISA MENGGUNAKAN FITUR LOGIN DENGAN Google DAN LOGIN DENGAN GitHub **⚠️ANDA HARUS MEMBUAT OAuth Apps GitHub dan OAuth Apps Google.** UNTUK CARANYA SILAHKAN KALIAN CARI SENDIRI DI INTERNET! <br>
+Setelah kalian membuat GitHub OAuth Apps & Google OAuth Apps **⚠️kaian harus konfigurasi ulang CLIENT_SECRET dan CLIENT_ID yang ada di file 'google_config.php' (untuk Google) dan file '.env' (untuk GitHub).**
