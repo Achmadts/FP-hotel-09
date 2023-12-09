@@ -5,13 +5,52 @@
 </html>
 <?php
 session_start();
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use Dotenv\Dotenv;
+
 require_once 'connection/conn.php';
 require_once 'vendor/autoload.php';
 require_once "connection/google_config.php";
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
-if(isset($_SESSION["email_verification"]["code"])){
+// GitHub login
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+// get the user's details
+
+function getUser()
+{
+    if (empty($_COOKIE["fp_hotel_access_token"])) {
+        return false;
+    }
+    $apiUrl = "https://api.github.com/user";
+
+    $client = new Client();
+
+    try {
+        $response = $client->get($apiUrl, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $_COOKIE["fp_hotel_access_token"],
+                'Accept' => 'application/json',
+            ]
+        ]);
+        if ($response->getStatusCode() == 200) {
+            return json_decode($response->getBody()->getContents());
+        }
+        return false;
+    } catch (RequestException $e) {
+        return false;
+    }
+}
+$user = false;
+$user = getUser();
+// END GitHub login
+
+if (isset($_SESSION["email_verification"]["code"])) {
     header("Location: email_verification.php");
     exit;
 }
@@ -69,7 +108,7 @@ if (isset($_GET['code'])) {
     }
     $_SESSION['login'] = $token;
 } else {
-    if (!isset($_SESSION["login"])) {
+    if (!isset($_SESSION["login"]) && !isset($_COOKIE["fp_hotel_access_token"])) {
         header("Location: index.php");
         die();
     };
@@ -140,14 +179,14 @@ if (isset($_GET['code'])) {
                         </ul>
                     </li>
                 </ul>
-                <a href="https://www.instagram.com/rpl2_59/?igshid=OGQ5ZDc2ODk2ZA%3D%3D"><img src="assets/img/logo_pplg.png" width="41" height="40" class="ms-5 me-0" style="margin-top: -5px;"></a>
+                <p class="text-light my-3"><?= isset($userinfo['name']) ? $userinfo['name'] : $_SESSION["login"]; ?></p>
             </div>
         </div>
     </nav>
     <center>
         <div style="flex-grow: 1;">
-            <div class="container1 justify-content-center align-items-center" style="margin-top: 30vh;">
-                <h1>Selamat Datang <span style="background: #0074d9; color: #fff; border-radius: 5px; padding: 0 10px;"><?= isset($userinfo['name']) ? $userinfo['name'] : $_SESSION["login"]; ?></span> di Hotel PPLG!</h1>
+            <div class="container justify-content-center align-items-center" style="margin-top: 30vh;">
+                <h1>Selamat Datang <span style="background: #0074d9; color: #fff; border-radius: 5px; padding: 0 10px;"> <?= isset($userinfo['name']) ? $userinfo['name'] : (isset($_SESSION["login"]) ? $_SESSION["login"] : $user->name); ?></span> di Hotel PPLG!</h1>
                 <p>Tempat Kenyamanan dan Keramahan Berpadu😊.</p>
                 <div class="row mt-2" style="width: 135px;">
                     <div class="col-6">
@@ -163,7 +202,16 @@ if (isset($_GET['code'])) {
         </div>
     </center>
     <footer class="p-1 text-center" style="margin-top: 29.7vh;">
-        <p class="fw-bold mt-3">fountaine project &COPY; 2023</p>
+        <div class="container">
+            <div class="row justify-content-center align-items-center text-center">
+                <div class="col-md-6" style="width: 221px;">
+                    <p class="fw-bold mt-3">fountaine project &COPY; 2023</p>
+                </div>
+                <div class="col-md-6" style="width: 41px; margin-top: 2px;">
+                    <a href="https://www.instagram.com/rpl2_59/?igshid=OGQ5ZDc2ODk2ZA%3D%3D"><img src="assets/img/logo_pplg.png" width="41" height="40"></a>
+                </div>
+            </div>
+        </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
