@@ -10,10 +10,10 @@ Fatal error: Uncaught Error: Failed opening required 'F:\xampp\htdocs\KELAS(11)\
 
 ## jalankan perintah berikut di inlilne `terminal`:
 ```
-composer dump-autoload <br>
-composer install <br>
-composer self-update <br>
-
+composer dump-autoload
+composer install
+composer self-update
 ```
+
 UNTUK BISA MENGGUNAKAN FITUR LOGIN DENGAN Google DAN LOGIN DENGAN GitHub **⚠️ANDA HARUS MEMBUAT OAuth Apps GitHub dan OAuth Apps Google.** UNTUK CARANYA SILAHKAN KALIAN CARI SENDIRI DI INTERNET! <br>
 Setelah kalian membuat GitHub OAuth Apps & Google OAuth Apps **⚠️kaian harus konfigurasi ulang CLIENT_SECRET dan CLIENT_ID yang ada di file 'google_config.php' (untuk Google) dan file '.env' (untuk GitHub).**
