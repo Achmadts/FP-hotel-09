@@ -9,7 +9,7 @@ Fatal error: Uncaught Error: Failed opening required 'F:\xampp\htdocs\KELAS(11)\
 
 
 ## jalankan perintah berikut di inlilne `terminal`:
-
+```
 composer dump-autoload <br>
 composer install <br>
 composer self-update <br>
