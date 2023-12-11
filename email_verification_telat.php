@@ -31,7 +31,9 @@ if (count($_POST) > 0) {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error[] = "Tolong masukkan email yang valid";
         } elseif (!valid_email($email)) {
-            $error[] = "Email tidak ditemukan!";
+            $error[] = "Email tidak tidak terdaftar!";
+        } elseif (is_email_verified($email)) {
+            $error[] = "Email sudah diverifikasi!";
         } else {
             $_SESSION["email_verification_telat"]["email"] = $email;
             kirim_email($email);
@@ -77,6 +79,21 @@ if (isset($_SESSION['timer']) && $_SESSION['timer'] <= time()) {
     unset($_SESSION['timer']);
 } elseif (!isset($_SESSION['timer'])) {
     $_SESSION['timer'] = time() + 60;
+}
+
+function is_email_verified($email)
+{
+    global $con;
+
+    $email = addslashes($email);
+
+    $query = "SELECT verifiedEmail FROM user WHERE email= '$email' LIMIT 1 ";
+    $result = mysqli_query($con, $query);
+    if ($result) {
+        $row = mysqli_fetch_assoc($result);
+        return $row["verifiedEmail"] == 1;
+    }
+    return false;
 }
 
 function kirim_email($email)
@@ -141,7 +158,6 @@ function kode_benar($code)
     }
     return "Kode OTP salah";
 }
-
 ?>
 
 <!DOCTYPE html>

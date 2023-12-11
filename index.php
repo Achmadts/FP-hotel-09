@@ -76,11 +76,6 @@ $dotenv->load();
                             <a href="https://github.com/login/oauth/authorize?client_id=<?= $_ENV['GITHUB_CLIENT_ID'] ?>&scope=user:read" class='btn btn-outline-primary d-grid gap-1 p-3' style="font-size: 15px;"><i class='bi bi-github'></i></a>
                         </div>
                     </div>
-                    <!-- <div class="col-md-4 my-1">
-                        <div class="text-center">
-                            <a href='#' class='btn btn-outline-primary d-grid gap-1 p-3' style="font-size: 15px;"><i class='bi bi-facebook'></i></a>
-                        </div>
-                    </div> -->
                 </div>
             </div>
             <div class="d-flex">
@@ -103,7 +98,7 @@ $dotenv->load();
                     }
                 } else {
                     foreach ($error as $err) {
-                        echo "<div class='error-msg' style='background-color: #ffe3e5; text-align: center; min-height: 40px; border-radius: 5px;'>";
+                        echo "<div class='error-msg' style='background-color: #ffe3e5; border: 1px solid #851923; text-align: center; min-height: 40px; border-radius: 5px;'>";
                         echo '<span class="error-msg" style="font-size: 90%; color: #851923; display: inline-block; margin-top: 7px;">' . htmlspecialchars($err) . '</span>';
                         echo "<br>";
                         echo "</div>";

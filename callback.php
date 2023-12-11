@@ -12,7 +12,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Dotenv\Dotenv;
 
-function dapatkanUser($accessToken)
+function getUser($accessToken)
 {
     $apiUrl = "https://api.github.com/user";
     $client = new Client();
@@ -64,7 +64,7 @@ $kodeOtentikasi = $_GET["code"];
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-// Tukar kode menggunakan Guzzle untuk mendapatkan token akses
+// Tukar kode untuk mendapatkan akses token (pakai Guzzle agar lebih mudah)
 $data = [
     'client_id' => $_ENV["GITHUB_CLIENT_ID"],
     'client_secret' => $_ENV["GITHUB_CLIENT_SECRET"],
@@ -85,7 +85,7 @@ if (!empty($tokenData->error)) {
 
 if (!empty($tokenData->access_token)) {
     // Dapatkan informasi user
-    $infoUser = dapatkanUser($tokenData->access_token);
+    $infoUser = getUser($tokenData->access_token);
 
     if ($infoUser === false) {
         exit("Gagal mendapatkan informasi User");
@@ -130,17 +130,17 @@ if (!empty($tokenData->access_token)) {
             exit();
         }
 
-        // User belum ada, masukkan User baru
+        // Kalau user belum ada, masukkan data user ke database
         $hashedPassword = password_hash($infoUser->name, PASSWORD_DEFAULT);
 
-        $queryMasukkanUser = "INSERT INTO user (name, email, password, verifiedEmail, token)
+        $queryInsertUser = "INSERT INTO user (name, email, password, verifiedEmail, token)
                   VALUES (:name, :email, :password, 1, :token)";
-        $pernyataanMasukkanUser = $pdo->prepare($queryMasukkanUser);
-        $pernyataanMasukkanUser->bindParam(':name', $infoUser->name, PDO::PARAM_STR);
-        $pernyataanMasukkanUser->bindParam(':email', $email, PDO::PARAM_STR);
-        $pernyataanMasukkanUser->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
-        $pernyataanMasukkanUser->bindParam(':token', $tokenData->access_token, PDO::PARAM_STR);
-        $pernyataanMasukkanUser->execute();
+        $stmtInsertUser = $pdo->prepare($queryInsertUser);
+        $stmtInsertUser->bindParam(':name', $infoUser->name, PDO::PARAM_STR);
+        $stmtInsertUser->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmtInsertUser->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+        $stmtInsertUser->bindParam(':token', $tokenData->access_token, PDO::PARAM_STR);
+        $stmtInsertUser->execute();
 
         echo '<script>
         Swal.fire({

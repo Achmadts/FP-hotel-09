@@ -41,18 +41,22 @@ function register($con, $data)
     }
 
     // cek pengguna sudah ada/belum di db
-    $name = htmlspecialchars(mysqli_real_escape_string($con, $data['name']));
-    $email = htmlspecialchars(mysqli_real_escape_string($con, $data['email']));
+    $name = $data['name'];
+    $email = $data['email'];
 
-    $select = "SELECT * FROM user WHERE email = '$email' OR name = '$name' ";
-    $result = mysqli_query($con, $select);
+    $select = "SELECT * FROM user WHERE email = ? OR name = ?";
+    $stmt = mysqli_prepare($con, $select);
+    mysqli_stmt_bind_param($stmt, 'ss', $email, $name);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_store_result($stmt);
 
-    if (mysqli_num_rows($result) > 0) {
+    if (mysqli_stmt_num_rows($stmt) > 0) {
         $error[] = 'Pengguna sudah ada!';
     }
 
     return $error;
 }
+
 function kirim_email($email)
 {
     global $con;
