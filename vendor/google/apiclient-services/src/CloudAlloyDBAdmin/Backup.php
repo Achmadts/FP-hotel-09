@@ -51,14 +51,26 @@ class Backup extends \Google\Model
    * @var string
    */
   public $displayName;
+  /**
+   * @var EncryptionConfig
+   */
+  public $encryptionConfig;
   protected $encryptionConfigType = EncryptionConfig::class;
   protected $encryptionConfigDataType = '';
+  /**
+   * @var EncryptionInfo
+   */
+  public $encryptionInfo;
   protected $encryptionInfoType = EncryptionInfo::class;
   protected $encryptionInfoDataType = '';
   /**
    * @var string
    */
   public $etag;
+  /**
+   * @var QuantityBasedExpiry
+   */
+  public $expiryQuantity;
   protected $expiryQuantityType = QuantityBasedExpiry::class;
   protected $expiryQuantityDataType = '';
   /**
@@ -77,6 +89,10 @@ class Backup extends \Google\Model
    * @var bool
    */
   public $reconciling;
+  /**
+   * @var bool
+   */
+  public $satisfiesPzs;
   /**
    * @var string
    */
@@ -321,6 +337,20 @@ class Backup extends \Google\Model
   public function getReconciling()
   {
     return $this->reconciling;
+  }
+  /**
+   * @param bool
+   */
+  public function setSatisfiesPzs($satisfiesPzs)
+  {
+    $this->satisfiesPzs = $satisfiesPzs;
+  }
+  /**
+   * @return bool
+   */
+  public function getSatisfiesPzs()
+  {
+    return $this->satisfiesPzs;
   }
   /**
    * @param string

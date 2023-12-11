@@ -20,10 +20,22 @@ namespace Google\Service\DiscoveryEngine;
 class GoogleCloudDiscoveryengineV1alphaEngine extends \Google\Collection
 {
   protected $collection_key = 'dataStoreIds';
+  /**
+   * @var GoogleCloudDiscoveryengineV1alphaEngineChatEngineConfig
+   */
+  public $chatEngineConfig;
   protected $chatEngineConfigType = GoogleCloudDiscoveryengineV1alphaEngineChatEngineConfig::class;
   protected $chatEngineConfigDataType = '';
+  /**
+   * @var GoogleCloudDiscoveryengineV1alphaEngineChatEngineMetadata
+   */
+  public $chatEngineMetadata;
   protected $chatEngineMetadataType = GoogleCloudDiscoveryengineV1alphaEngineChatEngineMetadata::class;
   protected $chatEngineMetadataDataType = '';
+  /**
+   * @var GoogleCloudDiscoveryengineV1alphaEngineCommonConfig
+   */
+  public $commonConfig;
   protected $commonConfigType = GoogleCloudDiscoveryengineV1alphaEngineCommonConfig::class;
   protected $commonConfigDataType = '';
   /**
@@ -38,16 +50,36 @@ class GoogleCloudDiscoveryengineV1alphaEngine extends \Google\Collection
    * @var string
    */
   public $displayName;
+  /**
+   * @var string
+   */
+  public $industryVertical;
+  /**
+   * @var GoogleCloudDiscoveryengineV1alphaEngineMediaRecommendationEngineConfig
+   */
+  public $mediaRecommendationEngineConfig;
   protected $mediaRecommendationEngineConfigType = GoogleCloudDiscoveryengineV1alphaEngineMediaRecommendationEngineConfig::class;
   protected $mediaRecommendationEngineConfigDataType = '';
   /**
    * @var string
    */
   public $name;
+  /**
+   * @var GoogleCloudDiscoveryengineV1alphaEngineRecommendationMetadata
+   */
+  public $recommendationMetadata;
   protected $recommendationMetadataType = GoogleCloudDiscoveryengineV1alphaEngineRecommendationMetadata::class;
   protected $recommendationMetadataDataType = '';
+  /**
+   * @var GoogleCloudDiscoveryengineV1alphaEngineSearchEngineConfig
+   */
+  public $searchEngineConfig;
   protected $searchEngineConfigType = GoogleCloudDiscoveryengineV1alphaEngineSearchEngineConfig::class;
   protected $searchEngineConfigDataType = '';
+  /**
+   * @var GoogleCloudDiscoveryengineV1alphaEngineSimilarDocumentsEngineConfig
+   */
+  public $similarDocumentsConfig;
   protected $similarDocumentsConfigType = GoogleCloudDiscoveryengineV1alphaEngineSimilarDocumentsEngineConfig::class;
   protected $similarDocumentsConfigDataType = '';
   /**
@@ -142,6 +174,20 @@ class GoogleCloudDiscoveryengineV1alphaEngine extends \Google\Collection
   public function getDisplayName()
   {
     return $this->displayName;
+  }
+  /**
+   * @param string
+   */
+  public function setIndustryVertical($industryVertical)
+  {
+    $this->industryVertical = $industryVertical;
+  }
+  /**
+   * @return string
+   */
+  public function getIndustryVertical()
+  {
+    return $this->industryVertical;
   }
   /**
    * @param GoogleCloudDiscoveryengineV1alphaEngineMediaRecommendationEngineConfig

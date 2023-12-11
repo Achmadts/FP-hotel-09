@@ -22,39 +22,41 @@ class GoogleCloudAiplatformV1FetchFeatureValuesRequest extends \Google\Model
   /**
    * @var string
    */
-  public $format;
+  public $dataFormat;
   /**
-   * @var string
+   * @var GoogleCloudAiplatformV1FeatureViewDataKey
    */
-  public $id;
+  public $dataKey;
+  protected $dataKeyType = GoogleCloudAiplatformV1FeatureViewDataKey::class;
+  protected $dataKeyDataType = '';
 
   /**
    * @param string
    */
-  public function setFormat($format)
+  public function setDataFormat($dataFormat)
   {
-    $this->format = $format;
+    $this->dataFormat = $dataFormat;
   }
   /**
    * @return string
    */
-  public function getFormat()
+  public function getDataFormat()
   {
-    return $this->format;
+    return $this->dataFormat;
   }
   /**
-   * @param string
+   * @param GoogleCloudAiplatformV1FeatureViewDataKey
    */
-  public function setId($id)
+  public function setDataKey(GoogleCloudAiplatformV1FeatureViewDataKey $dataKey)
   {
-    $this->id = $id;
+    $this->dataKey = $dataKey;
   }
   /**
-   * @return string
+   * @return GoogleCloudAiplatformV1FeatureViewDataKey
    */
-  public function getId()
+  public function getDataKey()
   {
-    return $this->id;
+    return $this->dataKey;
   }
 }
 

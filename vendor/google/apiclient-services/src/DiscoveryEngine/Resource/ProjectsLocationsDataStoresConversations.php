@@ -135,6 +135,7 @@ class ProjectsLocationsDataStoresConversations extends \Google\Service\Resource
    *
    * @param string $name Immutable. Fully qualified name
    * `project/locations/global/collections/{collection}/dataStore/conversations`
+   * or `project/locations/global/collections/{collection}/engines/conversations`.
    * @param GoogleCloudDiscoveryengineV1betaConversation $postBody
    * @param array $optParams Optional parameters.
    *

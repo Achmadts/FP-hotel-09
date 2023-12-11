@@ -19,8 +19,6 @@ namespace Google\Service\Batch;
 
 class LogsPolicy extends \Google\Model
 {
-  protected $cloudLoggingOptionType = CloudLoggingOption::class;
-  protected $cloudLoggingOptionDataType = '';
   /**
    * @var string
    */
@@ -30,20 +28,6 @@ class LogsPolicy extends \Google\Model
    */
   public $logsPath;
 
-  /**
-   * @param CloudLoggingOption
-   */
-  public function setCloudLoggingOption(CloudLoggingOption $cloudLoggingOption)
-  {
-    $this->cloudLoggingOption = $cloudLoggingOption;
-  }
-  /**
-   * @return CloudLoggingOption
-   */
-  public function getCloudLoggingOption()
-  {
-    return $this->cloudLoggingOption;
-  }
   /**
    * @param string
    */

@@ -25,6 +25,12 @@ class GoogleCloudDialogflowCxV3InputAudioConfig extends \Google\Collection
    */
   public $audioEncoding;
   /**
+   * @var GoogleCloudDialogflowCxV3BargeInConfig
+   */
+  public $bargeInConfig;
+  protected $bargeInConfigType = GoogleCloudDialogflowCxV3BargeInConfig::class;
+  protected $bargeInConfigDataType = '';
+  /**
    * @var bool
    */
   public $enableWordInfo;
@@ -62,6 +68,20 @@ class GoogleCloudDialogflowCxV3InputAudioConfig extends \Google\Collection
   public function getAudioEncoding()
   {
     return $this->audioEncoding;
+  }
+  /**
+   * @param GoogleCloudDialogflowCxV3BargeInConfig
+   */
+  public function setBargeInConfig(GoogleCloudDialogflowCxV3BargeInConfig $bargeInConfig)
+  {
+    $this->bargeInConfig = $bargeInConfig;
+  }
+  /**
+   * @return GoogleCloudDialogflowCxV3BargeInConfig
+   */
+  public function getBargeInConfig()
+  {
+    return $this->bargeInConfig;
   }
   /**
    * @param bool

@@ -20,8 +20,18 @@ namespace Google\Service\Dialogflow;
 class GoogleCloudDialogflowCxV3Agent extends \Google\Collection
 {
   protected $collection_key = 'supportedLanguageCodes';
+  /**
+   * @var GoogleCloudDialogflowCxV3AdvancedSettings
+   */
+  public $advancedSettings;
   protected $advancedSettingsType = GoogleCloudDialogflowCxV3AdvancedSettings::class;
   protected $advancedSettingsDataType = '';
+  /**
+   * @var GoogleCloudDialogflowCxV3AgentAnswerFeedbackSettings
+   */
+  public $answerFeedbackSettings;
+  protected $answerFeedbackSettingsType = GoogleCloudDialogflowCxV3AgentAnswerFeedbackSettings::class;
+  protected $answerFeedbackSettingsDataType = '';
   /**
    * @var string
    */
@@ -46,8 +56,16 @@ class GoogleCloudDialogflowCxV3Agent extends \Google\Collection
    * @var bool
    */
   public $enableStackdriverLogging;
+  /**
+   * @var GoogleCloudDialogflowCxV3AgentGenAppBuilderSettings
+   */
+  public $genAppBuilderSettings;
   protected $genAppBuilderSettingsType = GoogleCloudDialogflowCxV3AgentGenAppBuilderSettings::class;
   protected $genAppBuilderSettingsDataType = '';
+  /**
+   * @var GoogleCloudDialogflowCxV3AgentGitIntegrationSettings
+   */
+  public $gitIntegrationSettings;
   protected $gitIntegrationSettingsType = GoogleCloudDialogflowCxV3AgentGitIntegrationSettings::class;
   protected $gitIntegrationSettingsDataType = '';
   /**
@@ -62,6 +80,10 @@ class GoogleCloudDialogflowCxV3Agent extends \Google\Collection
    * @var string
    */
   public $securitySettings;
+  /**
+   * @var GoogleCloudDialogflowCxV3SpeechToTextSettings
+   */
+  public $speechToTextSettings;
   protected $speechToTextSettingsType = GoogleCloudDialogflowCxV3SpeechToTextSettings::class;
   protected $speechToTextSettingsDataType = '';
   /**
@@ -72,6 +94,10 @@ class GoogleCloudDialogflowCxV3Agent extends \Google\Collection
    * @var string[]
    */
   public $supportedLanguageCodes;
+  /**
+   * @var GoogleCloudDialogflowCxV3TextToSpeechSettings
+   */
+  public $textToSpeechSettings;
   protected $textToSpeechSettingsType = GoogleCloudDialogflowCxV3TextToSpeechSettings::class;
   protected $textToSpeechSettingsDataType = '';
   /**
@@ -92,6 +118,20 @@ class GoogleCloudDialogflowCxV3Agent extends \Google\Collection
   public function getAdvancedSettings()
   {
     return $this->advancedSettings;
+  }
+  /**
+   * @param GoogleCloudDialogflowCxV3AgentAnswerFeedbackSettings
+   */
+  public function setAnswerFeedbackSettings(GoogleCloudDialogflowCxV3AgentAnswerFeedbackSettings $answerFeedbackSettings)
+  {
+    $this->answerFeedbackSettings = $answerFeedbackSettings;
+  }
+  /**
+   * @return GoogleCloudDialogflowCxV3AgentAnswerFeedbackSettings
+   */
+  public function getAnswerFeedbackSettings()
+  {
+    return $this->answerFeedbackSettings;
   }
   /**
    * @param string

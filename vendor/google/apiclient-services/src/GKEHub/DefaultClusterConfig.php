@@ -19,9 +19,33 @@ namespace Google\Service\GKEHub;
 
 class DefaultClusterConfig extends \Google\Model
 {
+  /**
+   * @var BinaryAuthorizationConfig
+   */
+  public $binaryAuthorizationConfig;
+  protected $binaryAuthorizationConfigType = BinaryAuthorizationConfig::class;
+  protected $binaryAuthorizationConfigDataType = '';
+  /**
+   * @var SecurityPostureConfig
+   */
+  public $securityPostureConfig;
   protected $securityPostureConfigType = SecurityPostureConfig::class;
   protected $securityPostureConfigDataType = '';
 
+  /**
+   * @param BinaryAuthorizationConfig
+   */
+  public function setBinaryAuthorizationConfig(BinaryAuthorizationConfig $binaryAuthorizationConfig)
+  {
+    $this->binaryAuthorizationConfig = $binaryAuthorizationConfig;
+  }
+  /**
+   * @return BinaryAuthorizationConfig
+   */
+  public function getBinaryAuthorizationConfig()
+  {
+    return $this->binaryAuthorizationConfig;
+  }
   /**
    * @param SecurityPostureConfig
    */

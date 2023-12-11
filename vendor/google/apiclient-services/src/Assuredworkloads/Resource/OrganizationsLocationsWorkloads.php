@@ -18,6 +18,7 @@
 namespace Google\Service\Assuredworkloads\Resource;
 
 use Google\Service\Assuredworkloads\GoogleCloudAssuredworkloadsV1AnalyzeWorkloadMoveResponse;
+use Google\Service\Assuredworkloads\GoogleCloudAssuredworkloadsV1EnableResourceMonitoringResponse;
 use Google\Service\Assuredworkloads\GoogleCloudAssuredworkloadsV1ListWorkloadsResponse;
 use Google\Service\Assuredworkloads\GoogleCloudAssuredworkloadsV1MutatePartnerPermissionsRequest;
 use Google\Service\Assuredworkloads\GoogleCloudAssuredworkloadsV1RestrictAllowedResourcesRequest;
@@ -52,8 +53,7 @@ class OrganizationsLocationsWorkloads extends \Google\Service\Resource
    * @opt_param string assetTypes Optional. List of asset types to be analyzed,
    * including and under the source resource. If empty, all assets are analyzed.
    * The complete list of asset types is available
-   * [here](https://cloud.google.com/asset-inventory/docs/supported-asset-
-   * types#searchable_asset_types).
+   * [here](https://cloud.google.com/asset-inventory/docs/supported-asset-types).
    * @opt_param int pageSize Optional. Page size. If a value is not specified, the
    * default value of 10 is used.
    * @opt_param string pageToken Optional. The page token from the previous
@@ -112,6 +112,22 @@ class OrganizationsLocationsWorkloads extends \Google\Service\Resource
     $params = ['name' => $name];
     $params = array_merge($params, $optParams);
     return $this->call('delete', [$params], GoogleProtobufEmpty::class);
+  }
+  /**
+   * Enable resource violation monitoring for a workload.
+   * (workloads.enableResourceMonitoring)
+   *
+   * @param string $name Required. The `name` field is used to identify the
+   * workload. Format:
+   * organizations/{org_id}/locations/{location_id}/workloads/{workload_id}
+   * @param array $optParams Optional parameters.
+   * @return GoogleCloudAssuredworkloadsV1EnableResourceMonitoringResponse
+   */
+  public function enableResourceMonitoring($name, $optParams = [])
+  {
+    $params = ['name' => $name];
+    $params = array_merge($params, $optParams);
+    return $this->call('enableResourceMonitoring', [$params], GoogleCloudAssuredworkloadsV1EnableResourceMonitoringResponse::class);
   }
   /**
    * Gets Assured Workload associated with a CRM Node (workloads.get)

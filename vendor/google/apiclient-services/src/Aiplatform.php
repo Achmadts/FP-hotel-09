@@ -59,6 +59,7 @@ class Aiplatform extends \Google\Service
   public $projects_locations_datasets_operations;
   public $projects_locations_datasets_savedQueries;
   public $projects_locations_datasets_savedQueries_operations;
+  public $projects_locations_deploymentResourcePools;
   public $projects_locations_deploymentResourcePools_operations;
   public $projects_locations_endpoints;
   public $projects_locations_endpoints_operations;
@@ -1356,6 +1357,82 @@ class Aiplatform extends \Google\Service
           ]
         ]
     );
+    $this->projects_locations_deploymentResourcePools = new Aiplatform\Resource\ProjectsLocationsDeploymentResourcePools(
+        $this,
+        $this->serviceName,
+        'deploymentResourcePools',
+        [
+          'methods' => [
+            'create' => [
+              'path' => 'v1/{+parent}/deploymentResourcePools',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'delete' => [
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'get' => [
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'list' => [
+              'path' => 'v1/{+parent}/deploymentResourcePools',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'parent' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'pageSize' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'pageToken' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],'queryDeployedModels' => [
+              'path' => 'v1/{+deploymentResourcePool}:queryDeployedModels',
+              'httpMethod' => 'GET',
+              'parameters' => [
+                'deploymentResourcePool' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+                'pageSize' => [
+                  'location' => 'query',
+                  'type' => 'integer',
+                ],
+                'pageToken' => [
+                  'location' => 'query',
+                  'type' => 'string',
+                ],
+              ],
+            ],
+          ]
+        ]
+    );
     $this->projects_locations_deploymentResourcePools_operations = new Aiplatform\Resource\ProjectsLocationsDeploymentResourcePoolsOperations(
         $this,
         $this->serviceName,
@@ -1484,6 +1561,26 @@ class Aiplatform extends \Google\Service
               ],
             ],'deployModel' => [
               'path' => 'v1/{+endpoint}:deployModel',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'endpoint' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'directPredict' => [
+              'path' => 'v1/{+endpoint}:directPredict',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'endpoint' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'directRawPredict' => [
+              'path' => 'v1/{+endpoint}:directRawPredict',
               'httpMethod' => 'POST',
               'parameters' => [
                 'endpoint' => [
@@ -5115,6 +5212,16 @@ class Aiplatform extends \Google\Service
               ],
             ],'start' => [
               'path' => 'v1/{+name}:start',
+              'httpMethod' => 'POST',
+              'parameters' => [
+                'name' => [
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ],
+              ],
+            ],'upgrade' => [
+              'path' => 'v1/{+name}:upgrade',
               'httpMethod' => 'POST',
               'parameters' => [
                 'name' => [

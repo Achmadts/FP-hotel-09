@@ -26,7 +26,15 @@ class GoogleCloudAiplatformV1SchemaPredictParamsGroundingConfigSourceEntry exten
   /**
    * @var string
    */
+  public $inlineContext;
+  /**
+   * @var string
+   */
   public $type;
+  /**
+   * @var string
+   */
+  public $vertexAiSearchDatastore;
 
   /**
    * @param string
@@ -45,6 +53,20 @@ class GoogleCloudAiplatformV1SchemaPredictParamsGroundingConfigSourceEntry exten
   /**
    * @param string
    */
+  public function setInlineContext($inlineContext)
+  {
+    $this->inlineContext = $inlineContext;
+  }
+  /**
+   * @return string
+   */
+  public function getInlineContext()
+  {
+    return $this->inlineContext;
+  }
+  /**
+   * @param string
+   */
   public function setType($type)
   {
     $this->type = $type;
@@ -55,6 +77,20 @@ class GoogleCloudAiplatformV1SchemaPredictParamsGroundingConfigSourceEntry exten
   public function getType()
   {
     return $this->type;
+  }
+  /**
+   * @param string
+   */
+  public function setVertexAiSearchDatastore($vertexAiSearchDatastore)
+  {
+    $this->vertexAiSearchDatastore = $vertexAiSearchDatastore;
+  }
+  /**
+   * @return string
+   */
+  public function getVertexAiSearchDatastore()
+  {
+    return $this->vertexAiSearchDatastore;
   }
 }
 

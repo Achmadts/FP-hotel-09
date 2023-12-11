@@ -44,11 +44,11 @@ class SpacesMembers extends \Google\Service\Resource
    * message between two human users, use `users/app`. Unable to add other apps to
    * the space. - To add a human user, use `users/{user}`, where `{user}` can be
    * the email address for the user. For users in the same Workspace organization
-   * `{user}` can also be the `{person_id}` for the person from the People API, or
-   * the `id` for the user in the Directory API. For example, if the People API
-   * Person `resourceName` for `user@example.com` is `people/123456789`, you can
-   * add the user to the space by setting the `membership.member.name` to
-   * `users/user@example.com` or `users/123456789`. (members.create)
+   * `{user}` can also be the `id` for the person from the People API, or the `id`
+   * for the user in the Directory API. For example, if the People API Person
+   * profile ID for `user@example.com` is `123456789`, you can add the user to the
+   * space by setting the `membership.member.name` to `users/user@example.com` or
+   * `users/123456789`. (members.create)
    *
    * @param string $parent Required. The resource name of the space for which to
    * create the membership. Format: spaces/{space}
@@ -91,8 +91,8 @@ class SpacesMembers extends \Google\Service\Resource
    * Returns details about a membership. For an example, see [Get a
    * membership](https://developers.google.com/chat/api/guides/v1/members/get).
    * Requires
-   * [authentication](https://developers.google.com/chat/api/guides/auth). Fully
-   * supports [service account
+   * [authentication](https://developers.google.com/chat/api/guides/auth).
+   * Supports [app
    * authentication](https://developers.google.com/chat/api/guides/auth/service-
    * accounts) and [user
    * authentication](https://developers.google.com/chat/api/guides/auth/users).
@@ -126,8 +126,8 @@ class SpacesMembers extends \Google\Service\Resource
    * authentication](https://developers.google.com/chat/api/guides/auth/users)
    * lists memberships in spaces that the authenticated user has access to.
    * Requires
-   * [authentication](https://developers.google.com/chat/api/guides/auth). Fully
-   * supports [service account
+   * [authentication](https://developers.google.com/chat/api/guides/auth).
+   * Supports [app
    * authentication](https://developers.google.com/chat/api/guides/auth/service-
    * accounts) and [user
    * authentication](https://developers.google.com/chat/api/guides/auth/users).
@@ -159,6 +159,10 @@ class SpacesMembers extends \Google\Service\Resource
    * page. When paginating, all other parameters provided should match the call
    * that provided the page token. Passing different values to the other
    * parameters might lead to unexpected results.
+   * @opt_param bool showGroups Optional. When `true`, also returns memberships
+   * associated with a Google Group, in addition to other types of memberships. If
+   * a filter is set, Google Group memberships that don't match the filter
+   * criteria aren't returned.
    * @opt_param bool showInvited Optional. When `true`, also returns memberships
    * associated with invited members, in addition to other types of memberships.
    * If a filter is set, invited memberships that don't match the filter criteria

@@ -20,9 +20,31 @@ namespace Google\Service\Aiplatform;
 class GoogleCloudAiplatformV1SchemaPredictParamsGroundingConfig extends \Google\Collection
 {
   protected $collection_key = 'sources';
+  /**
+   * @var bool
+   */
+  public $disableAttribution;
+  /**
+   * @var GoogleCloudAiplatformV1SchemaPredictParamsGroundingConfigSourceEntry[]
+   */
+  public $sources;
   protected $sourcesType = GoogleCloudAiplatformV1SchemaPredictParamsGroundingConfigSourceEntry::class;
   protected $sourcesDataType = 'array';
 
+  /**
+   * @param bool
+   */
+  public function setDisableAttribution($disableAttribution)
+  {
+    $this->disableAttribution = $disableAttribution;
+  }
+  /**
+   * @return bool
+   */
+  public function getDisableAttribution()
+  {
+    return $this->disableAttribution;
+  }
   /**
    * @param GoogleCloudAiplatformV1SchemaPredictParamsGroundingConfigSourceEntry[]
    */

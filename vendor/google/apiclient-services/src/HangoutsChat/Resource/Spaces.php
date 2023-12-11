@@ -85,29 +85,29 @@ class Spaces extends \Google\Service\Resource
    * [user
    * authentication](https://developers.google.com/chat/api/guides/auth/users),
    * returns the direct message space between the specified user and the
-   * authenticated user. With [service account
+   * authenticated user. With [app
    * authentication](https://developers.google.com/chat/api/guides/auth/service-
    * accounts), returns the direct message space between the specified user and
    * the calling Chat app. Requires [user
    * authentication](https://developers.google.com/chat/api/guides/auth/users) or
-   * [service account
+   * [app
    * authentication](https://developers.google.com/chat/api/guides/auth/service-
    * accounts). (spaces.findDirectMessage)
    *
    * @param array $optParams Optional parameters.
    *
    * @opt_param string name Required. Resource name of the user to find direct
-   * message with. Format: `users/{user}`, where `{user}` is either the
-   * `{person_id}` for the
-   * [person](https://developers.google.com/people/api/rest/v1/people) from the
-   * People API, or the `id` for the [user](https://developers.google.com/admin-
+   * message with. Format: `users/{user}`, where `{user}` is either the `id` for
+   * the [person](https://developers.google.com/people/api/rest/v1/people) from
+   * the People API, or the `id` for the
+   * [user](https://developers.google.com/admin-
    * sdk/directory/reference/rest/v1/users) in the Directory API. For example, if
-   * the People API `Person.resourceName` is `people/123456789`, you can find a
-   * direct message with that person by using `users/123456789` as the `name`.
-   * When [authenticated as a
-   * user](https://developers.google.com/chat/api/guides/auth/users), you can use
-   * the email as an alias for `{user}`. For example, `users/example@gmail.com`
-   * where `example@gmail.com` is the email of the Google Chat user.
+   * the People API profile ID is `123456789`, you can find a direct message with
+   * that person by using `users/123456789` as the `name`. When [authenticated as
+   * a user](https://developers.google.com/chat/api/guides/auth/users), you can
+   * use the email as an alias for `{user}`. For example,
+   * `users/example@gmail.com` where `example@gmail.com` is the email of the
+   * Google Chat user.
    * @return Space
    */
   public function findDirectMessage($optParams = [])
@@ -119,8 +119,8 @@ class Spaces extends \Google\Service\Resource
   /**
    * Returns details about a space. For an example, see [Get a
    * space](https://developers.google.com/chat/api/guides/v1/spaces/get). Requires
-   * [authentication](https://developers.google.com/chat/api/guides/auth). Fully
-   * supports [service account
+   * [authentication](https://developers.google.com/chat/api/guides/auth).
+   * Supports [app
    * authentication](https://developers.google.com/chat/api/guides/auth/service-
    * accounts) and [user
    * authentication](https://developers.google.com/chat/api/guides/auth/users).
@@ -142,8 +142,8 @@ class Spaces extends \Google\Service\Resource
    * until the first message is sent. For an example, see [List
    * spaces](https://developers.google.com/chat/api/guides/v1/spaces/list).
    * Requires
-   * [authentication](https://developers.google.com/chat/api/guides/auth). Fully
-   * supports [service account
+   * [authentication](https://developers.google.com/chat/api/guides/auth).
+   * Supports [app
    * authentication](https://developers.google.com/chat/api/guides/auth/service-
    * accounts) and [user
    * authentication](https://developers.google.com/chat/api/guides/auth/users).
@@ -161,11 +161,11 @@ class Spaces extends \Google\Service\Resource
    * types, use the `OR` operator. For example, the following queries are valid:
    * ``` space_type = "SPACE" spaceType = "GROUP_CHAT" OR spaceType =
    * "DIRECT_MESSAGE" ``` Invalid queries are rejected by the server with an
-   * `INVALID_ARGUMENT` error. With [service account
+   * `INVALID_ARGUMENT` error. With [app
    * authentication](https://developers.google.com/chat/api/guides/auth/service-
    * accounts), this field is ignored and the query always returns all spaces. But
-   * the Chat API still validates the query syntax with service accounts, so
-   * invalid queries are still rejected.
+   * the Chat API still validates the query syntax, so invalid queries are still
+   * rejected.
    * @opt_param int pageSize Optional. The maximum number of spaces to return. The
    * service might return fewer than this value. If unspecified, at most 100
    * spaces are returned. The maximum value is 1,000. If you use a value more than
@@ -234,21 +234,20 @@ class Spaces extends \Google\Service\Resource
    * specify the human members to add, add memberships with the appropriate
    * `member.name` in the `SetUpSpaceRequest`. To add a human user, use
    * `users/{user}`, where `{user}` can be the email address for the user. For
-   * users in the same Workspace organization `{user}` can also be the
-   * `{person_id}` for the person from the People API, or the `id` for the user in
-   * the Directory API. For example, if the People API Person `resourceName` for
-   * `user@example.com` is `people/123456789`, you can add the user to the space
-   * by setting the `membership.member.name` to `users/user@example.com` or
-   * `users/123456789`. For a space or group chat, if the caller blocks or is
-   * blocked by some members, then those members aren't added to the created
-   * space. To create a direct message (DM) between the calling user and another
-   * human user, specify exactly one membership to represent the human user. If
-   * one user blocks the other, the request fails and the DM isn't created. To
-   * create a DM between the calling user and the calling app, set
-   * `Space.singleUserBotDm` to `true` and don't specify any memberships. You can
-   * only use this method to set up a DM with the calling app. To add the calling
-   * app as a member of a space or an existing DM between two human users, see
-   * [create a
+   * users in the same Workspace organization `{user}` can also be the `id` for
+   * the person from the People API, or the `id` for the user in the Directory
+   * API. For example, if the People API Person profile ID for `user@example.com`
+   * is `123456789`, you can add the user to the space by setting the
+   * `membership.member.name` to `users/user@example.com` or `users/123456789`.
+   * For a space or group chat, if the caller blocks or is blocked by some
+   * members, then those members aren't added to the created space. To create a
+   * direct message (DM) between the calling user and another human user, specify
+   * exactly one membership to represent the human user. If one user blocks the
+   * other, the request fails and the DM isn't created. To create a DM between the
+   * calling user and the calling app, set `Space.singleUserBotDm` to `true` and
+   * don't specify any memberships. You can only use this method to set up a DM
+   * with the calling app. To add the calling app as a member of a space or an
+   * existing DM between two human users, see [create a
    * membership](https://developers.google.com/chat/api/guides/v1/members/create).
    * If a DM already exists between two users, even when one user blocks the other
    * at the time a request is made, then the existing DM is returned. Spaces with

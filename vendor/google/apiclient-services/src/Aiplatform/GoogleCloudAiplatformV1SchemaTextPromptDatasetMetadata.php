@@ -28,12 +28,20 @@ class GoogleCloudAiplatformV1SchemaTextPromptDatasetMetadata extends \Google\Col
    * @var string
    */
   public $gcsUri;
+  /**
+   * @var GoogleCloudAiplatformV1SchemaPredictParamsGroundingConfig
+   */
+  public $groundingConfig;
   protected $groundingConfigType = GoogleCloudAiplatformV1SchemaPredictParamsGroundingConfig::class;
   protected $groundingConfigDataType = '';
   /**
    * @var string
    */
   public $maxOutputTokens;
+  /**
+   * @var string
+   */
+  public $note;
   /**
    * @var string
    */
@@ -114,6 +122,20 @@ class GoogleCloudAiplatformV1SchemaTextPromptDatasetMetadata extends \Google\Col
   public function getMaxOutputTokens()
   {
     return $this->maxOutputTokens;
+  }
+  /**
+   * @param string
+   */
+  public function setNote($note)
+  {
+    $this->note = $note;
+  }
+  /**
+   * @return string
+   */
+  public function getNote()
+  {
+    return $this->note;
   }
   /**
    * @param string
