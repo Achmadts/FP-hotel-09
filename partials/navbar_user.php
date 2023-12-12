@@ -34,14 +34,14 @@ $cari = isset($_GET["cari"]) ? htmlspecialchars($_GET["cari"]) : "";
                         </ul>
                     </li>
                 </ul>
-                <form class="d-flex" role="search" method="GET">
-                    <input class="form-control me-2" type="search" value="<?= isset($cari) ? $cari : ''; ?>" id="search" name="cari" autocomplete="off" placeholder="Search" aria-label="Search">
-                </form>
-                <!-- <a href="./logout.php" class="btn btn-outline-primary justify-content-center align-items-center mb-4" type="submit"><i class="bi bi-box-arrow-left" style="display: inline-block; margin-top: 1px;"></i> Logout</a> -->
-                <form action="./logout.php" onsubmit="return confirmLogout();">
-                    <button class="btn btn-outline-primary justify-content-center align-items-center" type="submit"><i class="bi bi-box-arrow-left" style="display: inline-block; margin-top: 1px;"></i> Logout</button>
-                </form>
-                <a href="https://www.instagram.com/rpl2_59/?igshid=OGQ5ZDc2ODk2ZA%3D%3D"><img src="./assets/img/logo_pplg.png" width="41" height="40" class="mb-3 ms-5 me-5 justify-content-center align-items-center" style="margin-top: -5px;"></a>
+                <div class="d-flex justify-content-center align-items-center">
+                    <form class="me-2 mb-0" role="search" method="GET">
+                        <input class="form-control me-2" type="search" value="<?= isset($cari) ? $cari : ''; ?>" id="search" name="cari" autocomplete="off" placeholder="Search" aria-label="Search">
+                    </form>
+                    <form action="./logout.php" onsubmit="return confirmLogout();" class="ms-2 mb-0">
+                        <button class="btn btn-outline-primary justify-content-center align-items-center" type="submit"><i class="bi bi-box-arrow-left" style="display: inline-block; margin-top: 1px;"></i> Logout</button>
+                    </form>
+                </div>
             </div>
         </div>
     </nav>

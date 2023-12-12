@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 09 Des 2023 pada 11.55
+-- Waktu pembuatan: 12 Des 2023 pada 08.16
 -- Versi server: 10.4.28-MariaDB
 -- Versi PHP: 8.2.4
 
@@ -34,6 +34,14 @@ CREATE TABLE `codes` (
   `expire` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `codes`
+--
+
+INSERT INTO `codes` (`id`, `email`, `code`, `expire`) VALUES
+(1, 'tohcon59@gmail.com', '71182', 1702358571),
+(2, 'tohcon59@gmail.com', '41024', 1702360018);
+
 -- --------------------------------------------------------
 
 --
@@ -61,6 +69,13 @@ CREATE TABLE `pengunjung` (
   `pesan` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `pengunjung`
+--
+
+INSERT INTO `pengunjung` (`id`, `name`, `email`, `alamat`, `tgl_lahir`, `no_telpon`, `jkel`, `region`, `tgl_check_in`, `tgl_check_out`, `jenis_kamar`, `jumlah_tamu`, `kategori`, `fasilitas_tambahan`, `metode_pembayaran`, `nomor_kartu_kredit`, `tgl_expired`, `pesan`) VALUES
+(1, 'Achmad Tirto Sudiro', 'achmadtirtosudirosudiro@gmail.com', 'Klari', '2006-09-09', '0895320316384', 'Laki-laki', 'Warga Lokal', '2023-12-12', '2023-12-20', 'Double', 2, 'VVIP', 'Bantal Acara Spesial ', 'Transfer Bank', '', '0000-00-00', 'Tes');
+
 -- --------------------------------------------------------
 
 --
@@ -73,8 +88,18 @@ CREATE TABLE `user` (
   `email` varchar(255) NOT NULL DEFAULT '',
   `password` varchar(255) NOT NULL,
   `verifiedEmail` int(11) NOT NULL DEFAULT 0,
-  `token` varchar(255) NOT NULL DEFAULT ''
+  `token` varchar(255) NOT NULL DEFAULT '',
+  `admin` int(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `user`
+--
+
+INSERT INTO `user` (`id`, `name`, `email`, `password`, `verifiedEmail`, `token`, `admin`) VALUES
+(3, 'Contoh', 'tohcon59@gmail.com', '$2y$10$fcXY2Q7Vu7a5Njm0EZTBHOKJrCNrEzSjmBTCd3fQyHr32GAnmWtwG', 1, '', 1),
+(4, 'p', 'p@gmail.com', '$2y$10$AAhQu4HJZicKbTleMPLrlOOz4LNY5pzb1Zpq47W96cP4wPOa2DXEK', 0, '', 0),
+(5, 'f', 'f@gmail.com', '$2y$10$NdPRwHOQRgl8gn4Vr1Ej8udaCD4prKliYIlml7SDsB5NvbDnYRf6K', 0, '', 0);
 
 --
 -- Indexes for dumped tables
@@ -110,19 +135,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `codes`
 --
 ALTER TABLE `codes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `pengunjung`
 --
 ALTER TABLE `pengunjung`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

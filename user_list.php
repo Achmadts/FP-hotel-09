@@ -17,14 +17,20 @@ if (isset($_SESSION["email_verification"]["code"])) {
 $limit = 2;
 $halaman = isset($_GET["halaman"]) ? $_GET["halaman"] : 1;
 
-if (isset($_GET["cari"])) {
-    $cari = $_GET["cari"];
-    $query = "SELECT * FROM user WHERE name LIKE '%$cari%' OR email LIKE '%$cari%'";
-} else {
-    $query = "SELECT * FROM user";
-}
-
+// Ambil data user dari database
+$query = "SELECT * FROM user";
 $result = $con->query($query);
+
+// Periksa apakah ada baris hasil query
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+
+    // Cek apakah kolom "admin"
+    if ($row["admin"] <= 0) {
+        header("Location: welcome.php");
+        exit;
+    }
+}
 
 $totalBaris = $result->num_rows;
 $totalHalaman = ceil($totalBaris / $limit);
@@ -142,7 +148,16 @@ $result = $con->query($query);
         <?php include 'partials/pagination.php'; ?>
     </div>
     <footer class="p-1 text-center">
-        <p class="fw-bold mt-3">fountaine project &COPY; 2023</p>
+        <div class="container">
+            <div class="row justify-content-center align-items-center text-center">
+                <div class="col-md-6" style="width: 221px;">
+                    <p class="fw-bold mt-3" style="font-size: 16.5px;">fountaine project &COPY; 2023</p>
+                </div>
+                <div class="col-md-6" style="width: 41px; margin-top: -17px;">
+                    <a href="https://www.instagram.com/rpl2_59/?igshid=OGQ5ZDc2ODk2ZA%3D%3D"><img src="assets/img/logo_pplg.png" width="41" height="40"></a>
+                </div>
+            </div>
+        </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script>

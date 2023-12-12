@@ -33,7 +33,7 @@ if (count($_POST) > 0) {
         } elseif (!valid_email($email)) {
             $error[] = "Email tidak tidak terdaftar!";
         } elseif (is_email_verified($email)) {
-            $error[] = "Email sudah diverifikasi!";
+            $error[] = "Email sudah diverifikasi silahkan";
         } else {
             $_SESSION["email_verification_telat"]["email"] = $email;
             kirim_email($email);
@@ -239,8 +239,11 @@ function kode_benar($code)
                         <?php
                         if (!empty($error)) {
                             foreach ($error as $err) {
-                                echo "<div class='error-msg' style='background-color: #ffe3e5; border: 1px solid #851923; text-align: center; min-height: 40px; border-radius: 5px;'>";
-                                echo '<span class="error-msg" style="font-size: 90%; color: #851923; display: inline-block; margin-top: 7px;">' . htmlspecialchars($err) . '</span>';
+                                echo "<div class='error-msg' style='background-color: #ffe3e5; border: 1px solid #851923; min-height: 40px; height: fit-content; border-radius: 5px;'>";
+                                echo '<span class="error-msg ms-1" style="font-size: 90%; color: #851923; display: inline-block; margin-top: 7px;">' . htmlspecialchars($err) . '</span>';
+                                if ($err === "Email sudah diverifikasi silahkan") {
+                                    echo ' <a href="index.php" class="me-1" style="text-decoration: none; margin-top: 7px;"> Login!</a>';
+                                }
                                 echo "<br>";
                                 echo "</div>";
                             }

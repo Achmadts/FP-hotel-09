@@ -16,14 +16,29 @@ if (isset($_SESSION["email_verification"]["code"])) {
 
 $limit = 2;
 $halaman = isset($_GET["halaman"]) ? $_GET["halaman"] : 1;
-$query = "SELECT * FROM pengunjung";
+
+// Ambil data user dari database
+$query = "SELECT * FROM user";
+$queryPengunjung = "SELECT * FROM pengunjung";
 $result = $con->query($query);
+
+// Periksa apakah ada baris hasil query
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+
+    // Cek apakah kolom "admin"
+    if ($row["admin"] <= 0) {
+        header("Location: welcome.php");
+        exit;
+    }
+}
+
 $totalBaris = $result->num_rows;
 $totalHalaman = ceil($totalBaris / $limit);
 
 $imbang = ($halaman - 1) * $limit;
-$query = $query . " LIMIT $limit OFFSET $imbang";
-$result = $con->query($query);
+$queryPengunjung = $queryPengunjung . " LIMIT $limit OFFSET $imbang";
+$result = $con->query($queryPengunjung);
 ?>
 
 <!DOCTYPE html>
@@ -140,7 +155,16 @@ $result = $con->query($query);
         <?php include 'partials/pagination.php' ?>
     </div>
     <footer class="p-1 text-center">
-        <p class="fw-bold mt-3">fountaine project &COPY; 2023</p>
+        <div class="container">
+            <div class="row justify-content-center align-items-center text-center">
+                <div class="col-md-6" style="width: 221px;">
+                    <p class="fw-bold mt-3" style="font-size: 16.5px;">fountaine project &COPY; 2023</p>
+                </div>
+                <div class="col-md-6" style="width: 41px; margin-top: -17px;">
+                    <a href="https://www.instagram.com/rpl2_59/?igshid=OGQ5ZDc2ODk2ZA%3D%3D"><img src="assets/img/logo_pplg.png" width="41" height="40"></a>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script>

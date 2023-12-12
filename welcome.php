@@ -171,11 +171,11 @@ if (isset($_GET['code'])) {
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Data
+                            Data (Hanya admin)
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="user_list.php">Data User</a></li>
-                            <li><a class="dropdown-item" href="list.php">Data Pengunjung</a></li>
+                            <li><a class="dropdown-item" href="user_list.php">Data User (Hanya admin)</a></li>
+                            <li><a class="dropdown-item" href="list.php">Data Pengunjung (Hanya admin)</a></li>
                         </ul>
                     </li>
                 </ul>
