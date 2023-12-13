@@ -40,7 +40,7 @@ if ($result->num_rows > 0) {
         echo "</tr>";
     }
 } else {
-    echo "<tr><td colspan='8'>Tidak ada data pengunjung.</td></tr>";
+    echo "<tr><td colspan='8'>Tidak ada data user.</td></tr>";
 }
 ?>
 

@@ -3,42 +3,23 @@ session_start();
 require_once 'connection/conn.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
-
 if (!isset($_SESSION["login"])) {
     header('Location: index.php');
     exit;
 }
-
 if (isset($_SESSION["email_verification"]["code"])) {
     header("Location: email_verification.php");
     exit;
 }
-
 $limit = 2;
 $halaman = isset($_GET["halaman"]) ? $_GET["halaman"] : 1;
-
-// Ambil data user dari database
-$query = "SELECT * FROM user";
-$queryPengunjung = "SELECT * FROM pengunjung";
+$query = "SELECT * FROM pengunjung";
 $result = $con->query($query);
-
-// Periksa apakah ada baris hasil query
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-
-    // Cek apakah kolom "admin"
-    if ($row["admin"] <= 0) {
-        header("Location: welcome.php");
-        exit;
-    }
-}
-
 $totalBaris = $result->num_rows;
 $totalHalaman = ceil($totalBaris / $limit);
-
 $imbang = ($halaman - 1) * $limit;
-$queryPengunjung = $queryPengunjung . " LIMIT $limit OFFSET $imbang";
-$result = $con->query($queryPengunjung);
+$query = $query . " LIMIT $limit OFFSET $imbang";
+$result = $con->query($query);
 ?>
 
 <!DOCTYPE html>
@@ -122,7 +103,7 @@ $result = $con->query($queryPengunjung);
                     </tr>
                 </thead>
                 <tbody id="tampil">
-                    <?php
+                <?php
                     $i = ($halaman - 1) * $limit;
                     if ($result->num_rows > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {

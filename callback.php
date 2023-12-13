@@ -84,14 +84,13 @@ if (!empty($tokenData->error)) {
 }
 
 if (!empty($tokenData->access_token)) {
-    // Dapatkan informasi user
     $infoUser = getUser($tokenData->access_token);
-
+    
     if ($infoUser === false) {
         exit("Gagal mendapatkan informasi User");
     }
 
-    // Set variabel sesi untuk login. Dan Setcookie untuk token (Opsional)
+    // Set variabel sesi login. Dan cookie untuk token (Opsional)
     $_SESSION["login"] = $infoUser->login;
     setcookie('fp_hotel_access_token', $tokenData->access_token, time() + 2592000, "/", "", false, true);
 
