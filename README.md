@@ -19,4 +19,4 @@ Untuk bisa menggunakan fitur Login dengan `Google` dan `GitHub` anda harus membu
 
 + `OAuth Apps GitHub` dan `OAuth Apps Google`
 + Setelah itu, kaian harus konfigurasi ulang `CLIENT_SECRET`, `CLIENT_ID` dan `Redirect uri` yang ada di file `google_config.php` **(untuk Google)**.
-+ dan konfigurasi ulang file `CLIENT_SECRET` dan `CLIENT_ID` yang ada di file `.env` **(untuk GitHub)**.
++ dan konfigurasi ulang `CLIENT_SECRET` dan `CLIENT_ID` yang ada di file `.env` **(untuk GitHub)**.
