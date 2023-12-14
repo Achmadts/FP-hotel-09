@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = register($con, $_POST,);
 
     if (count($error) == 0) {
-        header("Location: index.php");
+        header("Location: ../index.php");
         die;
     }
 }
@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <input type="submit" class="btn btn-primary mb-2 mt-4" name="submit" value="Daftar sekarang!">
-            <p>Sudah memiliki akun? <a href="index.php">Login sekarang!</a></p>
+            <p>Sudah memiliki akun? <a href="../index.php">Login sekarang!</a></p>
     </form>
     </div>
 
