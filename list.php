@@ -3,14 +3,22 @@ session_start();
 require_once 'connection/conn.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
-if (!isset($_SESSION["login"])) {
+
+if (!isset($_SESSION["login"]) && !isset($_SESSION["login_type"]) || $_SESSION["login_type"] !== "admin_login") {
     header('Location: index.php');
     exit;
 }
+
 if (isset($_SESSION["email_verification"]["code"])) {
     header("Location: email_verification.php");
     exit;
 }
+
+// echo "<pre>";
+// print_r($_SESSION);
+// print_r($_COOKIE);
+// echo "</pre>";
+
 $limit = 2;
 $halaman = isset($_GET["halaman"]) ? $_GET["halaman"] : 1;
 $query = "SELECT * FROM pengunjung";
@@ -21,6 +29,7 @@ $imbang = ($halaman - 1) * $limit;
 $query = $query . " LIMIT $limit OFFSET $imbang";
 $result = $con->query($query);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -142,7 +151,7 @@ $result = $con->query($query);
                     <p class="fw-bold mt-3" style="font-size: 16.5px;">fountaine project &COPY; 2023</p>
                 </div>
                 <div class="col-md-6" style="width: 41px; margin-top: -17px;">
-                    <a href="https://www.instagram.com/rpl2_59/?igshid=OGQ5ZDc2ODk2ZA%3D%3D"><img src="assets/img/logo_pplg.png" width="41" height="40"></a>
+                    <a href="https://www.instagram.com/rpl2_59/?igshid=OGQ5ZDc2ODk2ZA%3D%3D"><img src="assets/img/logo_pplg.png" alt="PPLG" width="41" height="40"></a>
                 </div>
             </div>
         </div>

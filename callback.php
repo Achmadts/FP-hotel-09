@@ -85,13 +85,13 @@ if (!empty($tokenData->error)) {
 
 if (!empty($tokenData->access_token)) {
     $infoUser = getUser($tokenData->access_token);
-    
+
     if ($infoUser === false) {
         exit("Gagal mendapatkan informasi User");
     }
 
     // Set variabel sesi login. Dan cookie untuk token (Opsional)
-    $_SESSION["login"] = $infoUser->login;
+    $_SESSION["login"] = $infoUser->name;
     setcookie('fp_hotel_access_token', $tokenData->access_token, time() + 2592000, "/", "", false, true);
 
     // Cek apakah email diterima dari API GitHub
@@ -116,6 +116,8 @@ if (!empty($tokenData->access_token)) {
 
         if ($UserSudahAda) {
             // Kalau user sudah terdaftar maka langsung arahkan ke halaman welcome.php
+            $_SESSION["login_type"] = ($UserSudahAda["type"] == 1) ? "admin_login" : "login";
+
             echo '<script>
             Swal.fire({
                 icon: "success",

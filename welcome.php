@@ -112,14 +112,29 @@ if (isset($_GET['code'])) {
         header("Location: index.php");
         die();
     };
+
     // Cek apakah user sudah ada di db
-    $sql = "SELECT * FROM user  WHERE token = '{$_SESSION['login']}'";
+    $sql = "SELECT * FROM user WHERE token = '{$_SESSION['login']}'";
     $result = mysqli_query($con, $sql);
 
     if (mysqli_num_rows($result) > 0) {
-        $userinfo = mysqli_fetch_assoc($result);
+        $row = mysqli_fetch_assoc($result);
+
+        if ($row["type"] == 1) {
+            $_SESSION["login_type"] = "admin_login";
+        } else {
+            $_SESSION["login_type"] = "user_login";
+        }
+
+        $userinfo = $row;
     }
 }
+
+// echo "<pre>";
+// var_dump($_SESSION);
+// var_dump($_COOKIE);
+// print_r($userinfo);
+// echo "</pre>";
 ?>
 
 <!DOCTYPE html>
@@ -169,13 +184,16 @@ if (isset($_GET['code'])) {
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="welcome.php">Home</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="about.php">About</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Data
+                            Data (Hanya Admin)
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="user_list.php">Data User</a></li>
-                            <li><a class="dropdown-item" href="list.php">Data Pengunjung</a></li>
+                            <li><a class="dropdown-item" href="user_list.php">Data User (Hanya Admin)</a></li>
+                            <li><a class="dropdown-item" href="list.php">Data Pengunjung (Hanya Admin)</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -201,7 +219,7 @@ if (isset($_GET['code'])) {
             </div>
         </div>
     </center>
-    <footer class="p-1 text-center" style="margin-top: 29.7vh;">
+    <footer class="p-1 text-center" style="margin-top: 29vh;">
         <div class="container">
             <div class="row justify-content-center align-items-center text-center">
                 <div class="col-md-6" style="width: 221px;">

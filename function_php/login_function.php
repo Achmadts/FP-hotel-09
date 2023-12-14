@@ -58,12 +58,19 @@ if (isset($_POST["submit"])) {
             }
             if ($row["verifiedEmail"] == 0) {
                 $error[] = "Email belum diverifikasi! Silahkan verifikasi";
-                } else {
+            } else {
                 if (!password_verify($password, $row["password"])) {
                     $error[] = "Password salah!";
                 } else {
                     $nama_pengguna = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
                     $_SESSION["login"] = $nama_pengguna;
+
+                    if ($row["type"] == 1) {
+                        $_SESSION["login_type"] = "admin_login";
+                    } else {
+                        $_SESSION["login_type"] = "login";
+                    }
+
                     echo '<script>
                     Swal.fire({
                         icon: "success",

@@ -3,14 +3,22 @@ session_start();
 require_once 'connection/conn.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
-if (!isset($_SESSION["login"])) {
+
+if (!isset($_SESSION["login"]) && !isset($_SESSION["login_type"]) || $_SESSION["login_type"] !== "admin_login") {
     header('Location: index.php');
     exit;
 }
+
 if (isset($_SESSION["email_verification"]["code"])) {
     header("Location: email_verification.php");
     exit;
 }
+
+// echo "<pre>";
+// print_r($_SESSION);
+// print_r($_COOKIE);
+// echo "</pre>";
+
 $limit = 2;
 $halaman = isset($_GET["halaman"]) ? $_GET["halaman"] : 1;
 $query = "SELECT * FROM user";
