@@ -27,6 +27,9 @@ $cari = isset($_GET["cari"]) ? htmlspecialchars($_GET["cari"]) : "";
                     <li class="nav-item mb-3">
                         <a class="nav-link" aria-current="page" href="about.php">About</a>
                     </li>
+                    <li class="nav-item mb-3">
+                        <a class="nav-link" aria-current="page" href="profile.php">Profile</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Data (Hanya Admin)

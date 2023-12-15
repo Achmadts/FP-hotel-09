@@ -3,10 +3,16 @@
 
 </html>
 <?php
-if (!isset($_SESSION["login"])) {
-    header("Location: ../index.php");
+
+if (!isset($_SESSION["login"]) && !isset($_SESSION["login_type"]) || $_SESSION["login_type"] !== "admin_login") {
+    header('Location: ../index.php');
     exit;
-};
+}
+
+if (isset($_SESSION["email_verification"]["code"])) {
+    header("Location: ../email_verification.php");
+    exit;
+}
 
 function tambahUser($con, $data)
 {

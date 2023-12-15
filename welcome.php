@@ -106,7 +106,7 @@ if (isset($_GET['code'])) {
             die();
         }
     }
-    $_SESSION['login'] = $token;
+    $_SESSION['login'] = $google_account_info["name"];
 } else {
     if (!isset($_SESSION["login"]) && !isset($_COOKIE["fp_hotel_access_token"])) {
         header("Location: index.php");
@@ -114,7 +114,7 @@ if (isset($_GET['code'])) {
     };
 
     // Cek apakah user sudah ada di db
-    $sql = "SELECT * FROM user WHERE token = '{$_SESSION['login']}'";
+    $sql = "SELECT * FROM user WHERE name = '{$_SESSION['login']}'";
     $result = mysqli_query($con, $sql);
 
     if (mysqli_num_rows($result) > 0) {
@@ -125,7 +125,6 @@ if (isset($_GET['code'])) {
         } else {
             $_SESSION["login_type"] = "user_login";
         }
-
         $userinfo = $row;
     }
 }
@@ -133,7 +132,6 @@ if (isset($_GET['code'])) {
 // echo "<pre>";
 // var_dump($_SESSION);
 // var_dump($_COOKIE);
-// print_r($userinfo);
 // echo "</pre>";
 ?>
 
@@ -186,6 +184,9 @@ if (isset($_GET['code'])) {
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="about.php">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="profile.php">Profile</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

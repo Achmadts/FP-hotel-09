@@ -47,13 +47,16 @@ if (isset($_SESSION["email_verification"]["code"])) {
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="about.php">About</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="profile.php">Profile</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Data
+                            Data (Hanya Admin)
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="user_list.php">Data User</a></li>
-                            <li><a class="dropdown-item" href="list.php">Data Pengunjung</a></li>
+                            <li><a class="dropdown-item" href="user_list.php">Data User (Hanya Admin)</a></li>
+                            <li><a class="dropdown-item" href="list.php">Data Pengunjung (Hanya Admin)</a></li>
                         </ul>
                     </li>
                 </ul>
