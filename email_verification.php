@@ -53,8 +53,11 @@ if (count($_POST) > 0) {
 
             // Ubah verifiedEmail jadi '1' di tabel 'user'
             $email = $_SESSION["email_verification"]["email"];
-            $updateQuery = "UPDATE user SET verifiedEmail = 1 WHERE email = '$email'";
-            mysqli_query($con, $updateQuery);
+            $updateQuery = "UPDATE user SET verifiedEmail = 1 WHERE email = ?";
+            $stmt = mysqli_prepare($con, $updateQuery);
+            mysqli_stmt_bind_param($stmt, 's', $email);
+            mysqli_stmt_execute($stmt);
+
             session_unset();
             session_destroy();
             $_SESSION = [];
@@ -81,8 +84,11 @@ if (count($_POST) > 0) {
             $email = mysqli_real_escape_string($con, $email);
             $kodeBaru = rand(10000, 99999);
             $expire = time() + (60 * 1);
-            $query = "INSERT INTO codes (email, code, expire) VALUES ('$email', '$kodeBaru', '$expire')";
-            $result = mysqli_query($con, $query);
+            $query = "INSERT INTO codes (email, code, expire) VALUES (?, ?, ?)";
+            $stmt = mysqli_prepare($con, $query);
+            mysqli_stmt_bind_param($stmt, 'ssi', $email, $kodeBaru, $expire);
+            $result = mysqli_stmt_execute($stmt);
+
             $kirimEmail = send_mail($email, 'Verifikasi Email', "
             <div style='text-align: center;'>
                 <p>Kode verifikasi email Anda adalah:</p>
@@ -115,8 +121,11 @@ function kode_benar($code, $email)
     if (isset($_SESSION["email_verification"]["code"])) {
         $email = mysqli_real_escape_string($con, $email);
 
-        $query = "SELECT * FROM codes WHERE code = '$code' AND email = '$email' ORDER BY id DESC LIMIT 1";
-        $result = mysqli_query($con, $query);
+        $query = "SELECT * FROM codes WHERE code = ? AND email = ? ORDER BY id DESC LIMIT 1";
+        $stmt = mysqli_prepare($con, $query);
+        mysqli_stmt_bind_param($stmt, 'ss', $code, $email);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
         if ($result) {
             if (mysqli_num_rows($result) > 0) {

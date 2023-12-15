@@ -65,7 +65,7 @@ if (isset($_SESSION["email_verification"]["code"])) {
     </nav>
     <section class="section">
         <div class="row">
-            <h1 data-aos="fade-up">Fountaine Team</h1>
+            <h1 data-aos="fade-up">Fountaine <span>Team</span></h1>
         </div>
         <div class="row" style="display: flex; justify-content: center; align-items: center;">
             <div class="column" data-aos="fade-down" data-aos-duration="500" data-aos-delay="0">

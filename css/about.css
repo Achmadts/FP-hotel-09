@@ -1,3 +1,21 @@
+:root {
+    --text-gradient: linear-gradient(#6045ea, #8567f7);
+}
+
+h1 span {
+    background: var(--text-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+h1 {
+    width: 100%;
+    text-align: center;
+    font-size: 3.5em;
+    color: #1f003b;
+}
+
 * {
     padding: 0;
     margin: 0;
@@ -26,13 +44,6 @@ body {
 .column {
     width: 100%;
     padding: 0.5em 0;
-}
-
-h1 {
-    width: 100%;
-    text-align: center;
-    font-size: 3.5em;
-    color: #1f003b;
 }
 
 .card {

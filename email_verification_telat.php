@@ -31,7 +31,7 @@ if (count($_POST) > 0) {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error[] = "Tolong masukkan email yang valid";
         } elseif (!valid_email($email)) {
-            $error[] = "Email tidak tidak terdaftar!";
+            $error[] = "Email tidak terdaftar!";
         } elseif (is_email_verified($email)) {
             $error[] = "Email sudah diverifikasi silahkan";
         } else {
@@ -51,8 +51,10 @@ if (count($_POST) > 0) {
             $_SESSION["timer"] = time() + 60;
 
             // Ubah verifiedEmail jadi '1' di tabel 'user'
-            $updateQuery = "UPDATE user SET verifiedEmail = 1 WHERE email = '$email'";
-            mysqli_query($con, $updateQuery);
+            $updateQuery = "UPDATE user SET verifiedEmail = 1 WHERE email = ?";
+            $stmt = mysqli_prepare($con, $updateQuery);
+            mysqli_stmt_bind_param($stmt, 's', $email);
+            mysqli_stmt_execute($stmt);
 
             session_unset();
             session_destroy();
@@ -104,8 +106,10 @@ function kirim_email($email)
     $code = rand(10000, 99999);
     $email = addslashes($email);
 
-    $query = "INSERT INTO codes (email, code, expire) VALUE ('$email', '$code', '$expire')";
-    mysqli_query($con, $query);
+    $query = "INSERT INTO codes (email, code, expire) VALUES (?, ?, ?)";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'ssi', $email, $code, $expire);
+    $result = mysqli_stmt_execute($stmt);
 
     $kirimEmail = send_mail(
         $email,
@@ -125,8 +129,12 @@ function valid_email($email)
 
     $email = addslashes($email);
 
-    $query = "SELECT * FROM user WHERE email= '$email' LIMIT 1 ";
-    $result = mysqli_query($con, $query);
+    $query = "SELECT * FROM user WHERE email = ? LIMIT 1";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    
     if ($result) {
         if (mysqli_num_rows($result) > 0) {
             return true;
@@ -142,8 +150,12 @@ function kode_benar($code)
     $expire = time();
     $email = addslashes($_SESSION["email_verification_telat"]["email"]);
 
-    $query = "SELECT * FROM codes  WHERE code = '$code' && email = '$email' ORDER BY id DESC LIMIT 1 ";
-    $result = mysqli_query($con, $query);
+    $query = "SELECT * FROM codes WHERE code = ? AND email = ? ORDER BY id DESC LIMIT 1";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'ss', $code, $email);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
     if ($result) {
         if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_assoc($result);

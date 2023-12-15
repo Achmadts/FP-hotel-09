@@ -67,13 +67,16 @@ function kirim_email($email)
 
     $query = "INSERT INTO codes (email, code, expire) VALUES ('$email', '$code', '$expire')";
     mysqli_query($con, $query);
-    $kirimEmail = send_mail($email, 'Verifikasi Email',
+    $kirimEmail = send_mail(
+        $email,
+        'Verifikasi Email',
         "<div style='text-align: center;'>
             <p>Kode verifikasi email Anda adalah:</p>
             <strong style='font-size: 30px;'>$code</strong>
             <p>Kode ini hanya berlaku selama 1 menit. Jangan berikan kode ini kepada siapa pun!</p>
         </div>
-    ");
+    "
+    );
 
     return $code;
 }
@@ -95,8 +98,10 @@ if (isset($_POST["submit"])) {
             // Simpan data kalau gak ada error
             $password = $_POST['password'];
             $pass = password_hash($password, PASSWORD_DEFAULT);
-            $insert = "INSERT INTO user(name, email, password) VALUES('$name','$email','$pass')";
-            mysqli_query($con, $insert);
+            $insert = "INSERT INTO user (name, email, password) VALUES (?, ?, ?)";
+            $stmt = mysqli_prepare($con, $insert);
+            mysqli_stmt_bind_param($stmt, 'sss', $name, $email, $pass);
+            mysqli_stmt_execute($stmt);
 
             $verification_code = kirim_email($email);
 

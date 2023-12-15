@@ -95,11 +95,14 @@ if (isset($_POST["submit"])) {
             // Simpan data kalau gak ada error
             $password = $_POST['password'];
             $pass = password_hash($password, PASSWORD_DEFAULT);
-            $insert = "INSERT INTO user(name, email, password, type) VALUES('$name','$email','$pass', 1)";
-            mysqli_query($con, $insert);
+            $type = 1;
+            
+            $insert = "INSERT INTO user (name, email, password, type) VALUES (?, ?, ?, ?)";
+            $stmt = mysqli_prepare($con, $insert);
+            mysqli_stmt_bind_param($stmt, 'sssi', $name, $email, $pass, $type);
+            mysqli_stmt_execute($stmt);
 
             $verification_code = kirim_email($email);
-
             $_SESSION["email_verification"]["email"] = $email;
             $_SESSION["email_verification"]["code"] = $verification_code;
 

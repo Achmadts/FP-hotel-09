@@ -95,7 +95,7 @@ if (!empty($tokenData->access_token)) {
     setcookie('fp_hotel_access_token', $tokenData->access_token, time() + 2592000, "/", "", false, true);
 
     // Cek apakah email diterima dari API GitHub
-    $email = isset($infoUser->email) ? $infoUser->email : 'default@gmail.com'; // Ganti dengan nilai default kalau email kosong
+    $email = isset($infoUser->email) ? $infoUser->email : 'default@gmail.com'; // Ganti dengan email default kalau email kosong
 
     // Kalau user menggunakan email default karena emailnya kosong maka, tambahkan nomor acak untuk pembeda
     if ($email === 'default@gmail.com') {

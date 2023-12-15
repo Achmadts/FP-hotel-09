@@ -111,35 +111,45 @@ function kirim_email($email)
     $code = rand(10000, 99999);
     $email = addslashes($email);
 
-    $query = "INSERT INTO codes (email, code, expire) VALUE ('$email', '$code', '$expire')";
-    mysqli_query($con, $query);
+    $query = "INSERT INTO codes (email, code, expire) VALUES (?, ?, ?)";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'ssi', $email, $code, $expire);
+    $result = mysqli_stmt_execute($stmt);
 
-    $kirimEmail = send_mail($email, 'Reset Password',
+    $kirimEmail = send_mail(
+        $email,
+        'Reset Password',
         "<div style='text-align: center;'>
             <p>Kode anda adalah:</p>
             <strong style='font-size: 30px;'>$code</strong>
             <p>Kode ini hanya berlaku selama 1 menit. Jangan berikan kode ini kepada siapa pun!</p>
         </div>
-    ");
+    "
+    );
 }
 function simpan_password($password)
 {
     global $con;
 
     $password = password_hash($password, PASSWORD_DEFAULT);
-    $email = addslashes($_SESSION["lupa_pw"]["email"]);
+    $email = $_SESSION["lupa_pw"]["email"];
 
-    $query = "UPDATE user SET password= '$password' WHERE email= '$email' LIMIT 1 ";
-    mysqli_query($con, $query);
+    $query = "UPDATE user SET password = ? WHERE email = ? LIMIT 1";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'ss', $password, $email);
+    mysqli_stmt_execute($stmt);
 }
+
 function valid_email($email)
 {
     global $con;
 
-    $email = addslashes($email);
+    $query = "SELECT * FROM user WHERE email= ? LIMIT 1";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
-    $query = "SELECT * FROM user WHERE email= '$email' LIMIT 1 ";
-    $result = mysqli_query($con, $query);
     if ($result) {
         if (mysqli_num_rows($result) > 0) {
             return true;
@@ -147,16 +157,20 @@ function valid_email($email)
     }
     return false;
 }
+
 function kode_benar($code)
 {
     global $con;
 
-    $code = addslashes($code);
     $expire = time();
-    $email = addslashes($_SESSION["lupa_pw"]["email"]);
+    $email = $_SESSION["lupa_pw"]["email"];
 
-    $query = "SELECT * FROM codes  WHERE code = '$code' && email = '$email' ORDER BY id DESC LIMIT 1 ";
-    $result = mysqli_query($con, $query);
+    $query = "SELECT * FROM codes WHERE code = ? AND email = ? ORDER BY id DESC LIMIT 1";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'ss', $code, $email);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
     if ($result) {
         if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_assoc($result);
@@ -171,7 +185,6 @@ function kode_benar($code)
     }
     return "Kode OTP salah";
 }
-
 ?>
 
 <!DOCTYPE html>
