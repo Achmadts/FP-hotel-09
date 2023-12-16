@@ -90,9 +90,7 @@ if (!empty($tokenData->access_token)) {
         exit("Gagal mendapatkan informasi User");
     }
 
-    // Set variabel sesi login. Dan cookie untuk token (Opsional)
     $_SESSION["login"] = $infoUser->name;
-    setcookie('fp_hotel_access_token', $tokenData->access_token, time() + 2592000, "/", "", false, true);
 
     // Cek apakah email diterima dari API GitHub
     $email = isset($infoUser->email) ? $infoUser->email : 'default@gmail.com'; // Ganti dengan email default kalau email kosong
@@ -106,17 +104,22 @@ if (!empty($tokenData->access_token)) {
         $pdo = new PDO("mysql:host=$host;dbname=$db", $username, $password);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Cek apakah User sudah ada di database
-        $queryPeriksaUser = "SELECT * FROM user WHERE name = :name OR email = :email";
+        // Cek User sudah ada / belum ada di database
+        $queryPeriksaUser = "SELECT * FROM user WHERE name = :name OR email = :email OR token_id = :token_id";
         $pernyataanPeriksaUser = $pdo->prepare($queryPeriksaUser);
         $pernyataanPeriksaUser->bindParam(':name', $infoUser->name, PDO::PARAM_STR);
         $pernyataanPeriksaUser->bindParam(':email', $email, PDO::PARAM_STR);
+        $pernyataanPeriksaUser->bindParam(':token_id', $infoUser->id, PDO::PARAM_STR);
         $pernyataanPeriksaUser->execute();
+
         $UserSudahAda = $pernyataanPeriksaUser->fetch(PDO::FETCH_ASSOC);
 
         if ($UserSudahAda) {
             // Kalau user sudah terdaftar maka langsung arahkan ke halaman welcome.php
+            $user_id = $_SESSION["user_id"] = $UserSudahAda["id"];
+            $_SESSION["login"] = $UserSudahAda["name"];
             $_SESSION["login_type"] = ($UserSudahAda["type"] == 1) ? "admin_login" : "login";
+            setcookie('fp_hotel_access_token', $tokenData->access_token, time() + 2592000, "/", "", false, true);
 
             echo '<script>
             Swal.fire({
@@ -134,14 +137,18 @@ if (!empty($tokenData->access_token)) {
         // Kalau user belum ada, masukkan data user ke database
         $hashedPassword = password_hash($infoUser->name, PASSWORD_DEFAULT);
 
-        $queryInsertUser = "INSERT INTO user (name, email, password, verifiedEmail, token)
-                  VALUES (:name, :email, :password, 1, :token)";
+        $queryInsertUser = "INSERT INTO user (name, email, password, verifiedEmail, token, token_id)
+                          VALUES (:name, :email, :password, 1, :token, :token_id)";
         $stmtInsertUser = $pdo->prepare($queryInsertUser);
         $stmtInsertUser->bindParam(':name', $infoUser->name, PDO::PARAM_STR);
         $stmtInsertUser->bindParam(':email', $email, PDO::PARAM_STR);
         $stmtInsertUser->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
         $stmtInsertUser->bindParam(':token', $tokenData->access_token, PDO::PARAM_STR);
+        $stmtInsertUser->bindParam(':token_id', $infoUser->id, PDO::PARAM_INT);
         $stmtInsertUser->execute();
+
+        $newUserId = $pdo->lastInsertId();
+        $user_id = $_SESSION["user_id"] = $newUserId;
 
         echo '<script>
         Swal.fire({

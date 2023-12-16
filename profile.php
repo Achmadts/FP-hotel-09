@@ -1,3 +1,8 @@
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+</html>
+
 <?php
 session_start();
 require_once 'connection/conn.php';
@@ -16,22 +21,16 @@ if (isset($_SESSION["email_verification"]["code"])) {
 
 $error = array();
 
-// Inisialisasi $id sesuai dengan login user
-$name = $_SESSION["login"];
+$id = $_SESSION["user_id"];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = editUser($_POST);
-
-    if (count($error) == 0) {
-        header("Location: ../user_list.php");
-        die;
-    }
 }
 
-$query = "SELECT * FROM user WHERE name = ?";
+$query = "SELECT * FROM user WHERE id = ?";
 $stmt = mysqli_prepare($con, $query);
 
-mysqli_stmt_bind_param($stmt, "s", $name);
+mysqli_stmt_bind_param($stmt, "s", $id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
@@ -43,16 +42,72 @@ if ($result && $row = mysqli_fetch_assoc($result)) {
     $id = $row["id"];
     $name = $row["name"];
     $email = $row["email"];
-    $password = $row["password"];
-    $cpassword = $row["password"];
 } else {
     echo "Error fetching data from database: " . mysqli_error($con);
 }
 
+function editUser($data)
+{
+    $error = array();
+
+    // validasi
+    if (!preg_match('/^[a-zA-Z\s]+$/', $data["name"])) {
+        $error[] = "Nama harus berupa huruf";
+    }
+
+    if (!filter_var($data["email"], FILTER_VALIDATE_EMAIL)) {
+        $error[] = "Masukkan email yang valid";
+    }
+    return $error;
+}
+
+if (isset($_POST["submit"])) {
+    $error = [];
+
+    $name = htmlspecialchars(mysqli_real_escape_string($con, $_POST["name"]));
+    $email = htmlspecialchars(mysqli_real_escape_string($con, $_POST["email"]));
+
+    $error = editUser($_POST);
+
+    if (empty($error)) {
+        $id = $row["id"];
+
+        $select = "SELECT * FROM user WHERE email = '$email' OR name = '$name'";
+        $result = mysqli_query($con, $select);
+
+        if (mysqli_num_rows($result) > 1) {
+            $error[] = "Pengguna sudah ada";
+        } else {
+            $update = "UPDATE user SET name=?, email=? WHERE id=?";
+            $stmt = mysqli_prepare($con, $update);
+            mysqli_stmt_bind_param($stmt, 'ssi', $name, $email, $id);
+            mysqli_stmt_execute($stmt);
+
+            if (mysqli_stmt_affected_rows($stmt) < 0) {
+                echo "Data user gagal diedit: " . mysqli_error($con);
+            } else {
+                echo '<script>
+                Swal.fire({
+                    icon: "success",
+                    title: "Data berhasil diperbarui",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(function() {
+                    window.location.href = "profile.php";
+                });
+                </script>';
+                exit;
+            }
+        }
+    }
+}
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+
 // echo "<pre>";
 // var_dump($_SESSION);
-// var_dump($_COOKIE);
-// var_dump($row);
+// // var_dump($_COOKIE);
+// var_dump($name);
 // echo "</pre>";
 ?>
 
@@ -62,7 +117,7 @@ if ($result && $row = mysqli_fetch_assoc($result)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodingDung | Profile Template</title>
+    <title>Profile</title>
     <link rel="stylesheet" href="css/profile.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -80,9 +135,9 @@ if ($result && $row = mysqli_fetch_assoc($result)) {
 </head>
 
 <body style="display: flex; flex-direction: column; min-height: 100vh;">
-<?php include "partials/navbar_profile.php"; ?>
+    <?php include "partials/navbar_profile.php"; ?>
     <div class="container light-style flex-grow-1 container-p-y">
-        <form action="">
+        <form action="" method="POST">
             <h4 class="font-weight-bold py-3 mb-4 mt-3">
                 Account settings
             </h4>
@@ -100,27 +155,11 @@ if ($result && $row = mysqli_fetch_assoc($result)) {
                                 <div class="card-body">
                                     <div class="form-group mb-3">
                                         <label class="form-label">Name</label>
-                                        <input type="text" class="form-control" value="<?= isset($userinfo['name']) ? $userinfo['name'] : $_SESSION["login"]; ?>">
+                                        <input type="text" name="name" class="form-control" value="<?= $name; ?>" autocomplete="off">
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">E-mail</label>
-                                        <input type="text" class="form-control mb-1" value="<?= $email; ?>">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="account-change-password">
-                                <div class="card-body pb-2">
-                                    <div class="form-group">
-                                        <label class="form-label">Current password</label>
-                                        <input type="password" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">New password</label>
-                                        <input type="password" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Repeat new password</label>
-                                        <input type="password" class="form-control">
+                                        <input type="email" name="email" class="form-control mb-1" value="<?= $email; ?>" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +168,7 @@ if ($result && $row = mysqli_fetch_assoc($result)) {
                 </div>
             </div>
             <div class="text-end mt-3">
-                <button type="button" class="btn btn-primary">Save changes</button>&nbsp;
+                <button type="submit" name="submit" class="btn btn-primary">Save changes</button>
                 <button type="reset" class="btn btn-warning">Reset</button>
             </div>
         </form>

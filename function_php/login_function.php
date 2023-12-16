@@ -64,6 +64,7 @@ if (isset($_POST["submit"])) {
                 } else {
                     $nama_pengguna = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
                     $_SESSION["login"] = $nama_pengguna;
+                    $user_id = $_SESSION["user_id"] = $row['id'];
 
                     if ($row["type"] == 1) {
                         $_SESSION["login_type"] = "admin_login";

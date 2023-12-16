@@ -88,8 +88,9 @@ if (isset($_GET['code'])) {
         echo 'Gagal mendapatkan access token. Pesan Kesalahan: Kunci "access_token" tidak ditemukan di session.';
         die();
     }
+
     // Cek apakah user sudah ada di db
-    $sql = "SELECT * FROM user  WHERE email = '{$userinfo['email']}'";
+    $sql = "SELECT * FROM user WHERE email = '{$userinfo['email']}' OR name = '{$userinfo['name']}' OR token = '{$userinfo['token']}' ";
     $result = mysqli_query($con, $sql);
 
     if (mysqli_num_rows($result) > 0) {
@@ -106,7 +107,9 @@ if (isset($_GET['code'])) {
             die();
         }
     }
-    $_SESSION['login'] = $google_account_info["name"];
+    $newUserId = mysqli_insert_id($con);
+    $_SESSION['login'] = $token;
+    $_SESSION["user_id"] = $newUserId;
 } else {
     if (!isset($_SESSION["login"]) && !isset($_COOKIE["fp_hotel_access_token"])) {
         header("Location: index.php");
@@ -114,7 +117,7 @@ if (isset($_GET['code'])) {
     };
 
     // Cek apakah user sudah ada di db
-    $sql = "SELECT * FROM user WHERE name = '{$_SESSION['login']}'";
+    $sql = "SELECT * FROM user WHERE token = '{$_SESSION['login']}'";
     $result = mysqli_query($con, $sql);
 
     if (mysqli_num_rows($result) > 0) {
@@ -126,6 +129,7 @@ if (isset($_GET['code'])) {
             $_SESSION["login_type"] = "user_login";
         }
         $userinfo = $row;
+        $user_id = $_SESSION["user_id"] = $userinfo['id'];
     }
 }
 
