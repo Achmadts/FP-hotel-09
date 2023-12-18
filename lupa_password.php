@@ -14,6 +14,11 @@ if (isset($_SESSION["login"]) || isset($_COOKIE["fp_hotel_access_token"])) {
     exit;
 }
 
+if (isset($_SESSION["TFA"]["code"])) {
+    header("Location: TFA.php");
+    exit;
+}
+
 if (isset($_SESSION["email_verification"]["code"])) {
     header("Location: email_verification.php");
     exit;

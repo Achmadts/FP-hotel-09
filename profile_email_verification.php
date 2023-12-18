@@ -9,13 +9,8 @@ require_once "mail.php";
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
-if (isset($_SESSION["login"]) || isset($_COOKIE["fp_hotel_access_token"])) {
-    header("Location: welcome.php");
-    exit;
-}
-
-if (isset($_SESSION["TFA"]["code"])) {
-    header("Location: TFA.php");
+if (!isset($_SESSION["login"])) {
+    header("Location: index.php");
     exit;
 }
 
@@ -42,7 +37,7 @@ if (count($_POST) > 0) {
         } else {
             $_SESSION["email_verification_telat"]["email"] = $email;
             kirim_email($email);
-            header("Location: email_verification_telat.php?mode=enter_code");
+            header("Location: profile_email_verification.php?mode=enter_code");
             die;
         }
     } elseif ($mode == 'enter_code') {
@@ -51,9 +46,7 @@ if (count($_POST) > 0) {
         $result = kode_benar($code, $email);
 
         if ($result == "Kode OTP benar") {
-            $_SESSION["email_verification"]["code"] = $code;
-            $_SESSION["email_verification"]["email"] = $email;
-            $_SESSION["timer"] = time() + 60;
+            session_unset();
 
             // Ubah verifiedEmail jadi '1' di tabel 'user'
             $updateQuery = "UPDATE user SET verifiedEmail = 1 WHERE email = ?";
@@ -61,20 +54,35 @@ if (count($_POST) > 0) {
             mysqli_stmt_bind_param($stmt, 's', $email);
             mysqli_stmt_execute($stmt);
 
-            session_unset();
-            session_destroy();
-            $_SESSION = [];
-            echo '<script>
-            Swal.fire({
-                icon: "success",
-                title: "Email berhasil diverifikasi!",
-                showConfirmButton: false,
-                timer: 1500
-            }).then(function() {
-                window.location.href = "index.php";
-            });
-            </script>';
-            exit();
+            // Dapatkan informasi pengguna dari database
+            $query = "SELECT id, name, type FROM user WHERE email = ?";
+            $stmt = mysqli_prepare($con, $query);
+            mysqli_stmt_bind_param($stmt, 's', $email);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                $row = mysqli_fetch_assoc($result);
+
+                // Set session informasi pengguna
+                $_SESSION["user_id"] = $row['id'];
+                $_SESSION["login"] = $row['name'];
+                $_SESSION["login_type"] = ($row["type"] == 1) ? "admin_login" : "login";
+
+                echo '<script>
+                Swal.fire({
+                    icon: "success",
+                    title: "Login berhasil!",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(function() {
+                    window.location.href = "profile.php";
+                });
+                </script>';
+                exit();
+            } else {
+                $error[] = "Gagal mendapatkan informasi pengguna";
+            }
         } else {
             $error[] = $result;
         }
@@ -139,7 +147,7 @@ function valid_email($email)
     mysqli_stmt_bind_param($stmt, 's', $email);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    
+
     if ($result) {
         if (mysqli_num_rows($result) > 0) {
             return true;
@@ -175,6 +183,9 @@ function kode_benar($code)
     }
     return "Kode OTP salah";
 }
+echo "<pre>";
+var_dump($_SESSION);
+echo "</pre>";
 ?>
 
 <!DOCTYPE html>
@@ -248,7 +259,7 @@ function kode_benar($code)
         case 'enter_email':
             # code...
     ?>
-            <form action="email_verification_telat.php?mode=enter_email" method="POST">
+            <form action="profile_email_verification.php?mode=enter_email" method="POST">
                 <div class="container">
                     <h2>Email Verification</h2>
                     <h6>Masukkan email kamu</h6>
@@ -259,7 +270,7 @@ function kode_benar($code)
                                 echo "<div class='error-msg' style='background-color: #ffe3e5; border: 1px solid #851923; min-height: 40px; height: fit-content; border-radius: 5px;'>";
                                 echo '<span class="error-msg ms-1" style="font-size: 90%; color: #851923; display: inline-block; margin-top: 7px;">' . htmlspecialchars($err) . '</span>';
                                 if ($err === "Email sudah diverifikasi silahkan") {
-                                    echo ' <a href="index.php" class="me-1" style="text-decoration: none; margin-top: 7px;"> Login!</a>';
+                                    echo ' <a href="profile.php" class="me-1" style="text-decoration: none; margin-top: 7px;"> Login!</a>';
                                 }
                                 echo "<br>";
                                 echo "</div>";
@@ -272,7 +283,6 @@ function kode_benar($code)
                         <label for="email">Email</label>
                     </div>
                     <input type="submit" class="btn btn-primary mb-2 mt-3" name="submit" value="Next">
-                    <p><a href="index.php" style="text-decoration: none;">Login</a></p>
                 </div>
             </form>
         <?php
@@ -281,7 +291,7 @@ function kode_benar($code)
         case 'enter_code':
             # code...
         ?>
-            <form action="email_verification_telat.php?mode=enter_code" method="POST">
+            <form action="profile_email_verification.php?mode=enter_code" method="POST">
                 <div class="container" style="width: 80%;">
                     <h2>Email Verification</h2>
                     <h6 style="font-size: 90%;">Masukkan kode OTP yang dikirim ke <?php echo $_SESSION['email_verification_telat']['email']; ?></h6>
@@ -308,10 +318,9 @@ function kode_benar($code)
                     </div>
 
                     <input type="submit" class="btn btn-primary mb-1 mt-3 w-100" name="submit" value="Next">
-                    <a href="email_verification_telat.php">
+                    <a href="profile_email_verification.php">
                         <input type="button" class="btn btn-primary mb-2 w-100" name="submit" value="Mulai lagi">
                     </a>
-                    <p><a href="index.php" style="text-decoration: none;">Login</a></p>
                 </div>
             </form>
     <?php

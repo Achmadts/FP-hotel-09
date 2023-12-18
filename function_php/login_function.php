@@ -5,8 +5,18 @@
 </html>
 <?php
 session_start();
+require_once "connection/conn.php";
+require_once "mail.php";
+header("Content-Security-Policy: frame-ancestors 'none';");
+header("X-Frame-Options: DENY");
+
 if (isset($_SESSION["login"]) || isset($_COOKIE["fp_hotel_access_token"])) {
     header("Location: welcome.php");
+    exit;
+}
+
+if (isset($_SESSION["TFA"]["code"])) {
+    header("Location: TFA.php");
     exit;
 }
 
@@ -18,6 +28,28 @@ if (isset($_SESSION["email_verification"]["code"])) {
 if (isset($_SESSION["email_verification_telat"]["email"])) {
     header("Location: email_verification_telat.php");
     exit;
+}
+
+function kirim_email($email)
+{
+    global $con;
+
+    $expire = time() + (60 * 1);
+    $code = rand(10000, 99999);
+    $email = mysqli_real_escape_string($con, $email);
+
+    $query = "INSERT INTO codes (email, code, expire) VALUES ('$email', '$code', '$expire')";
+    mysqli_query($con, $query);
+    
+    $kirimEmail = send_mail($email, 'Two Factor Authentication', "
+    <div style='text-align: center;'>
+        <p>Kode OTP 2FA Anda adalah:</p>
+        <strong style='font-size: 30px;'>$code</strong>
+        <p>Kode ini hanya berlaku selama 1 menit. Jangan berikan kode ini kepada siapa pun!</p>
+    </div>
+    ");
+
+    return $code;
 }
 
 if (isset($_POST["submit"])) {
@@ -41,6 +73,15 @@ if (isset($_POST["submit"])) {
 
         if (mysqli_num_rows($hasil) > 0) {
             $row = mysqli_fetch_assoc($hasil);
+
+            // Check 2FA status
+            if ($row["2FA"] == 1) {
+                $verification_code = kirim_email($email);
+                $_SESSION["TFA"]["email"] = $email;
+                $_SESSION["TFA"]["code"] = $verification_code;
+                header("Location: TFA.php?email=" . urlencode($email));
+                exit();
+            }
 
             // Kalau checkbox remember me di check
             if (isset($_POST['remember-me']) && $_POST['remember-me'] == 'on') {

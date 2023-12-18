@@ -30,6 +30,11 @@ if (isset($_SESSION["email_verification"]["code"])) {
     exit;
 }
 
+if (isset($_SESSION["TFA"]["code"])) {
+    header("Location: TFA.php");
+    exit;
+}
+
 function editUser($data)
 {
     $error = array();

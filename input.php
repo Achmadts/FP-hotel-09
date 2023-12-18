@@ -5,8 +5,18 @@ require_once 'function_php/input_function.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
+if (!isset($_SESSION["login"]) && !isset($_SESSION["login_type"]) || $_SESSION["login_type"] !== "admin_login") {
+  header('Location: index.php');
+  exit;
+}
+
 if (isset($_SESSION["email_verification"]["code"])) {
   header("Location: email_verification.php");
+  exit;
+}
+
+if (isset($_SESSION["TFA"]["code"])) {
+  header("Location: TFA.php");
   exit;
 }
 ?>

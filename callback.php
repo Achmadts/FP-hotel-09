@@ -119,7 +119,7 @@ if (!empty($tokenData->access_token)) {
             $user_id = $_SESSION["user_id"] = $UserSudahAda["id"];
             $_SESSION["login"] = $UserSudahAda["name"];
             $_SESSION["login_type"] = ($UserSudahAda["type"] == 1) ? "admin_login" : "login";
-            setcookie('fp_hotel_access_token', $tokenData->access_token, time() + 2592000, "/", "", false, true);
+            // setcookie('fp_hotel_access_token', $tokenData->access_token, time() + 2592000, "/", "", false, true);
 
             echo '<script>
             Swal.fire({

@@ -15,6 +15,11 @@ if (!isset($_SESSION["email_verification"]["code"])) {
     header("Location: index.php");
 }
 
+if (isset($_SESSION["TFA"]["code"])) {
+    header("Location: TFA.php");
+    exit;
+}
+
 if (!isset($_SESSION['email_verification'])) {
     $_SESSION['email_verification'] = array();
 }

@@ -16,7 +16,7 @@ require_once "connection/google_config.php";
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
-// GitHub login
+// Login GitHub
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
@@ -48,7 +48,7 @@ function getUser()
 }
 $user = false;
 $user = getUser();
-// END GitHub login
+// Akhir login GitHub
 
 if (isset($_SESSION["email_verification"]["code"])) {
     header("Location: email_verification.php");
