@@ -9,13 +9,18 @@ require_once 'connection/conn.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
 
-if (!isset($_SESSION["login"])) {
-    header('Location: index.php');
+if (!isset($_SESSION["login"]) && !isset($_COOKIE["fp_hotel_access_token"])) {
+    header("Location: index.php");
     exit;
 }
 
 if (isset($_SESSION["email_verification"]["code"])) {
     header("Location: email_verification.php");
+    exit;
+}
+
+if (isset($_SESSION["TFA"]["code"])) {
+    header("Location: TFA.php");
     exit;
 }
 
@@ -66,47 +71,57 @@ if (isset($_POST["submit"])) {
 
     $name = htmlspecialchars(mysqli_real_escape_string($con, $_POST["name"]));
     $email = htmlspecialchars(mysqli_real_escape_string($con, $_POST["email"]));
+    $verifiedEmail = 0;
+
+    // Ambil data user dari database sebelumnya
+    $query = "SELECT name, email, verifiedEmail, 2FA FROM user WHERE id = ?";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'i', $row["id"]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if ($result && $dataLama = mysqli_fetch_assoc($result)) {
+        // Cek alamat email baru sama/sama dengan yang ada di database
+        if ($email === $dataLama['email']) {
+            $verifiedEmail = $dataLama['verifiedEmail'];
+        }
+    }
 
     $error = editUser($_POST);
 
     if (empty($error)) {
         $id = $row["id"];
 
-        $select = "SELECT * FROM user WHERE email = '$email' OR name = '$name'";
-        $result = mysqli_query($con, $select);
+        // Cek tombol Autentikasi 2 faktor diaktifkan/tidak
+        $btn2FAAktif = isset($_POST["btnTFA"]) ? 1 : 0;
 
-        if (mysqli_num_rows($result) > 1) {
-            $error[] = "Pengguna sudah ada";
+        $update = "UPDATE user SET name=?, email=?, 2FA=?, verifiedEmail=? WHERE id=?";
+        $stmt = mysqli_prepare($con, $update);
+
+        mysqli_stmt_bind_param($stmt, 'ssiii', $name, $email, $btn2FAAktif, $verifiedEmail, $id);
+        mysqli_stmt_execute($stmt);
+
+        if (mysqli_stmt_affected_rows($stmt) < 0) {
+            echo "Data user gagal diedit: " . mysqli_error($con);
         } else {
-            $update = "UPDATE user SET name=?, email=? WHERE id=?";
-            $stmt = mysqli_prepare($con, $update);
-            mysqli_stmt_bind_param($stmt, 'ssi', $name, $email, $id);
-            mysqli_stmt_execute($stmt);
-
-            if (mysqli_stmt_affected_rows($stmt) < 0) {
-                echo "Data user gagal diedit: " . mysqli_error($con);
-            } else {
-                echo '<script>
-                Swal.fire({
-                    icon: "success",
-                    title: "Data berhasil diperbarui",
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(function() {
-                    window.location.href = "profile.php";
-                });
-                </script>';
-                exit;
-            }
+            echo '<script>
+            Swal.fire({
+                icon: "success",
+                title: "Data berhasil diperbarui!",
+                showConfirmButton: false,
+                timer: 1500
+            }).then(function() {
+                window.location.href = "profile.php";
+            });
+            </script>';
+            exit;
         }
     }
 }
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
 
 // echo "<pre>";
 // var_dump($_SESSION);
-// // var_dump($_COOKIE);
+// var_dump($_COOKIE);
 // var_dump($name);
 // echo "</pre>";
 ?>
@@ -146,21 +161,41 @@ if (isset($_POST["submit"])) {
                     <div class="col-md-3 pt-0">
                         <div class="list-group list-group-flush account-settings-links">
                             <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
-                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
                         </div>
                     </div>
                     <div class="col-md-9">
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="account-general">
                                 <div class="card-body">
+                                    <?php
+                                    if (!empty($error)) {
+                                        foreach ($error as $err) {
+                                            echo '<div class="alert alert-danger mt-3">' . htmlspecialchars($err) . '</div>';
+                                        }
+                                    }
+                                    ?>
                                     <div class="form-group mb-3">
-                                        <label class="form-label">Name</label>
-                                        <input type="text" name="name" class="form-control" value="<?= $name; ?>" autocomplete="off">
+                                        <label class="form-label">Nama</label>
+                                        <input type="text" name="name" class="form-control" value="<?= $name; ?>" autocomplete="off" placeholder="Nama">
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">E-mail</label>
-                                        <input type="email" name="email" class="form-control mb-1" value="<?= $email; ?>" autocomplete="off">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" name="email" class="form-control mb-1" value="<?= $email; ?>" autocomplete="off" placeholder="Email">
+                                        <?php
+                                        if ($row["verifiedEmail"] == 0) {
+                                            echo '
+                                                <div class="alert alert-warning mt-3">
+                                                    Silahkan verifikasi ulang email kamu<br>
+                                                    <a href="profile_email_verification.php" style="text-decoration: none;">disini</a>
+                                                </div>';
+                                        }
+                                        ?>
                                     </div>
+                                    <div class="form-check form-switch mt-3">
+                                        <label class="form-check-label user-select-none" for="flexSwitchCheckChecked" style="cursor: pointer;">Autentikasi Dua Faktor</label>
+                                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="cursor: pointer;" name="btnTFA" <?php echo ($row['2FA'] == 1) ? 'checked' : ''; ?>>
+                                    </div>
+                                    <b><small class="text-danger" style="font-size: x-small; margin-left: 40px;">Hanya untuk login menggunakan Email!</small></b>
                                 </div>
                             </div>
                         </div>
