@@ -20,8 +20,6 @@ header("X-Frame-Options: DENY");
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-// get the user's details
-
 function getUser()
 {
     if (empty($_COOKIE["fp_hotel_access_token"])) {

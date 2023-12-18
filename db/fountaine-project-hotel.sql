@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 14 Des 2023 pada 13.57
+-- Waktu pembuatan: 18 Des 2023 pada 13.08
 -- Versi server: 10.4.28-MariaDB
 -- Versi PHP: 8.2.4
 
@@ -61,15 +61,6 @@ CREATE TABLE `pengunjung` (
   `pesan` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data untuk tabel `pengunjung`
---
-
-INSERT INTO `pengunjung` (`id`, `name`, `email`, `alamat`, `tgl_lahir`, `no_telpon`, `jkel`, `region`, `tgl_check_in`, `tgl_check_out`, `jenis_kamar`, `jumlah_tamu`, `kategori`, `fasilitas_tambahan`, `metode_pembayaran`, `nomor_kartu_kredit`, `tgl_expired`, `pesan`) VALUES
-(1, 'Achmad Tirto Sudiro', 'achmadtirtosudirosudiro@gmail.com', 'Klari', '2006-09-09', '0895320316384', 'Laki-laki', 'Warga Lokal', '2023-12-12', '2023-12-20', 'Double', 2, 'VVIP', 'Bantal, Acara Spesial', 'Transfer Bank', '', '0000-00-00', 'Tes'),
-(2, 'Bayu', 'bayu@gmail.com', 'Karawang', '2001-01-10', '089523865727675', 'Laki-laki', 'Warga Lokal', '2023-12-12', '2023-12-13', 'Single', 1, 'VVIP', 'Bantal, Acara Spesial', 'Tunai', '', '0000-00-00', 'Hai\r\n'),
-(3, 'Iswan', 'wan@gmail.com', 'Karawang', '2006-10-10', '089858265726956', 'Laki-laki', 'Warga Lokal', '2023-12-12', '2023-12-13', 'Single', 1, 'VVIP', 'Bantal Acara Spesial ', 'Transfer Bank', '', '0000-00-00', 'Hai');
-
 -- --------------------------------------------------------
 
 --
@@ -83,7 +74,9 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL,
   `verifiedEmail` int(11) NOT NULL DEFAULT 0,
   `token` varchar(255) NOT NULL DEFAULT '',
-  `type` int(11) NOT NULL DEFAULT 0
+  `type` int(11) NOT NULL DEFAULT 0,
+  `token_id` varchar(255) NOT NULL,
+  `2FA` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -126,7 +119,7 @@ ALTER TABLE `codes`
 -- AUTO_INCREMENT untuk tabel `pengunjung`
 --
 ALTER TABLE `pengunjung`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
