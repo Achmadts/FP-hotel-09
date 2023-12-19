@@ -25,13 +25,11 @@ if (isset($_SESSION["TFA"]["code"])) {
 }
 
 $error = array();
+$errorPw = array();
 
 $id = $_SESSION["user_id"];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $error = editUser($_POST);
-}
-
+// Ambil data user diluar blok switch
 $query = "SELECT * FROM user WHERE id = ?";
 $stmt = mysqli_prepare($con, $query);
 
@@ -40,7 +38,7 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
 if (!$result) {
-    echo "Error executing query: " . mysqli_error($con);
+    echo "Query gagal: " . mysqli_error($con);
 }
 
 if ($result && $row = mysqli_fetch_assoc($result)) {
@@ -48,12 +46,13 @@ if ($result && $row = mysqli_fetch_assoc($result)) {
     $name = $row["name"];
     $email = $row["email"];
 } else {
-    echo "Error fetching data from database: " . mysqli_error($con);
+    echo "Gagal mengambil data dari database: " . mysqli_error($con);
 }
 
 function editUser($data)
 {
     $error = array();
+    $errorPw = array();
 
     // validasi
     if (!preg_match('/^[a-zA-Z\s]+$/', $data["name"])) {
@@ -66,57 +65,114 @@ function editUser($data)
     return $error;
 }
 
-if (isset($_POST["submit"])) {
-    $error = [];
+$mode = isset($_POST["submit_general"]) ? 'submit_general' : (isset($_POST["submit_password"]) ? 'submit_password' : '');
+$tabAktif = ($mode === 'submit_password') ? 'account-change-password' : 'account-general';
 
-    $name = htmlspecialchars(mysqli_real_escape_string($con, $_POST["name"]));
-    $email = htmlspecialchars(mysqli_real_escape_string($con, $_POST["email"]));
-    $verifiedEmail = 0;
+switch ($mode) {
+    case 'submit_general':
+        $error = [];
+        $name = htmlspecialchars(mysqli_real_escape_string($con, $_POST["name"]));
+        $email = htmlspecialchars(mysqli_real_escape_string($con, $_POST["email"]));
+        $verifiedEmail = 0;
 
-    // Ambil data user dari database sebelumnya
-    $query = "SELECT name, email, verifiedEmail, 2FA FROM user WHERE id = ?";
-    $stmt = mysqli_prepare($con, $query);
-    mysqli_stmt_bind_param($stmt, 'i', $row["id"]);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-
-    if ($result && $dataLama = mysqli_fetch_assoc($result)) {
-        // Cek alamat email baru sama/sama dengan yang ada di database
-        if ($email === $dataLama['email']) {
-            $verifiedEmail = $dataLama['verifiedEmail'];
-        }
-    }
-
-    $error = editUser($_POST);
-
-    if (empty($error)) {
-        $id = $row["id"];
-
-        // Cek tombol Autentikasi 2 faktor diaktifkan/tidak
-        $btn2FAAktif = isset($_POST["btnTFA"]) ? 1 : 0;
-
-        $update = "UPDATE user SET name=?, email=?, 2FA=?, verifiedEmail=? WHERE id=?";
-        $stmt = mysqli_prepare($con, $update);
-
-        mysqli_stmt_bind_param($stmt, 'ssiii', $name, $email, $btn2FAAktif, $verifiedEmail, $id);
+        $query = "SELECT name, email, verifiedEmail, 2FA FROM user WHERE id = ?";
+        $stmt = mysqli_prepare($con, $query);
+        mysqli_stmt_bind_param($stmt, 'i', $row["id"]);
         mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
-        if (mysqli_stmt_affected_rows($stmt) < 0) {
-            echo "Data user gagal diedit: " . mysqli_error($con);
-        } else {
-            echo '<script>
-            Swal.fire({
-                icon: "success",
-                title: "Data berhasil diperbarui!",
-                showConfirmButton: false,
-                timer: 1500
-            }).then(function() {
-                window.location.href = "profile.php";
-            });
-            </script>';
-            exit;
+        if ($result && $dataLama = mysqli_fetch_assoc($result)) {
+            if ($email === $dataLama['email']) {
+                $verifiedEmail = $dataLama['verifiedEmail'];
+            }
         }
-    }
+
+        $error = editUser($_POST);
+
+        if (empty($error)) {
+            $id = $row["id"];
+
+            // Cek tombol Autentikasi 2 faktor diaktifkan/tidak
+            $btn2FAAktif = isset($_POST["btnTFA"]) ? 1 : 0;
+
+            $update = "UPDATE user SET name=?, email=?, 2FA=?, verifiedEmail=? WHERE id=?";
+            $stmt = mysqli_prepare($con, $update);
+
+            mysqli_stmt_bind_param($stmt, 'ssiii', $name, $email, $btn2FAAktif, $verifiedEmail, $id);
+            mysqli_stmt_execute($stmt);
+
+            if (mysqli_stmt_affected_rows($stmt) < 0) {
+                echo "Data user gagal diedit: " . mysqli_error($con);
+            } else {
+                echo '<script>
+                Swal.fire({
+                    icon: "success",
+                    title: "Data berhasil diperbarui!",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(function() {
+                    window.location.href = "profile.php";
+                });
+                </script>';
+                exit;
+            }
+        }
+        break;
+
+    case 'submit_password':
+        $errorPw = [];
+        $pwLama = isset($_POST["pwLama"]) ? htmlspecialchars(mysqli_real_escape_string($con, $_POST["pwLama"])) : "";
+        $pwBaru = isset($_POST["pwBaru"]) ? htmlspecialchars(mysqli_real_escape_string($con, $_POST["pwBaru"])) : "";
+        $ulangPwBaru = isset($_POST["ulangPwBaru"]) ? htmlspecialchars(mysqli_real_escape_string($con, $_POST["ulangPwBaru"])) : "";
+
+        if ($pwBaru !== $ulangPwBaru) {
+            $errorPw[] = "Kata sandi baru tidak sama dengan pengulangan.";
+        }
+
+        if (strlen($pwBaru) < 6) {
+            $errorPw[] = "Password minimal harus 6 karakter.";
+        }
+
+        $queryCekPassword = "SELECT password FROM user WHERE id = ?";
+        $stmtCekPassword = mysqli_prepare($con, $queryCekPassword);
+        mysqli_stmt_bind_param($stmtCekPassword, 'i', $id);
+        mysqli_stmt_execute($stmtCekPassword);
+        $resultCekPassword = mysqli_stmt_get_result($stmtCekPassword);
+
+        if ($resultCekPassword && $rowCheckPassword = mysqli_fetch_assoc($resultCekPassword)) {
+            $hashedpwLama = $rowCheckPassword['password'];
+
+            if (!password_verify($pwLama, $hashedpwLama)) {
+                $errorPw[] = "Kata sandi lama salah.";
+            }
+        }
+
+        if (empty($errorPw)) {
+            // Perbarui kata sandi
+            $hashedpwBaru = password_hash($pwBaru, PASSWORD_DEFAULT);
+
+            $queryUpdatePassword = "UPDATE user SET password = ? WHERE id = ?";
+            $stmtUpdatePassword = mysqli_prepare($con, $queryUpdatePassword);
+            mysqli_stmt_bind_param($stmtUpdatePassword, 'si', $hashedpwBaru, $id);
+            mysqli_stmt_execute($stmtUpdatePassword);
+
+            if (mysqli_stmt_affected_rows($stmtUpdatePassword) < 0) {
+                echo "Password gagal diubah!: " . mysqli_error($con);
+            } else {
+                echo '<script>
+                    Swal.fire({
+                        icon: "success",
+                        title: "Password berhasil diperbarui!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function() {
+                        window.location.href = "profile.php";
+                    });
+                    </script>';
+                exit;
+            }
+        }
+        break;
 }
 
 // echo "<pre>";
@@ -152,20 +208,21 @@ if (isset($_POST["submit"])) {
 <body style="display: flex; flex-direction: column; min-height: 100vh;">
     <?php include "partials/navbar_profile.php"; ?>
     <div class="container light-style flex-grow-1 container-p-y">
-        <form action="" method="POST">
-            <h4 class="font-weight-bold py-3 mb-4 mt-3">
-                Account settings
-            </h4>
-            <div class="card overflow-hidden">
-                <div class="row no-gutters row-bordered row-border-light">
-                    <div class="col-md-3 pt-0">
-                        <div class="list-group list-group-flush account-settings-links">
-                            <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
-                        </div>
+        <h4 class="font-weight-bold py-3 mb-4 mt-3">
+            <i class="bi bi-gear"></i> Account settings
+        </h4>
+        <div class="card overflow-hidden">
+            <div class="row no-gutters row-bordered row-border-light">
+                <div class="col-md-3 pt-0">
+                    <div class="list-group list-group-flush account-settings-links">
+                        <a class="list-group-item list-group-item-action <?= ($tabAktif === 'account-general') ? 'active' : ''; ?>" data-toggle="list" href="#account-general">General</a>
+                        <a class="list-group-item list-group-item-action <?= ($tabAktif === 'account-change-password') ? 'active' : ''; ?>" data-toggle="list" href="#account-change-password">Change Password</a>
                     </div>
-                    <div class="col-md-9">
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="account-general">
+                </div>
+                <div class="col-md-9">
+                    <div class="tab-content">
+                        <div class="tab-pane fade <?= ($tabAktif === 'account-general') ? 'show active' : ''; ?>" id="account-general">
+                            <form action="" method="POST">
                                 <div class="card-body">
                                     <?php
                                     if (!empty($error)) {
@@ -176,11 +233,11 @@ if (isset($_POST["submit"])) {
                                     ?>
                                     <div class="form-group mb-3">
                                         <label class="form-label">Nama</label>
-                                        <input type="text" name="name" class="form-control" value="<?= $name; ?>" autocomplete="off" placeholder="Nama">
+                                        <input type="text" name="name" class="form-control" value="<?= $name; ?>" autocomplete="off" placeholder="Nama" required>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Email</label>
-                                        <input type="email" name="email" class="form-control mb-1" value="<?= $email; ?>" autocomplete="off" placeholder="Email">
+                                        <input type="email" name="email" class="form-control mb-1" value="<?= $email; ?>" autocomplete="off" placeholder="Email" required>
                                         <?php
                                         if ($row["verifiedEmail"] == 0) {
                                             echo '
@@ -197,16 +254,50 @@ if (isset($_POST["submit"])) {
                                     </div>
                                     <b><small class="text-danger" style="font-size: x-small; margin-left: 40px;">Hanya untuk login menggunakan Email!</small></b>
                                 </div>
-                            </div>
+                                <div class="text-end mt-3 me-2">
+                                    <button type="submit" name="submit_general" class="btn btn-primary">Save changes</button>
+                                    <button type="reset" class="btn btn-warning">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade <?= ($tabAktif === 'account-change-password') ? 'show active' : ''; ?>" id="account-change-password">
+                            <form action="" method="POST">
+                                <div class="card-body pb-2">
+                                    <?php
+                                    if (!empty($errorPw)) {
+                                        foreach ($errorPw as $err) {
+                                            echo '<div class="alert alert-danger mt-3">' . htmlspecialchars($err) . '</div>';
+                                        }
+                                    }
+                                    ?>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Password lama</label>
+                                        <input type="password" name="pwLama" id="pw_lama" class="form-control" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Password baru</label>
+                                        <input type="password" name="pwBaru" class="form-control" id="pw_baru" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Ulangi password baru</label>
+                                        <div class="input-group">
+                                            <input type="password" name="ulangPwBaru" class="form-control pb-2" id="ulang_pw_baru" required>
+                                            <span class="input-group-text" style="cursor: pointer;">
+                                                <i class="bi bi-eye" id="icon"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-end mt-3 me-2">
+                                    <button type="submit" name="submit_password" class="btn btn-primary">Save changes</button>
+                                    <button type="reset" class="btn btn-warning">Reset</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="text-end mt-3">
-                <button type="submit" name="submit" class="btn btn-primary">Save changes</button>
-                <button type="reset" class="btn btn-warning">Reset</button>
-            </div>
-        </form>
+        </div>
     </div>
     <footer class="p-1 text-center">
         <div class="container">
@@ -242,6 +333,27 @@ if (isset($_POST["submit"])) {
             });
             return false;
         }
+    </script>
+    <script>
+        const pwLama = document.getElementById('pw_lama');
+        const pwBaru = document.getElementById('pw_baru');
+        const ulangPwBaru = document.getElementById('ulang_pw_baru');
+        const icon = document.getElementById('icon');
+
+        showHidePassword = () => {
+            if (pwLama.type == "password" || pwBaru.type == "password" || ulangPwBaru.type == "password") {
+                pwLama.setAttribute('type', 'text');
+                pwBaru.setAttribute('type', 'text');
+                ulangPwBaru.setAttribute('type', 'text');
+            } else {
+                pwLama.setAttribute('type', 'password');
+                pwBaru.setAttribute('type', 'password');
+                ulangPwBaru.setAttribute('type', 'password');
+            }
+            icon.classList.toggle('bi-eye');
+            icon.classList.toggle('bi-eye-slash');
+        };
+        icon.addEventListener('click', showHidePassword);
     </script>
 </body>
 
