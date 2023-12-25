@@ -2,13 +2,13 @@
 
 <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
     <div class="container">
-        <a href="./welcome.php"><img src="./assets/img/WhatsApp_Image_2023-09-05_at_15.02.25-removebg-preview.png.png" alt="Logo" width="26" height="25" class="d-inline-block align-text-top mx-2 mt-1"></a>
-        <a class="navbar-brand" href="#">Hotel PPLG</a>
+        <a href="#"><img src="./assets/img/WhatsApp_Image_2023-09-05_at_15.02.25-removebg-preview.png.png" alt="Logo" width="26" height="25" class="d-inline-block align-text-top m-2 mt-3 mb-3"></a>
+        <a class="navbar-brand ms-2" href="#">Hotel PPLG</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="welcome.php">Home</a>
                 </li>
@@ -16,7 +16,10 @@
                     <a class="nav-link" aria-current="page" href="about.php">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="profile.php">Profile</a>
+                    <a class="nav-link active" aria-current="page" href="./profile.php">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="pesanan.php">Pesanan</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -28,8 +31,9 @@
                     </ul>
                 </li>
             </ul>
-            <form action="./logout.php" onsubmit="return confirmLogout();" class="ms-2 my-2">
-                <button class="btn btn-outline-primary justify-content-center align-items-center" type="submit"><i class="bi bi-box-arrow-left" style="display: inline-block; margin-top: 1px;"></i> Logout</button>
+            <p class="text-light my-3 me-4"><?= isset($_SESSION["userinfo"]) ? $_SESSION["userinfo"]["name"] : $_SESSION["login"]; ?></p>
+            <form action="./logout.php" onsubmit="return confirmLogout();">
+                <button class="btn btn-outline-primary justify-content-center align-items-center" type="submit" style="margin-bottom: -15px;"><i class="bi bi-box-arrow-left" style="display: inline-block; margin-top: 1px;"></i> Logout</button>
             </form>
         </div>
     </div>

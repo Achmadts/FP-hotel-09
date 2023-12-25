@@ -50,17 +50,17 @@ if (isset($_SESSION["TFA"]["code"])) {
         <h2 class="text-center">Pendaftaran Hotel</h2><br>
         <div class="form-floating">
           <input type="text" class="form-control" id="nama" name="nama_pengunjung" required placeholder="Masukkan nama anda" autocomplete="off"><br>
-          <label for="nama">Nama</label>
+          <label for="nama">Nama Pemesan</label>
         </div>
 
         <div class="form-floating">
           <input type="email" class="form-control" id="email" name="email_pengunjung" required placeholder="Masukkan email anda" autocomplete="off"><br>
-          <label for="email">Email</label>
+          <label for="email">Email Pemesan</label>
         </div>
 
         <div class="form-floating">
           <input type="text" class="form-control" id="Alamat" name="alamat_pengunjung" required placeholder="Masukkan alamat anda" autocomplete="off"><br>
-          <label for="Alamat">Alamat</label>
+          <label for="Alamat">Alamat Pemesan</label>
         </div>
 
         <div class="form-floating">
@@ -70,28 +70,28 @@ if (isset($_SESSION["TFA"]["code"])) {
 
         <div class="form-floating">
           <input type="number" class="form-control" id="notlp" name="notlp" required placeholder="Masukkan no telpon anda" autocomplete="off">
-          <label for="NoTelepon">No Telepon</label>
+          <label for="NoTelepon">No Telepon Pemesan</label>
         </div>
 
       </li>
 
-      <label for="jkel" style="font-size: 20px; margin-bottom: 10px; margin-top: 5px">Jenis Kelamin:</label>
+      <label for="jkel" style="font-size: 20px; margin-bottom: 10px; margin-top: 5px">Jenis Kelamin Pemesan:</label>
       <div class="jenis_kelamin d-flex" style="width: 200px;">
         <input type="radio" class="btn-check" id="laki" name="jenis_kelamin" value="Laki-laki" required autocomplete="off">
         <label for="laki" class="btn btn-outline-primary me-1">Laki-laki</label>
 
         <input type="radio" class="btn-check" id="perempuan" name="jenis_kelamin" value="Perempuan">
         <label for="perempuan" class="btn btn-outline-primary">Perempuan</label><br><br>
-      </div>
+      </div><br>
 
-      <label for="tamu" class="mb-2 mt-3" style="font-size: 20px;">Kewarganegaraan:</label><br>
+      <!-- <label for="tamu" class="mb-2 mt-3" style="font-size: 20px;">Kewarganegaraan:</label><br>
       <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="width: 250px;">
         <input type="radio" class="btn-check" name="kwg" id="btnradio3" value="Warga Lokal" autocomplete="off">
         <label class="btn btn-outline-primary" for="btnradio3">Warga Lokal</label>
 
         <input type="radio" class="btn-check" name="kwg" id="btnradio4" value="Warga Asing" autocomplete="off">
         <label class="btn btn-outline-primary" for="btnradio4">Warga Asing</label>
-      </div><br><br>
+      </div><br><br> -->
 
       <li>
         <div class="form-floating">
