@@ -114,7 +114,6 @@ if (isset($_POST['submit'])) {
         }
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -196,80 +195,89 @@ if (isset($_POST['submit'])) {
     $user_id = $_SESSION["user_id"];
 
     $query = "
-    SELECT k.foto_kamar, tk.type_kamar, tk.rating, t.waktu_chekin, t.waktu_chekout, t.total_harga, t.status
-    FROM kamar k
-    JOIN type_kamar tk ON k.no_kamar = tk.type_kamar
-    JOIN transaksi t ON k.no_kamar = t.no_kamar
-    JOIN user u ON t.id = u.id
-    WHERE u.id = $user_id;
+SELECT k.foto_kamar, tk.type_kamar, tk.rating, t.waktu_chekin, t.waktu_chekout, t.total_harga, t.status
+FROM kamar k
+JOIN type_kamar tk ON k.no_kamar = tk.type_kamar
+JOIN transaksi t ON k.no_kamar = t.no_kamar
+JOIN user u ON t.id = u.id
+WHERE u.id = $user_id;
 ";
 
     $result = mysqli_query($con, $query);
 
-    while ($row = mysqli_fetch_assoc($result)) {
+    if (mysqli_num_rows($result) == 0) {
+        echo '<div class="container mt-5">
+            <div class="alert alert-warning" role="alert">
+                Tidak ada pesanan.
+            </div>
+          </div>';
+    } else {
+
+        while ($row = mysqli_fetch_assoc($result)) {
     ?>
-        <div class="container mb-5">
-            <form action="" method="POST">
-                <div class="card mb-3 mt-5" style="max-width: 58.47rem;">
-                    <div class="row g-0">
-                        <div class="col-md-6">
-                            <img src="<?php echo $row['foto_kamar']; ?>" class="img-fluid" alt="...">
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h5 class="card-title"><?php echo $row["type_kamar"]; ?> Room</h5>
+            <div class="container mb-5">
+                <form action="" method="POST">
+                    <div class="card mb-3 mt-5" style="max-width: 58.47rem;">
+                        <div class="row g-0">
+                            <div class="col-md-6">
+                                <img src="<?php echo $row['foto_kamar']; ?>" class="img-fluid" alt="...">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5 class="card-title"><?php echo $row["type_kamar"]; ?> Room</h5>
+                                        </div>
+                                        <div class="col-md-6 d-flex justify-content-md-end justify-content-start mb-3 mb-md-0">
+                                            <p class="card-text">
+                                                <?php
+                                                for ($i = 0; $i < $row['rating']; $i++) {
+                                                    echo '<i class="bi bi-star-fill text-warning me-1"></i>';
+                                                }
+                                                ?>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="col-md-6 d-flex justify-content-md-end justify-content-start mb-3 mb-md-0">
-                                        <p class="card-text">
-                                            <?php
-                                            for ($i = 0; $i < $row['rating']; $i++) {
-                                                echo '<i class="bi bi-star-fill text-warning me-1"></i>';
-                                            }
-                                            ?>
-                                        </p>
+                                    <div class="d-flex justify-content-between" style="margin-bottom: -10px; margin-top: 5px;">
+                                        <p>Status:</p>
+                                        <?php
+                                        if ($row && $row['status'] === 'Dibayar') {
+                                            echo '<p class="text-end"><i class="bi bi-circle-fill text-success"> ' . $row["status"] . '</i></p>';
+                                        } else {
+                                            echo '<p class="text-end"><i class="bi bi-circle-fill text-danger"> ' . $row["status"] . '</i></p>';
+                                        }
+                                        ?>
                                     </div>
-                                </div>
-                                <div class="d-flex justify-content-between" style="margin-bottom: -10px; margin-top: 5px;">
-                                    <p>Status:</p>
+                                    <div class="d-flex justify-content-between" style="margin-bottom: -10px;">
+                                        <p>Check In:</p>
+                                        <p class="text-end"><?php echo $row["waktu_chekin"] ?></p>
+                                    </div>
+                                    <div class="d-flex justify-content-between" style="margin-bottom: -10px;">
+                                        <p>Check Out:</p>
+                                        <p class="text-end"><?php echo $row["waktu_chekout"] ?></p>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <p>Total harga:</p>
+                                        <p class="text-end">Rp. <?php echo number_format($row['total_harga']); ?></p>
+                                    </div>
                                     <?php
                                     if ($row && $row['status'] === 'Dibayar') {
-                                        echo '<p class="text-end"><i class="bi bi-circle-fill text-success"> ' . $row["status"] . '</i></p>';
                                     } else {
-                                        echo '<p class="text-end"><i class="bi bi-circle-fill text-danger"> ' . $row["status"] . '</i></p>';
-                                    }
-                                    ?>
-                                </div>
-                                <div class="d-flex justify-content-between" style="margin-bottom: -10px;">
-                                    <p>Check In:</p>
-                                    <p class="text-end"><?php echo $row["waktu_chekin"] ?></p>
-                                </div>
-                                <div class="d-flex justify-content-between" style="margin-bottom: -10px;">
-                                    <p>Check Out:</p>
-                                    <p class="text-end"><?php echo $row["waktu_chekout"] ?></p>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <p>Total harga:</p>
-                                    <p class="text-end">Rp. <?php echo number_format($row['total_harga']); ?></p>
-                                </div>
-                                <?php
-                                if ($row && $row['status'] === 'Dibayar') {
-                                } else {
-                                    echo '<div class="input-group mb-3">
+                                        echo '<div class="input-group mb-3">
                                                 <span class="input-group-text">Rp</span>
                                                 <input type="text" class="form-control" name="nominal" placeholder="Masukkan nominal pembayaran">
                                               </div>
                                               <button class="btn btn-primary w-100 mb-0" name="submit">Bayar</button>';
-                                }
-                                ?>
+                                    }
+                                    ?>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
     <?php
+        }
     }
     ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
