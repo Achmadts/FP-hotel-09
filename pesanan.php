@@ -8,6 +8,7 @@ session_start();
 require_once 'connection/conn.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
+date_default_timezone_set('Asia/Jakarta');
 
 if (!isset($_SESSION["login"]) && !isset($_COOKIE["fp_hotel_access_token"])) {
     header("Location: index.php");
@@ -200,23 +201,32 @@ if (isset($_POST['submit'])) {
     <?php
     $user_id = $_SESSION["user_id"];
 
+    $updateExpiredQuery = "
+     UPDATE transaksi t
+     JOIN user u ON t.id = u.id
+     SET t.status = 'Expired'
+     WHERE u.id = $user_id AND t.status = 'Belum Dibayar' AND NOW() > t.expire;
+ ";
+
+    mysqli_query($con, $updateExpiredQuery);
+
     $query = "
-    SELECT k.foto_kamar, tk.type_kamar, tk.rating, t.waktu_chekin, t.waktu_chekout, t.total_harga, t.status
-    FROM kamar k
-    JOIN type_kamar tk ON k.type_kamar = tk.type_kamar
-    JOIN transaksi t ON k.no_kamar = t.no_kamar
-    JOIN user u ON t.id = u.id
-    WHERE u.id = $user_id;
-    ";
+     SELECT k.foto_kamar, tk.type_kamar, tk.rating, t.waktu_chekin, t.waktu_chekout, t.total_harga, t.status, t.expire
+     FROM kamar k
+     JOIN type_kamar tk ON k.type_kamar = tk.type_kamar
+     JOIN transaksi t ON k.no_kamar = t.no_kamar
+     JOIN user u ON t.id = u.id
+     WHERE u.id = $user_id;
+ ";
 
     $result = mysqli_query($con, $query);
 
     if (mysqli_num_rows($result) == 0) {
         echo '<div class="container mt-5">
-        <div class="alert alert-warning" role="alert">
-            Tidak ada pesanan.
-        </div>
-      </div>';
+     <div class="alert alert-warning" role="alert">
+         Tidak ada pesanan.
+     </div>
+   </div>';
     } else {
         while ($row = mysqli_fetch_assoc($result)) {
     ?>
@@ -225,7 +235,7 @@ if (isset($_POST['submit'])) {
                     <div class="card mb-3 mt-5" style="max-width: 58.47rem;">
                         <div class="row g-0">
                             <div class="col-md-6">
-                                <img src="<?php echo $row['foto_kamar']; ?>" class="img-fluid" alt="...">
+                                <img src="<?php echo $row['foto_kamar']; ?>" class="img-fluid h-100" alt="<?php echo $row['type_kamar']; ?> Room">
                             </div>
                             <div class="col-md-6">
                                 <div class="card-body">
@@ -248,7 +258,9 @@ if (isset($_POST['submit'])) {
                                         <?php
                                         if ($row && $row['status'] === 'Dibayar') {
                                             echo '<p class="text-end"><i class="bi bi-circle-fill text-success"> ' . $row["status"] . '</i></p>';
-                                        } else {
+                                        } elseif($row && $row['status'] === 'Belum Dibayar') {
+                                            echo '<p class="text-end"><i class="bi bi-circle-fill text-warning"> ' . $row["status"] . '</i></p>';
+                                        }else{
                                             echo '<p class="text-end"><i class="bi bi-circle-fill text-danger"> ' . $row["status"] . '</i></p>';
                                         }
                                         ?>
@@ -261,18 +273,22 @@ if (isset($_POST['submit'])) {
                                         <p>Check Out:</p>
                                         <p class="text-end"><?php echo $row["waktu_chekout"] ?></p>
                                     </div>
+                                    <div class="d-flex justify-content-between" style="margin-bottom: -10px;">
+                                        <p>Tenggat pembayaran:</p>
+                                        <p class="text-end"><?php echo $row["expire"] ?></p>
+                                    </div>
                                     <div class="d-flex justify-content-between">
                                         <p>Total harga:</p>
                                         <p class="text-end">Rp. <?php echo number_format($row['total_harga']); ?></p>
                                     </div>
                                     <?php
-                                    if ($row && $row['status'] === 'Dibayar') {
+                                    if ($row && $row['status'] === 'Dibayar' || $row && $row['status'] === 'Expired') {
                                     } else {
                                         echo '<div class="input-group mb-3">
                                                 <span class="input-group-text">Rp</span>
                                                 <input type="text" class="form-control" name="nominal" placeholder="Masukkan nominal pembayaran">
                                               </div>
-                                              <button class="btn btn-primary w-100 mb-0" name="submit">Bayar</button>';
+                                              <button class="btn btn-primary w-100" name="submit">Bayar</button>';
                                     }
                                     ?>
                                 </div>

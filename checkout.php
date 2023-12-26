@@ -8,6 +8,7 @@ session_start();
 require_once 'connection/conn.php';
 header("Content-Security-Policy: frame-ancestors 'none';");
 header("X-Frame-Options: DENY");
+date_default_timezone_set('Asia/Jakarta');
 
 if (!isset($_SESSION["login"]) && !isset($_COOKIE["fp_hotel_access_token"])) {
     header("Location: index.php");
@@ -33,7 +34,6 @@ if ($no_kamar) {
         $row = mysqli_fetch_assoc($result);
     }
 }
-
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -79,12 +79,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tgl_checkout = strtotime($checkout);
 
     $id = $_SESSION["user_id"];
+    $waktu_sekarang = date('Y-m-d H:i:s');
+    $waktu_expire = date('Y-m-d H:i:s', strtotime($waktu_sekarang . ' + 1 hour'));
 
     // Menghitung selisih hari check-in dan check-out
     $selisih = $tgl_checkout - $tgl_checkin;
     $lama_inap = floor($selisih / (60 * 60 * 24));
     $total_harga = $row['harga_kamar'] * $lama_inap;
-    $query_insert_transaksi = "INSERT INTO transaksi (id_pengunjung, id, no_kamar, waktu_chekin, waktu_chekout, lama_inap, total_harga, status) VALUES ('$pengunjung_id', '$id', '$no_kamar', '$checkin', '$checkout', '$lama_inap', '$total_harga', 'Belum Dibayar')";
+    $query_insert_transaksi = "INSERT INTO transaksi (id_pengunjung, id, no_kamar, waktu_chekin, waktu_chekout, lama_inap, total_harga, expire, status) VALUES ('$pengunjung_id', '$id', '$no_kamar', '$checkin', '$checkout', '$lama_inap', '$total_harga', '$waktu_expire', 'Belum Dibayar')";
     mysqli_query($con, $query_insert_transaksi);
 
     $_SESSION['session_id_pengunjung'] = $pengunjung_id;
@@ -266,9 +268,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 const checkinDate = new Date(checkinValue);
                 const checkoutDate = new Date(checkoutValue);
 
-                console.log("CheckIn: " + checkinDate);
-                console.log("CheckOut: " + checkoutDate);
-                console.log("Hari ini: " + today);
+                // console.log("CheckIn: " + checkinDate);
+                // console.log("CheckOut: " + checkoutDate);
+                // console.log("Hari ini: " + today);
 
                 if (checkinDate <= today || checkoutDate <= checkinDate || checkinValue === '0000-00-00' || checkinValue === '' || checkoutValue === '0000-00-00' || checkoutValue === '') {
                     pesanError.textContent = 'Masukkan tanggal check-in & check-out yang valid!';
