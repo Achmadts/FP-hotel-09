@@ -86,10 +86,16 @@ if (isset($_POST['submit'])) {
         exit;
     }
 
+    function hapusFormatAngka($amount)
+    {
+        return (int) str_replace(['Rp.', '.', ' '], '', $amount);
+    }
+
+    $nominal = hapusFormatAngka($_POST['nominal']);
     $id_transaksi = $row['id_transaksi'];
     $total_harga = $row['total_harga'];
 
-    if ($nominal < $total_harga || $nominal > $total_harga) {
+    if ($nominal != $total_harga) {
         echo '<script>
             Swal.fire({
                 title: "Gagal!",
@@ -297,6 +303,22 @@ if (isset($_POST['submit'])) {
             });
             return false;
         }
+    </script>
+    <script>
+        function formatAngka(angka) {
+            var reverse = angka.toString().split('').reverse().join(''),
+                ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return 'Rp. ' + ribuan;
+        }
+
+        function hapusFormatAngka(rp) {
+            return parseInt(rp.replace(/,.*|[^0-9]/g, ''), 10);
+        }
+
+        document.querySelector('[name="nominal"]').addEventListener('input', function(e) {
+            e.target.value = formatAngka(hapusFormatAngka(e.target.value));
+        });
     </script>
 </body>
 
