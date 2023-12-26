@@ -195,13 +195,13 @@ if (isset($_POST['submit'])) {
     $user_id = $_SESSION["user_id"];
 
     $query = "
-SELECT k.foto_kamar, tk.type_kamar, tk.rating, t.waktu_chekin, t.waktu_chekout, t.total_harga, t.status
-FROM kamar k
-JOIN type_kamar tk ON k.no_kamar = tk.type_kamar
-JOIN transaksi t ON k.no_kamar = t.no_kamar
-JOIN user u ON t.id = u.id
-WHERE u.id = $user_id;
-";
+    SELECT k.foto_kamar, tk.type_kamar, tk.rating, t.waktu_chekin, t.waktu_chekout, t.total_harga, t.status
+    FROM kamar k
+    JOIN type_kamar tk ON k.type_kamar = tk.type_kamar
+    JOIN transaksi t ON k.no_kamar = t.no_kamar
+    JOIN user u ON t.id = u.id
+    WHERE u.id = $user_id;
+    ";
 
     $result = mysqli_query($con, $query);
 
@@ -214,6 +214,8 @@ WHERE u.id = $user_id;
     } else {
 
         while ($row = mysqli_fetch_assoc($result)) {
+            echo $row["type_kamar"]; // Tambahkan baris ini untuk debugging
+
     ?>
             <div class="container mb-5">
                 <form action="" method="POST">

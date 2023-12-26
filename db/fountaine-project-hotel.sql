@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 18 Des 2023 pada 13.08
+-- Waktu pembuatan: 26 Des 2023 pada 00.48
 -- Versi server: 10.4.28-MariaDB
 -- Versi PHP: 8.2.4
 
@@ -37,29 +37,86 @@ CREATE TABLE `codes` (
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `kamar`
+--
+
+CREATE TABLE `kamar` (
+  `no_kamar` int(11) NOT NULL,
+  `status` enum('Tersedia','Tidak tersedia') NOT NULL,
+  `foto_kamar` varchar(255) NOT NULL,
+  `type_kamar` enum('Standard','Executive','Suite','View','Family','Thematic') NOT NULL,
+  `fasilitas_kamar` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `kamar`
+--
+
+INSERT INTO `kamar` (`no_kamar`, `status`, `foto_kamar`, `type_kamar`, `fasilitas_kamar`) VALUES
+(1, 'Tersedia', './assets/img/paket1.jpg', 'Standard', 'WiFi,TV,AC'),
+(2, 'Tersedia', './assets/img/paket2.jpg', 'Executive', 'WiFi,TV,AC,Pemanas air'),
+(3, 'Tersedia', './assets/img/paket3.jpeg', 'Family', 'WiFi,TV,AC,Pemanas air'),
+(4, 'Tersedia', './assets/img/paket4.jpeg', 'Suite', 'WiFi,TV,AC,Pemanas air'),
+(5, 'Tersedia', './assets/img/paket5.jpeg', 'View', 'WiFi,TV,AC'),
+(6, 'Tersedia', './assets/img/paket6.jpeg', 'Thematic', 'WiFi,TV,AC,Pemanas air');
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `pengunjung`
 --
 
 CREATE TABLE `pengunjung` (
-  `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `alamat` varchar(255) NOT NULL,
-  `tgl_lahir` date NOT NULL,
-  `no_telpon` varchar(15) NOT NULL,
-  `jkel` enum('Laki-laki','Perempuan','','') NOT NULL,
-  `region` enum('Warga Lokal','Warga Asing','','') NOT NULL,
-  `tgl_check_in` date NOT NULL,
-  `tgl_check_out` date NOT NULL,
-  `jenis_kamar` enum('Single','Double','Suite','') NOT NULL,
-  `jumlah_tamu` int(11) NOT NULL,
-  `kategori` enum('VVIP','VIP','Biasa','') NOT NULL,
-  `fasilitas_tambahan` varchar(255) NOT NULL,
-  `metode_pembayaran` enum('Kartu Kredit','Transfer Bank','Tunai') NOT NULL,
-  `nomor_kartu_kredit` varchar(16) NOT NULL,
-  `tgl_expired` date NOT NULL,
-  `pesan` text NOT NULL
+  `id_pengunjung` int(11) NOT NULL,
+  `nama_pengunjung` varchar(255) NOT NULL,
+  `email_pengunjung` varchar(255) NOT NULL,
+  `alamat_pengunjung` varchar(255) NOT NULL,
+  `no_hp_pengunjung` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `transaksi`
+--
+
+CREATE TABLE `transaksi` (
+  `id_transaksi` int(11) NOT NULL,
+  `id_pengunjung` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
+  `no_kamar` int(11) NOT NULL,
+  `waktu_chekin` datetime NOT NULL,
+  `waktu_chekout` datetime NOT NULL,
+  `lama_inap` varchar(255) NOT NULL,
+  `total_harga` bigint(20) NOT NULL,
+  `status` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `type_kamar`
+--
+
+CREATE TABLE `type_kamar` (
+  `type_kamar` enum('Standard','Executive','Suite','View','Family','Thematic') NOT NULL,
+  `harga_kamar` bigint(50) NOT NULL,
+  `kapasitas_pengunjung` int(11) NOT NULL,
+  `unit_tersedia` int(11) NOT NULL,
+  `rating` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `type_kamar`
+--
+
+INSERT INTO `type_kamar` (`type_kamar`, `harga_kamar`, `kapasitas_pengunjung`, `unit_tersedia`, `rating`) VALUES
+('Standard', 2000000, 2, 5, 4),
+('Executive', 5000000, 2, -7, 5),
+('Suite', 8500000, 4, 5, 5),
+('View', 5500000, 2, 10, 4),
+('Family', 8000000, 4, 10, 5),
+('Thematic', 6800000, 2, 5, 4);
 
 -- --------------------------------------------------------
 
@@ -93,10 +150,32 @@ ALTER TABLE `codes`
   ADD KEY `email` (`email`);
 
 --
+-- Indeks untuk tabel `kamar`
+--
+ALTER TABLE `kamar`
+  ADD PRIMARY KEY (`no_kamar`),
+  ADD KEY `type_kamar` (`type_kamar`);
+
+--
 -- Indeks untuk tabel `pengunjung`
 --
 ALTER TABLE `pengunjung`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id_pengunjung`);
+
+--
+-- Indeks untuk tabel `transaksi`
+--
+ALTER TABLE `transaksi`
+  ADD PRIMARY KEY (`id_transaksi`),
+  ADD KEY `id_pengunjung` (`id_pengunjung`,`no_kamar`),
+  ADD KEY `no_kamar` (`no_kamar`),
+  ADD KEY `id` (`id`);
+
+--
+-- Indeks untuk tabel `type_kamar`
+--
+ALTER TABLE `type_kamar`
+  ADD PRIMARY KEY (`type_kamar`);
 
 --
 -- Indeks untuk tabel `user`
@@ -116,16 +195,46 @@ ALTER TABLE `codes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT untuk tabel `kamar`
+--
+ALTER TABLE `kamar`
+  MODIFY `no_kamar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT untuk tabel `pengunjung`
 --
 ALTER TABLE `pengunjung`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pengunjung` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT untuk tabel `transaksi`
+--
+ALTER TABLE `transaksi`
+  MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+--
+
+--
+-- Ketidakleluasaan untuk tabel `kamar`
+--
+ALTER TABLE `kamar`
+  ADD CONSTRAINT `kamar_ibfk_1` FOREIGN KEY (`type_kamar`) REFERENCES `type_kamar` (`type_kamar`);
+
+--
+-- Ketidakleluasaan untuk tabel `transaksi`
+--
+ALTER TABLE `transaksi`
+  ADD CONSTRAINT `transaksi_ibfk_1` FOREIGN KEY (`id_pengunjung`) REFERENCES `pengunjung` (`id_pengunjung`),
+  ADD CONSTRAINT `transaksi_ibfk_2` FOREIGN KEY (`no_kamar`) REFERENCES `kamar` (`no_kamar`),
+  ADD CONSTRAINT `transaksi_ibfk_3` FOREIGN KEY (`id`) REFERENCES `user` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

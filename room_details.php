@@ -149,7 +149,7 @@ if (isset($_SESSION["TFA"]["code"])) {
             </div>
         </div>
     </div>
-    <h4>Description</h4>
+    <h4>Deskripsi</h4>
     <p class="mb-5">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Necessitatibus, ullam quasi temporibus facere doloremque, excepturi nobis aliquam dolores similique, quaerat sit quis ea a ipsam enim? Rerum quas eligendi optio nobis temporibus illum officia culpa, vel quibusdam consequatur, architecto cumque esse eaque tempora unde perferendis assumenda fuga? Voluptates, modi excepturi? Aut blanditiis corrupti quae doloribus unde non voluptatum eaque quia, eum odio velit porro aliquid fuga. Beatae, atque adipisci nihil doloremque quo molestias ea veniam nulla molestiae aliquid dolore odit vel amet debitis rerum velit? Delectus rerum distinctio illum ratione saepe veritatis labore pariatur, nisi ipsum amet at adipisci assumenda.</p>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
