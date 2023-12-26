@@ -213,10 +213,10 @@ if (isset($_POST['submit'])) {
 
     if (mysqli_num_rows($result) == 0) {
         echo '<div class="container mt-5">
-            <div class="alert alert-warning" role="alert">
-                Tidak ada pesanan.
-            </div>
-          </div>';
+        <div class="alert alert-warning" role="alert">
+            Tidak ada pesanan.
+        </div>
+      </div>';
     } else {
         while ($row = mysqli_fetch_assoc($result)) {
     ?>
