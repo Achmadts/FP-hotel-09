@@ -212,10 +212,7 @@ if (isset($_POST['submit'])) {
             </div>
           </div>';
     } else {
-
         while ($row = mysqli_fetch_assoc($result)) {
-            echo $row["type_kamar"]; // Tambahkan baris ini untuk debugging
-
     ?>
             <div class="container mb-5">
                 <form action="" method="POST">
