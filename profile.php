@@ -75,6 +75,7 @@ switch ($mode) {
         $email = htmlspecialchars(mysqli_real_escape_string($con, $_POST["email"]));
         $verifiedEmail = 0;
 
+        // Ambil data lama pengguna dari database
         $query = "SELECT name, email, verifiedEmail, 2FA FROM user WHERE id = ?";
         $stmt = mysqli_prepare($con, $query);
         mysqli_stmt_bind_param($stmt, 'i', $row["id"]);
@@ -82,12 +83,36 @@ switch ($mode) {
         $result = mysqli_stmt_get_result($stmt);
 
         if ($result && $dataLama = mysqli_fetch_assoc($result)) {
+            // Cek email atau nama yang baru udah ada di database/belum
+            if ($name !== $dataLama['name']) {
+                $checkNameQuery = "SELECT id FROM user WHERE name = ?";
+                $checkNameStmt = mysqli_prepare($con, $checkNameQuery);
+                mysqli_stmt_bind_param($checkNameStmt, 's', $name);
+                mysqli_stmt_execute($checkNameStmt);
+                $checkNameResult = mysqli_stmt_get_result($checkNameStmt);
+                if (mysqli_num_rows($checkNameResult) > 0) {
+                    $error[] = "Nama sudah ada!";
+                }
+            }
+
+            if ($email !== $dataLama['email']) {
+                $checkEmailQuery = "SELECT id FROM user WHERE email = ?";
+                $checkEmailStmt = mysqli_prepare($con, $checkEmailQuery);
+                mysqli_stmt_bind_param($checkEmailStmt, 's', $email);
+                mysqli_stmt_execute($checkEmailStmt);
+                $checkEmailResult = mysqli_stmt_get_result($checkEmailStmt);
+                if (mysqli_num_rows($checkEmailResult) > 0) {
+                    $error[] = "Email sudah ada!";
+                }
+            }
+
             if ($email === $dataLama['email']) {
                 $verifiedEmail = $dataLama['verifiedEmail'];
             }
         }
 
-        $error = editUser($_POST);
+        $errorsFromValidation = editUser($_POST);
+        $error = array_merge($error, $errorsFromValidation);
 
         if (empty($error)) {
             $id = $row["id"];
@@ -148,7 +173,7 @@ switch ($mode) {
         }
 
         if (empty($errorPw)) {
-            // Perbarui kata sandi
+            // Perbarui pw
             $hashedpwBaru = password_hash($pwBaru, PASSWORD_DEFAULT);
 
             $queryUpdatePassword = "UPDATE user SET password = ? WHERE id = ?";

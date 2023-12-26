@@ -72,7 +72,7 @@ if (count($_POST) > 0) {
                 echo '<script>
                 Swal.fire({
                     icon: "success",
-                    title: "Login berhasil!",
+                    title: "Email berhasil diverifikasi!",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(function() {
