@@ -38,6 +38,23 @@ if ($no_kamar) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $error = [];
+    $id = $_SESSION["user_id"];
+
+    $query_check_pesanan = "SELECT * FROM transaksi WHERE id = '$id' AND status = 'Belum Dibayar'";
+    $result_check_pesanan = mysqli_query($con, $query_check_pesanan);
+
+    if (mysqli_num_rows($result_check_pesanan) > 0) {
+        echo '<script>
+        Swal.fire({
+            icon: "error",
+            title: "Booking gagal!",
+            text: "Anda memiliki pesanan yang belum dibayar!"
+        }).then(function() {
+            window.location.href = "checkout.php?no_kamar=' . urlencode($row['no_kamar']) . '";
+        });
+        </script>';
+        exit();
+    }
 
     $nama = $_POST['nama'];
     $email = $_POST['email'];
@@ -78,7 +95,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tgl_checkin = strtotime($checkin);
     $tgl_checkout = strtotime($checkout);
 
-    $id = $_SESSION["user_id"];
     $waktu_sekarang = date('Y-m-d H:i:s');
     $waktu_expire = date('Y-m-d H:i:s', strtotime($waktu_sekarang . ' + 1 hour'));
 
@@ -268,10 +284,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 const checkinDate = new Date(checkinValue);
                 const checkoutDate = new Date(checkoutValue);
 
-                // console.log("CheckIn: " + checkinDate);
-                // console.log("CheckOut: " + checkoutDate);
-                // console.log("Hari ini: " + today);
-
                 if (checkinDate <= today || checkoutDate <= checkinDate || checkinValue === '0000-00-00' || checkinValue === '' || checkoutValue === '0000-00-00' || checkoutValue === '') {
                     pesanError.textContent = 'Masukkan tanggal check-in & check-out yang valid!';
                     bookingButton.setAttribute('disabled', true);
@@ -282,10 +294,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     bookingButton.setAttribute('disabled', true);
                     pesanError.textContent = 'Semua kolom harus diisi!';
                 }
-                // console.log("input_nama:", input_nama);
-                // console.log("input_email:", input_email);
-                // console.log("input_alamat:", input_alamat);
-                // console.log("input_no_telpon:", input_no_telpon);
             }
 
             function TotalPembayaran() {

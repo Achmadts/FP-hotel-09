@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 26 Des 2023 pada 00.48
+-- Waktu pembuatan: 27 Des 2023 pada 14.28
 -- Versi server: 10.4.28-MariaDB
 -- Versi PHP: 8.2.4
 
@@ -58,7 +58,7 @@ INSERT INTO `kamar` (`no_kamar`, `status`, `foto_kamar`, `type_kamar`, `fasilita
 (3, 'Tersedia', './assets/img/paket3.jpeg', 'Family', 'WiFi,TV,AC,Pemanas air'),
 (4, 'Tersedia', './assets/img/paket4.jpeg', 'Suite', 'WiFi,TV,AC,Pemanas air'),
 (5, 'Tersedia', './assets/img/paket5.jpeg', 'View', 'WiFi,TV,AC'),
-(6, 'Tersedia', './assets/img/paket6.jpeg', 'Thematic', 'WiFi,TV,AC,Pemanas air');
+(6, 'Tersedia', './assets/img/paket6.jpeg', 'Thematic', 'WiFi,TV,AC');
 
 -- --------------------------------------------------------
 
@@ -89,6 +89,7 @@ CREATE TABLE `transaksi` (
   `waktu_chekout` datetime NOT NULL,
   `lama_inap` varchar(255) NOT NULL,
   `total_harga` bigint(20) NOT NULL,
+  `expire` datetime DEFAULT NULL,
   `status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -111,12 +112,12 @@ CREATE TABLE `type_kamar` (
 --
 
 INSERT INTO `type_kamar` (`type_kamar`, `harga_kamar`, `kapasitas_pengunjung`, `unit_tersedia`, `rating`) VALUES
-('Standard', 2000000, 2, 5, 4),
-('Executive', 5000000, 2, -7, 5),
-('Suite', 8500000, 4, 5, 5),
-('View', 5500000, 2, 10, 4),
-('Family', 8000000, 4, 10, 5),
-('Thematic', 6800000, 2, 5, 4);
+('Standard', 2000000, 2, 22, 4),
+('Executive', 8000000, 2, -13, 5),
+('Suite', 8500000, 4, 34, 5),
+('View', 4500000, 2, 5, 4),
+('Family', 10000000, 4, -4, 5),
+('Thematic', 4000000, 2, 47, 4);
 
 -- --------------------------------------------------------
 

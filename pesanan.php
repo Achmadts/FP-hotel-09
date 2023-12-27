@@ -41,49 +41,21 @@ if (isset($_SESSION['status_pembayaran']) && $_SESSION['status_pembayaran'] == '
 }
 
 if (isset($_POST['submit'])) {
-    $nominal = $_POST['nominal'];
 
-    if (isset($_SESSION['user_id'])) {
-        $user_id = $_SESSION['user_id'];
-    } else {
-        echo "User ID tidak ditemukan!";
+    if (!isset($_GET['id_transaksi'])) {
+        echo "ID transaksi tidak ditemukan!";
         exit;
     }
+    $id_transaksi = $_GET['id_transaksi'];
 
-    if (isset($_SESSION['session_id_pengunjung'])) {
-        $session_id_pengunjung = $_SESSION['session_id_pengunjung'];
-    }
-
-    $query_pengunjung = "SELECT id_pengunjung FROM pengunjung WHERE id_pengunjung = ?";
-    $stmt_pengunjung = mysqli_prepare($con, $query_pengunjung);
-    mysqli_stmt_bind_param($stmt_pengunjung, "i", $session_id_pengunjung);
-    mysqli_stmt_execute($stmt_pengunjung);
-    $result_pengunjung = mysqli_stmt_get_result($stmt_pengunjung);
-    $row_pengunjung = mysqli_fetch_assoc($result_pengunjung);
-
-    if (!$row_pengunjung || !isset($row_pengunjung['id_pengunjung'])) {
+    if (!isset($_GET['id_pengunjung'])) {
         echo "ID pengunjung tidak ditemukan!";
         exit;
     }
+    $id_pengunjung = $_GET['id_pengunjung'];
 
-    $id_pengunjung = $row_pengunjung['id_pengunjung'];
-
-    // Ambil id_transaksi & total_harga berdasarkan id_pengunjung dari tabel pengunjung
-    $query_id_transaksi = "SELECT id_transaksi, total_harga FROM transaksi WHERE id_pengunjung = ?";
-    $stmt_transaksi = mysqli_prepare($con, $query_id_transaksi);
-    mysqli_stmt_bind_param($stmt_transaksi, "i", $id_pengunjung);
-    mysqli_stmt_execute($stmt_transaksi);
-    $result_id_transaksi = mysqli_stmt_get_result($stmt_transaksi);
-
-    if (!$result_id_transaksi) {
-        echo "Error: " . mysqli_error($con);
-        exit;
-    }
-
-    $row = mysqli_fetch_assoc($result_id_transaksi);
-
-    if (!$row || !isset($row['id_transaksi'])) {
-        echo "ID transaksi tidak ditemukan!";
+    if (!isset($_POST['nominal']) || empty($_POST['nominal'])) {
+        echo "Nominal tidak ditemukan!";
         exit;
     }
 
@@ -93,8 +65,20 @@ if (isset($_POST['submit'])) {
     }
 
     $nominal = hapusFormatAngka($_POST['nominal']);
-    $id_transaksi = $row['id_transaksi'];
-    $total_harga = $row['total_harga'];
+
+    if (!isset($_SESSION['user_id'])) {
+        echo "User ID tidak ditemukan!";
+        exit;
+    }
+    $user_id = $_SESSION['user_id'];
+
+    $query_total_harga = "SELECT total_harga FROM transaksi WHERE id_transaksi = ?";
+    $stmt_total_harga = mysqli_prepare($con, $query_total_harga);
+    mysqli_stmt_bind_param($stmt_total_harga, "i", $id_transaksi);
+    mysqli_stmt_execute($stmt_total_harga);
+    $result_total_harga = mysqli_stmt_get_result($stmt_total_harga);
+    $row_total_harga = mysqli_fetch_assoc($result_total_harga);
+    $total_harga = $row_total_harga['total_harga'];
 
     if ($nominal != $total_harga) {
         echo '<script>
@@ -120,6 +104,76 @@ if (isset($_POST['submit'])) {
             echo "Error: " . mysqli_error($con);
         }
     }
+}
+
+if (isset($_POST['hapusHistoriPesanan'])) {
+    if (!isset($_GET['id_transaksi']) || !isset($_GET['id_pengunjung'])) {
+        echo "ID transaksi atau ID pengunjung tidak ditemukan!";
+        exit;
+    }
+
+    $id_transaksi = $_GET['id_transaksi'];
+    $id_pengunjung = $_GET['id_pengunjung'];
+
+    $query_select = "SELECT id_pengunjung FROM transaksi WHERE id_pengunjung = ? AND id_pengunjung = ? AND (status = 'Expired' OR status = 'Dibayar')";
+    $stmt_select = mysqli_prepare($con, $query_select);
+    mysqli_stmt_bind_param($stmt_select, "ii", $id_transaksi, $id_pengunjung);
+    mysqli_stmt_execute($stmt_select);
+
+    $result = mysqli_stmt_get_result($stmt_select);
+
+    if ($row = mysqli_fetch_assoc($result)) {
+        $query1 = "DELETE FROM transaksi WHERE id_pengunjung = ?";
+        $stmt1 = mysqli_prepare($con, $query1);
+        mysqli_stmt_bind_param($stmt1, "i", $id_pengunjung);
+        mysqli_stmt_execute($stmt1);
+        mysqli_stmt_close($stmt1);
+
+        $query2 = "DELETE FROM pengunjung WHERE id_pengunjung = ?";
+        $stmt2 = mysqli_prepare($con, $query2);
+        mysqli_stmt_bind_param($stmt2, "i", $id_pengunjung);
+        mysqli_stmt_execute($stmt2);
+        mysqli_stmt_close($stmt2);
+
+        header("Location: pesanan.php");
+        exit();
+    } else {
+        echo "Tidak ada data pengunjung dengan ID transaksi dan ID pengunjung yang diberikan!";
+    }
+
+    mysqli_stmt_close($stmt_select);
+}
+
+if (isset($_POST['batalkanPesanan'])) {
+    if (!isset($_GET['id_transaksi'])) {
+        echo "ID transaksi tidak ditemukan dalam URL!";
+        exit;
+    }
+
+    $id_transaksi = $_GET['id_transaksi'];
+
+    $query_check_transaksi = "SELECT id_transaksi FROM transaksi WHERE id_transaksi = ? AND status = 'Belum Dibayar'";
+    $stmt_check_transaksi = $con->prepare($query_check_transaksi);
+    $stmt_check_transaksi->bind_param('s', $id_transaksi);
+    $stmt_check_transaksi->execute();
+    $result_transaksi = $stmt_check_transaksi->get_result();
+
+    if ($result_transaksi->num_rows > 0) {
+        $query_update = "UPDATE transaksi SET status = 'Dibatalkan' WHERE id_transaksi = ?";
+        $stmt_update = $con->prepare($query_update);
+        $stmt_update->bind_param('s', $id_transaksi);
+
+        if ($stmt_update->execute()) {
+            header('Location: pesanan.php');
+            exit();
+        } else {
+            echo "Gagal membatalkan pesanan: " . $stmt_update->error;
+        }
+        $stmt_update->close();
+    } else {
+        echo "Tidak ada transaksi yang ditemukan dengan ID transaksi tersebut atau sudah dibayar.";
+    }
+    $stmt_check_transaksi->close();
 }
 ?>
 
@@ -202,22 +256,22 @@ if (isset($_POST['submit'])) {
     $user_id = $_SESSION["user_id"];
 
     $updateExpiredQuery = "
-     UPDATE transaksi t
-     JOIN user u ON t.id = u.id
-     SET t.status = 'Expired'
-     WHERE u.id = $user_id AND t.status = 'Belum Dibayar' AND NOW() > t.expire;
- ";
+        UPDATE transaksi t
+        JOIN user u ON t.id = u.id
+        SET t.status = 'Expired'
+        WHERE u.id = $user_id AND t.status = 'Belum Dibayar' AND NOW() > t.expire;
+    ";
 
     mysqli_query($con, $updateExpiredQuery);
 
     $query = "
-     SELECT k.foto_kamar, tk.type_kamar, tk.rating, t.waktu_chekin, t.waktu_chekout, t.total_harga, t.status, t.expire
-     FROM kamar k
-     JOIN type_kamar tk ON k.type_kamar = tk.type_kamar
-     JOIN transaksi t ON k.no_kamar = t.no_kamar
-     JOIN user u ON t.id = u.id
-     WHERE u.id = $user_id;
- ";
+    SELECT t.id_transaksi, k.foto_kamar, tk.type_kamar, tk.rating, t.waktu_chekin, t.waktu_chekout, t.total_harga, t.status, t.expire, t.id_pengunjung
+    FROM kamar k
+    JOIN type_kamar tk ON k.type_kamar = tk.type_kamar
+    JOIN transaksi t ON k.no_kamar = t.no_kamar
+    JOIN user u ON t.id = u.id
+    WHERE u.id = $user_id;
+";
 
     $result = mysqli_query($con, $query);
 
@@ -231,7 +285,7 @@ if (isset($_POST['submit'])) {
         while ($row = mysqli_fetch_assoc($result)) {
     ?>
             <div class="container mb-5">
-                <form action="" method="POST">
+                <form action="pesanan.php?id_transaksi=<?php echo $row['id_transaksi']; ?>&id_pengunjung=<?php echo $row['id_pengunjung']; ?>" method="POST">
                     <div class="card mb-3 mt-5" style="max-width: 58.47rem;">
                         <div class="row g-0">
                             <div class="col-md-6">
@@ -282,13 +336,17 @@ if (isset($_POST['submit'])) {
                                         <p class="text-end">Rp. <?php echo number_format($row['total_harga']); ?></p>
                                     </div>
                                     <?php
-                                    if ($row && $row['status'] === 'Dibayar' || $row && $row['status'] === 'Expired') {
+                                    if ($row && $row['status'] === 'Dibayar' || $row && $row['status'] === 'Expired' || $row && $row['status'] === 'Dibatalkan') {
+                                        echo '<button type="submit" class="btn btn-danger w-100 mt-4" name="hapusHistoriPesanan">Hapus histori pesanan</button>';
                                     } else {
                                         echo '<div class="input-group mb-3">
-                                                <span class="input-group-text">Rp</span>
-                                                <input type="text" class="form-control" name="nominal" placeholder="Masukkan nominal pembayaran">
-                                              </div>
-                                              <button class="btn btn-primary w-100" name="submit">Bayar</button>';
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="text" class="form-control" name="nominal" placeholder="Masukkan nominal pembayaran" autocomplete="off">
+                                                </div>
+                                                <div class="d-flex">
+                                                <button type="submit" class="btn btn-primary w-50 me-1" name="submit">Bayar</button>
+                                                <button type="submit" class="btn btn-danger w-50 ms-1" name="batalkanPesanan">Batalkan Pesanan</button>
+                                                </div>';
                                     }
                                     ?>
                                 </div>
