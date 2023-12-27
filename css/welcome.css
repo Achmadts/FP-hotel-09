@@ -183,7 +183,7 @@ nav {
   text-align: center;
   color: var(--text-dark);
 }
-
+/* 
 .reward__container {
   padding: 2rem;
   text-align: center;
@@ -220,9 +220,9 @@ nav {
 
 .reward__btn:hover {
   background-color: var(--primary-color-dark);
-}
+} */
 
-.footer {
+/* .footer {
   background-color: var(--extra-light);
 }
 
@@ -278,7 +278,7 @@ nav {
   width: 20rem;
   height: 2px;
   background-color: var(--text-light);
-}
+} */
 
 @media (width < 900px) {
   .populer__grid {
@@ -291,9 +291,9 @@ nav {
     gap: 1rem;
   }
 
-  .footer__container {
+  /* .footer__container {
     grid-template-columns: repeat(2, 1fr);
-  }
+  } */
 }
 
 @media (width < 600px) {
@@ -313,7 +313,7 @@ nav {
     grid-template-columns: repeat(1, 1fr);
   }
 
-  .footer__container {
+  /* .footer__container {
     gap: 2rem;
-  }
+  } */
 }

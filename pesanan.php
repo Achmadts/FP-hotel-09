@@ -68,7 +68,7 @@ if (isset($_POST['submit'])) {
 
     $id_pengunjung = $row_pengunjung['id_pengunjung'];
 
-    // Ambil id_transaksi dan total_harga berdasarkan id_pengunjung dari tabel pengunjung
+    // Ambil id_transaksi & total_harga berdasarkan id_pengunjung dari tabel pengunjung
     $query_id_transaksi = "SELECT id_transaksi, total_harga FROM transaksi WHERE id_pengunjung = ?";
     $stmt_transaksi = mysqli_prepare($con, $query_id_transaksi);
     mysqli_stmt_bind_param($stmt_transaksi, "i", $id_pengunjung);
@@ -274,7 +274,7 @@ if (isset($_POST['submit'])) {
                                         <p class="text-end"><?php echo $row["waktu_chekout"] ?></p>
                                     </div>
                                     <div class="d-flex justify-content-between" style="margin-bottom: -10px;">
-                                        <p>Tenggat pembayaran:</p>
+                                        <p>Tenggat bayar:</p>
                                         <p class="text-end"><?php echo $row["expire"] ?></p>
                                     </div>
                                     <div class="d-flex justify-content-between">
