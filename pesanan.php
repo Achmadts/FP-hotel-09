@@ -115,14 +115,14 @@ if (isset($_POST['hapusHistoriPesanan'])) {
     $id_transaksi = $_GET['id_transaksi'];
     $id_pengunjung = $_GET['id_pengunjung'];
 
-    $query_select = "SELECT id_pengunjung FROM transaksi WHERE id_pengunjung = ? AND id_pengunjung = ? AND (status = 'Expired' OR status = 'Dibayar')";
+    $query_select = "SELECT id_pengunjung FROM transaksi WHERE id_pengunjung = ? AND id_pengunjung = ? AND (status = 'Expired' OR status = 'Dibayar' OR status = 'Dibatalkan')";
     $stmt_select = mysqli_prepare($con, $query_select);
     mysqli_stmt_bind_param($stmt_select, "ii", $id_transaksi, $id_pengunjung);
     mysqli_stmt_execute($stmt_select);
 
     $result = mysqli_stmt_get_result($stmt_select);
 
-    if ($row = mysqli_fetch_assoc($result)) {
+    if ($result && mysqli_num_rows($result) > 0) {
         $query1 = "DELETE FROM transaksi WHERE id_pengunjung = ?";
         $stmt1 = mysqli_prepare($con, $query1);
         mysqli_stmt_bind_param($stmt1, "i", $id_pengunjung);
@@ -140,7 +140,6 @@ if (isset($_POST['hapusHistoriPesanan'])) {
     } else {
         echo "Tidak ada data pengunjung dengan ID transaksi dan ID pengunjung yang diberikan!";
     }
-
     mysqli_stmt_close($stmt_select);
 }
 
