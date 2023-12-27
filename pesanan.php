@@ -258,9 +258,9 @@ if (isset($_POST['submit'])) {
                                         <?php
                                         if ($row && $row['status'] === 'Dibayar') {
                                             echo '<p class="text-end"><i class="bi bi-circle-fill text-success"> ' . $row["status"] . '</i></p>';
-                                        } elseif($row && $row['status'] === 'Belum Dibayar') {
+                                        } elseif ($row && $row['status'] === 'Belum Dibayar') {
                                             echo '<p class="text-end"><i class="bi bi-circle-fill text-warning"> ' . $row["status"] . '</i></p>';
-                                        }else{
+                                        } else {
                                             echo '<p class="text-end"><i class="bi bi-circle-fill text-danger"> ' . $row["status"] . '</i></p>';
                                         }
                                         ?>
