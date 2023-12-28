@@ -70,8 +70,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <span style="right: 20px; top: 50%; transform: translateY(-45%); cursor: pointer; position: absolute; font-size: 20px;">
                     <i class="bi bi-eye" id="icon"></i>
                 </span>
-            </div><br>
-
+            </div>
+            <div class="form-check form-switch mt-3 mb-4">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="cursor: pointer;" name="btnType">
+                <label class="form-check-label" style="margin-right: 20rem; cursor: pointer;" for="flexSwitchCheckChecked">Admin</label>
+            </div>
             <input type="submit" class="btn btn-primary mb-2 mt-3" name="submit" value="Tambah!"><br>
     </form>
     </div>

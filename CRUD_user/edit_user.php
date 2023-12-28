@@ -59,42 +59,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="email" class="form-control w-100" name="email" value="<?= $email; ?>" required placeholder="Masukkan email kamu" autocomplete="off">
                 <label for="email">Masukkan email</label>
             </div>
-
-            <div class="form-floating mt-3">
-                <input type="password" class="form-control w-100" id="pw" value="<?= $password; ?>" name="password" required placeholder="Masukkan password" readonly>
-                <label for="password">Masukkan password</label>
+            <div class="form-check form-switch mt-3 mb-4">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="cursor: pointer;" name="btnType" <?php echo ($row['type'] == 1) ? 'checked' : ''; ?>>
+                <label class="form-check-label" style="margin-right: 20rem; cursor: pointer;" for="flexSwitchCheckChecked">Admin</label>
             </div>
-
-            <div class="form-floating mt-3 position-relative">
-                <input type="password" class="form-control w-100" value="<?= $password; ?>" id="cpw" name="cpassword" required placeholder="Konfirmasi password" style="margin-bottom: -5px;" readonly>
-                <label for="cpassword">Masukkan konfirmasi password</label>
-                <span style="right: 20px; top: 50%; transform: translateY(-45%); cursor: pointer; position: absolute; font-size: 20px;">
-                    <i class="bi bi-eye" id="icon"></i>
-                </span>
-            </div><br>
-
             <input type="submit" class="btn btn-primary mb-2" name="submit" value="Ubah!"><br>
     </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        const password = document.getElementById('pw');
-        const cpassword = document.getElementById('cpw');
-        const toggler = document.getElementById('icon');
-
-        const showHidePassword = () => {
-            if (password.type == "password" && cpassword.type == "password") {
-                password.setAttribute('type', 'text');
-                cpassword.setAttribute('type', 'text');
-            } else {
-                password.setAttribute('type', 'password');
-                cpassword.setAttribute('type', 'password');
-            }
-            toggler.classList.toggle('bi-eye');
-            toggler.classList.toggle('bi-eye-slash');
-        };
-        toggler.addEventListener('click', showHidePassword);
-    </script>
 </body>
 
 </html>

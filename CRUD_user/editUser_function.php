@@ -17,8 +17,6 @@ if (!$result) {
 
 $name = $row["name"];
 $email = $row["email"];
-$password = $row["password"];
-$cpassword = $row["password"];
 
 if (!isset($_SESSION["login"]) && !isset($_SESSION["login_type"]) || $_SESSION["login_type"] !== "admin_login") {
     header('Location: ../index.php');
@@ -47,14 +45,6 @@ function editUser($data)
     if (!filter_var($data["email"], FILTER_VALIDATE_EMAIL)) {
         $error[] = "Masukkan email yang valid";
     }
-
-    if (strlen(trim($data["password"])) < 6) {
-        $error[] = "Password minimal harus 6 karakter";
-    }
-
-    if ($data["password"] !== $data["cpassword"]) {
-        $error[] = "Password tidak sesuai!";
-    }
     return $error;
 }
 
@@ -63,9 +53,8 @@ if (isset($_POST["submit"])) {
 
     $name = htmlspecialchars(mysqli_real_escape_string($con, $_POST['name']));
     $email = htmlspecialchars(mysqli_real_escape_string($con, $_POST['email']));
-    $password = $_POST['password'];
-    $cpassword = $_POST['cpassword'];
-
+    $verifiedEmail = 1;
+    $adminType = isset($_POST['btnType']) ? 1 : 0;
     $error = editUser($_POST);
 
     // Cek apakah terdapat kesalahan
@@ -77,19 +66,15 @@ if (isset($_POST["submit"])) {
         if (mysqli_num_rows($result) > 1) {
             $error[] = 'Pengguna sudah ada!';
         } else {
-            if ($password !== $cpassword) {
-                $error[] = 'Password tidak sesuai!';
-            } else {
-                $pass = password_hash($password, PASSWORD_DEFAULT);
-                $update_query = "UPDATE user SET name=?, email=?, password=? WHERE id=?";
-                $update_stmt = mysqli_prepare($con, $update_query);
-                mysqli_stmt_bind_param($update_stmt, "sssi", $name, $email, $pass, $id);
-                mysqli_stmt_execute($update_stmt);
+            $update_query = "UPDATE user SET name=?, email=?, verifiedEmail=?, type=? WHERE id=?";
+            $update_stmt = mysqli_prepare($con, $update_query);
+            mysqli_stmt_bind_param($update_stmt, "sssii", $name, $email, $verifiedEmail, $adminType, $id);
+            mysqli_stmt_execute($update_stmt);
 
-                if (mysqli_stmt_affected_rows($update_stmt) < 0) {
-                    echo "Data user gagal diedit: " . mysqli_error($con);
-                } else {
-                    echo '<script>
+            if (mysqli_stmt_affected_rows($update_stmt) < 0) {
+                echo "Data user gagal diedit: " . mysqli_error($con);
+            } else {
+                echo '<script>
                     Swal.fire({
                         icon: "success",
                         title: "Data berhasil diperbarui",
@@ -99,8 +84,7 @@ if (isset($_POST["submit"])) {
                         window.location.href = "../user_list.php";
                     });
                     </script>';
-                    exit;
-                }
+                exit;
             }
         }
     }

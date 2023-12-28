@@ -35,7 +35,7 @@ $cari = isset($_GET["cari"]) ? htmlspecialchars($_GET["cari"]) : "";
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Data (Hanya Admin)
+                            Admin
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item active" href="user_list.php">Data User (Hanya Admin)</a></li>

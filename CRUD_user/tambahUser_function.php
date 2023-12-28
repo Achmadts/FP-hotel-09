@@ -59,6 +59,7 @@ if (isset($_POST["submit"])) {
     $email = htmlspecialchars(mysqli_real_escape_string($con, $_POST['email']));
     $password = $_POST['password'];
     $cpassword = $_POST['cpassword'];
+    $adminType = isset($_POST['btnType']) ? 1 : 0;
 
     $error = tambahUser($con, $_POST);
 
@@ -74,7 +75,7 @@ if (isset($_POST["submit"])) {
                 $error[] = 'Password tidak sesuai!';
             } else {
                 $pass = password_hash($password, PASSWORD_DEFAULT);
-                $insert = "INSERT INTO user(name, email, password) VALUES('$name','$email','$pass')";
+                $insert = "INSERT INTO user(name, email, password, verifiedEmail, type) VALUES('$name','$email','$pass', 1, '$adminType')";
                 mysqli_query($con, $insert);
                 echo '<script>
                     Swal.fire({

@@ -21,15 +21,20 @@
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="pesanan.php">Pesanan</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Data (Hanya Admin)
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="user_list.php">Data User (Hanya Admin)</a></li>
-                        <li><a class="dropdown-item" href="list.php">Data Pengunjung (Hanya Admin)</a></li>
-                    </ul>
-                </li>
+                <?php
+                if (!isset($_SESSION["login_type"]) || $_SESSION["login_type"] !== "admin_login") {
+                } else {
+                    echo ' <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Admin
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="user_list.php">Data User (Hanya Admin)</a></li>
+                                        <li><a class="dropdown-item" href="list.php">Data Pengunjung (Hanya Admin)</a></li>
+                                    </ul>
+                                </li>';
+                }
+                ?>
             </ul>
             <p class="text-light my-3 me-4"><?= isset($_SESSION["userinfo"]) ? $_SESSION["userinfo"]["name"] : $_SESSION["login"]; ?></p>
             <form action="./logout.php" onsubmit="return confirmLogout();">
