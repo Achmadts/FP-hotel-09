@@ -336,7 +336,7 @@ if (isset($_POST['batalkanPesanan'])) {
                                     </div>
                                     <?php
                                     if ($row && $row['status'] === 'Dibayar' || $row && $row['status'] === 'Expired' || $row && $row['status'] === 'Dibatalkan') {
-                                        echo '<button type="submit" class="btn btn-danger w-100 mt-4" name="hapusHistoriPesanan">Hapus histori pesanan</button>';
+                                        echo '<button type="submit" onclick="return konfirmasiHapusPesanan()" class="btn btn-danger w-100 mt-4" name="hapusHistoriPesanan">Hapus histori pesanan</button>';
                                     } else {
                                         echo '<div class="input-group mb-3">
                                                     <span class="input-group-text">Rp</span>
@@ -344,7 +344,7 @@ if (isset($_POST['batalkanPesanan'])) {
                                                 </div>
                                                 <div class="d-flex">
                                                 <button type="submit" class="btn btn-primary w-50 me-1" name="submit">Bayar</button>
-                                                <button type="submit" class="btn btn-danger w-50 ms-1" name="batalkanPesanan">Batalkan Pesanan</button>
+                                                <button type="submit" onclick="return konfirmasiBatal()" class="btn btn-danger w-50 ms-1" name="batalkanPesanan">Batalkan Pesanan</button>
                                                 </div>';
                                     }
                                     ?>
@@ -360,6 +360,15 @@ if (isset($_POST['batalkanPesanan'])) {
     ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        function konfirmasiBatal() {
+            return confirm("Yakin mau batalkan pesanan ini?");
+        }
+
+        function konfirmasiHapusPesanan() {
+            return confirm("Yakin mau hapus pesanan ini?");
+        }
+    </script>
     <script>
         function confirmLogout() {
             Swal.fire({
