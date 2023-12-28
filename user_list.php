@@ -82,6 +82,20 @@ $result = $con->query($query);
             z-index: 1;
             padding: 10px;
         }
+
+        @media (max-width: 900px) {
+            .alert.alert-primary {
+                margin-left: 0rem !important;
+                width: 100% !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .alert.alert-primary {
+                margin-left: 0rem !important;
+                width: 100% !important;
+            }
+        }
     </style>
 </head>
 
@@ -91,14 +105,16 @@ $result = $con->query($query);
 
         <!-- <div class="tombol mx-5 justify-content-center align-items-center" style="margin-top: 100px;"> -->
         <div class="container">
-            <div class="row  mt-5 justify-content-center align-items-center">
+            <div class="alert alert-primary mt-4 mb-4" style="width: 93.5%; margin-left: 2.65rem;" role="alert">
+                Tabel User yang terdaftar
+            </div>
+            <div class="row  mt-3 justify-content-center align-items-center">
                 <div class="col-md-4">
                     <a href="CRUD_user/tambah_user.php" style="margin-left: 110px;" class="float-start"><button><i class="bi bi-person-plus-fill"> Tambah Data </i></button></a>
                 </div>
             </div>
         </div>
         <!-- </div> -->
-        <br><br>
         <div class="table table-responsive">
             <table border="1" class="table align-middle" style="width: 80%;">
                 <thead>
@@ -113,7 +129,7 @@ $result = $con->query($query);
                     </tr>
                 </thead>
                 <tbody id="tampil">
-                <?php
+                    <?php
                     $i = ($halaman - 1) * $limit;
                     if ($result->num_rows > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
