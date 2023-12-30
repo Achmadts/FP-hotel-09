@@ -19,17 +19,23 @@ if (isset($_SESSION["TFA"]["code"])) {
     exit;
 }
 
-if(isset($_GET['hapusid'])){
+if (isset($_GET['hapusid'])) {
     $id = $_GET['hapusid'];
 
-    $sql = "DELETE FROM `pengunjung` WHERE id=$id";
-    $result = mysqli_query($con, $sql);
-    if($result){
+    $delete_transaksi_sql = "DELETE FROM `transaksi` WHERE id_pengunjung=$id";
+    $result_transaksi = mysqli_query($con, $delete_transaksi_sql);
+
+    if (!$result_transaksi) {
+        die(mysqli_error($con));
+    }
+
+    $delete_pengunjung_sql = "DELETE FROM `pengunjung` WHERE id_pengunjung=$id";
+    $result_pengunjung = mysqli_query($con, $delete_pengunjung_sql);
+
+    if ($result_pengunjung) {
         echo '<script>alert("Data berhasil dihapus"); window.location.href = "list.php";</script>';
         header('location: ../list.php');
-    }else{
+    } else {
         die(mysqli_error($con));
     }
 }
-
-?>

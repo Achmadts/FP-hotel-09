@@ -19,22 +19,24 @@ if (isset($_SESSION["TFA"]["code"])) {
     exit;
 }
 
-// echo "<pre>";
-// print_r($_SESSION);
-// print_r($_COOKIE);
-// echo "</pre>";
-
 $limit = 2;
 $halaman = isset($_GET["halaman"]) ? $_GET["halaman"] : 1;
-$query = "SELECT * FROM pengunjung";
+$query = "SELECT pengunjung.id_pengunjung, pengunjung.nama_pengunjung, pengunjung.alamat_pengunjung, pengunjung.email_pengunjung, pengunjung.no_hp_pengunjung, transaksi.waktu_chekin, transaksi.waktu_chekout, transaksi.lama_inap, transaksi.total_harga, transaksi.status, type_kamar.type_kamar
+          FROM pengunjung INNER JOIN transaksi ON pengunjung.id_pengunjung = transaksi.id_pengunjung
+          INNER JOIN type_kamar ON transaksi.type_kamar = type_kamar.type_kamar";
 $result = $con->query($query);
+
 $totalBaris = $result->num_rows;
 $totalHalaman = ceil($totalBaris / $limit);
 $imbang = ($halaman - 1) * $limit;
 $query = $query . " LIMIT $limit OFFSET $imbang";
 $result = $con->query($query);
-?>
 
+// echo "<pre>";
+// print_r($_SESSION);
+// print_r($_COOKIE);
+// echo "</pre>";
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -83,6 +85,20 @@ $result = $con->query($query);
             z-index: 1;
             padding: 10px;
         }
+
+        @media (max-width: 900px) {
+            .alert.alert-primary {
+                margin-left: 0rem !important;
+                width: 100% !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .alert.alert-primary {
+                margin-left: 0rem !important;
+                width: 100% !important;
+            }
+        }
     </style>
 </head>
 
@@ -90,58 +106,58 @@ $result = $con->query($query);
     <div style="flex-grow: 1;">
         <?php include "partials/navbar_pengunjung.php"; ?>
 
-        <!-- <div class="tombol mx-5 justify-content-center align-items-center" style="margin-top: 100px;"> -->
         <div class="container">
-            <div class="row mt-5 justify-content-center align-items-center">
-                <div class="col-md-4">
-                    <a href="CRUD_pengunjung/tambah.php" style="margin-left: 110px;" class="float-start"><button><i class="bi bi-person-plus-fill"> Tambah Data </i></button></a>
-                </div>
+            <div class="alert alert-primary mt-5 mb-4" style="width: 100.8%; margin-left: -.3rem" role="alert">
+                Tabel Pengunjung yang terdaftar
             </div>
         </div>
-        <!-- </div> -->
-        <br><br>
-        <div class="table table-responsive">
+
+        <div class="table table-responsive mt-3">
             <table border="1" class="table align-middle" style="width: 80%;">
                 <thead>
                     <tr>
                         <th style="background-color: #000; color: #fff;">No</th>
-                        <th style="background-color: #252525; color: #fff;">Nama</th>
-                        <th style="background-color: #252525; color: #fff;">Alamat</th>
-                        <th style="background-color: #252525; color: #fff;">Email</th>
-                        <th style="background-color: #252525; color: #fff;">No telepon</th>
+                        <th style="background-color: #252525; color: #fff;">Nama Pengunjung</th>
+                        <th style="background-color: #252525; color: #fff;">Alamat Pengunjung</th>
+                        <th style="background-color: #252525; color: #fff;">Email Pengunjung</th>
+                        <th style="background-color: #252525; color: #fff;">No Telepon Pengunjung</th>
                         <th style="background-color: #252525; color: #fff;">Check-in</th>
                         <th style="background-color: #252525; color: #fff;">Check-out</th>
-                        <th style="background-color: #252525; color: #fff;">Tipe Kamar</th>
-                        <th style="background-color: #252525; color: #fff;">Jumlah Tamu</th>
+                        <th style="background-color: #252525; color: #fff;">Jenis Kamar</th>
+                        <th style="background-color: #252525; color: #fff;">Lama Inap</th>
+                        <th style="background-color: #252525; color: #fff;">Total Pembayaran</th>
+                        <th style="background-color: #252525; color: #fff;">Status Pembayaran</th>
                         <th style="background-color: #252525; color: #fff;" class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody id="tampil">
-                <?php
+                    <?php
                     $i = ($halaman - 1) * $limit;
                     if ($result->num_rows > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
                             $i++;
                             echo "<tr class='border'>";
                             echo "<td>" . $i . "</td>";
-                            echo "<td>" . $row['name'] . "</td>";
-                            echo "<td>" . $row['alamat'] . "</td>";
-                            echo "<td>" . $row['email'] . "</td>";
-                            echo "<td>" . $row['no_telpon'] . "</td>";
-                            echo "<td>" . $row['tgl_check_in'] . "</td>";
-                            echo "<td>" . $row['tgl_check_out'] . "</td>";
-                            echo "<td>" . $row['jenis_kamar'] . "</td>";
-                            echo "<td>" . $row['jumlah_tamu'] . "</td>";
+                            echo "<td>" . $row['nama_pengunjung'] . "</td>";
+                            echo "<td>" . $row['alamat_pengunjung'] . "</td>";
+                            echo "<td>" . $row['email_pengunjung'] . "</td>";
+                            echo "<td>" . $row['no_hp_pengunjung'] . "</td>";
+                            echo "<td>" . $row['waktu_chekin'] . "</td>";
+                            echo "<td>" . $row['waktu_chekout'] . "</td>";
+                            echo "<td>" . $row['type_kamar'] . "</td>";
+                            echo "<td>" . $row['lama_inap'] . "</td>";
+                            echo "<td>Rp. " . number_format($row['total_harga'], 0, ',', '.') . "</td>";
+                            echo "<td>" . $row['status'] . "</td>";
                             echo '<div class="container">
                                     <td class="d-flex text-center justify-content-center align-items-center mb-4" style="border: none;">
-                                        <a href="CRUD_pengunjung/edit.php?editid=' . $row["id"] . '" style="margin-bottom: -10px; margin-top: 20px; text-align: center; display: block;" class="justify-content-center"><button class="btn btn-primary mx-2 mt-0"><i class="bi bi-pencil-square text-white"></i></button></a>
-                                        <button class="btn btn-danger mx-2 mt-0 tombol-hapus" data-id="' . $row["id"] . '" style="margin-bottom: -30px;"><i class="bi bi-trash text-white"></i></button>
+                                        <a href="CRUD_pengunjung/edit.php?editid=' . $row["id_pengunjung"] . '" style="margin-bottom: -10px; margin-top: 20px; text-align: center; display: block;" class="justify-content-center"><button class="btn btn-primary mx-2 mt-0"><i class="bi bi-pencil-square text-white"></i></button></a>
+                                        <button class="btn btn-danger mx-2 mt-0 tombol-hapus" data-id="' . $row["id_pengunjung"] . '" style="margin-bottom: -30px;"><i class="bi bi-trash text-white"></i></button>
                                     </td>
                                 </div>';
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='9' style='border: none; text-align: center;'>Tidak ada data pengunjung.</td></tr>";
+                        echo "<tr><td colspan='12' style='border: none; text-align: center;'>Tidak ada data pengunjung.</td></tr>";
                     }
                     ?>
                 </tbody>
@@ -155,7 +171,7 @@ $result = $con->query($query);
                 <div class="col-md-6" style="width: 221px;">
                     <p class="fw-bold mt-3" style="font-size: 16.5px;">fountaine project &COPY; 2023</p>
                 </div>
-                <div class="col-md-6" style="width: 41px; margin-top: -17px;">
+                <div class="col-md-6" style="width: 41px;">
                     <a href="https://www.instagram.com/rpl2_59/?igshid=OGQ5ZDc2ODk2ZA%3D%3D"><img src="assets/img/logo_pplg.png" alt="PPLG" width="41" height="40"></a>
                 </div>
             </div>

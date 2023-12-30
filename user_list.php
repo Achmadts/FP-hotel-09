@@ -164,7 +164,7 @@ $result = $con->query($query);
                 <div class="col-md-6" style="width: 221px;">
                     <p class="fw-bold mt-3" style="font-size: 16.5px;">fountaine project &COPY; 2023</p>
                 </div>
-                <div class="col-md-6" style="width: 41px; margin-top: -17px;">
+                <div class="col-md-6" style="width: 41px;">
                     <a href="https://www.instagram.com/rpl2_59/?igshid=OGQ5ZDc2ODk2ZA%3D%3D"><img src="assets/img/logo_pplg.png" width="41" height="40"></a>
                 </div>
             </div>

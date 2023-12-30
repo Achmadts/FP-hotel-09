@@ -6,9 +6,16 @@ $halaman = isset($_GET["halaman"]) ? $_GET["halaman"] : 1;
 
 if (isset($_POST["cari"])) {
     $cari = htmlspecialchars($_POST["cari"]);
-    $query = "SELECT * FROM pengunjung WHERE name LIKE '%$cari%' OR email LIKE '%$cari%' OR no_telpon LIKE '%$cari%'";
+    $query = "SELECT pengunjung.*, transaksi.waktu_chekin, transaksi.waktu_chekout, transaksi.lama_inap, transaksi.total_harga, transaksi.status, type_kamar.type_kamar 
+              FROM pengunjung 
+              LEFT JOIN transaksi ON pengunjung.id_pengunjung = transaksi.id_pengunjung 
+              LEFT JOIN type_kamar ON transaksi.type_kamar = type_kamar.type_kamar 
+              WHERE pengunjung.nama_pengunjung LIKE '%$cari%' OR pengunjung.email_pengunjung LIKE '%$cari%' OR pengunjung.no_hp_pengunjung LIKE '%$cari%'";
 } else {
-    $query = "SELECT * FROM pengunjung";
+    $query = "SELECT pengunjung.*, transaksi.waktu_chekin, transaksi.waktu_chekout, transaksi.lama_inap, transaksi.total_harga, transaksi.status, type_kamar.type_kamar 
+              FROM pengunjung 
+              LEFT JOIN transaksi ON pengunjung.id_pengunjung = transaksi.id_pengunjung 
+              LEFT JOIN type_kamar ON transaksi.type_kamar = type_kamar.type_kamar";
 }
 
 $result = $con->query($query);
@@ -26,14 +33,16 @@ if ($result->num_rows > 0) {
         $i++;
         echo "<tr class='border'>";
         echo "<td>" . $i . "</td>";
-        echo "<td>" . $row['name'] . "</td>";
-        echo "<td>" . $row['alamat'] . "</td>";
-        echo "<td>" . $row['email'] . "</td>";
-        echo "<td>" . $row['no_telpon'] . "</td>";
-        echo "<td>" . $row['tgl_check_in'] . "</td>";
-        echo "<td>" . $row['tgl_check_out'] . "</td>";
-        echo "<td>" . $row['jenis_kamar'] . "</td>";
-        echo "<td>" . $row['jumlah_tamu'] . "</td>";
+        echo "<td>" . $row['nama_pengunjung'] . "</td>";
+        echo "<td>" . $row['alamat_pengunjung'] . "</td>";
+        echo "<td>" . $row['email_pengunjung'] . "</td>";
+        echo "<td>" . $row['no_hp_pengunjung'] . "</td>";
+        echo "<td>" . $row['waktu_chekin'] . "</td>";
+        echo "<td>" . $row['waktu_chekout'] . "</td>";
+        echo "<td>" . $row['type_kamar'] . "</td>";
+        echo "<td>" . $row['lama_inap'] . "</td>";
+        echo "<td>Rp. " . number_format($row['total_harga'], 0, ',', '.') . "</td>";
+        echo "<td>" . $row['status'] . "</td>";
         echo '<div class="container">
                 <td class="d-flex text-center justify-content-center align-items-center mb-4" style="border: none;">
                     <a href="crud_pengunjung/edit.php?editid=' . $row["id"] . '" style="margin-bottom: -10px; margin-top: 20px; text-align: center; display: block;" class="justify-content-center"><button class="btn btn-primary mx-2 mt-0"><i class="bi bi-pencil-square text-white"></i></button></a>
@@ -43,7 +52,7 @@ if ($result->num_rows > 0) {
         echo "</tr>";
     }
 } else {
-    echo "<tr><td colspan='9' style='border: none; text-align: center;'>Tidak ada data pengunjung.</td></tr>";
+    echo "<tr><td colspan='12' style='border: none; text-align: center;'>Tidak ada data pengunjung.</td></tr>";
 }
 ?>
 

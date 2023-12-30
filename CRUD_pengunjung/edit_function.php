@@ -1,5 +1,6 @@
 <html lang="en">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 </html>
 <?php
 require_once '../connection/conn.php';
@@ -22,7 +23,12 @@ if (isset($_SESSION["TFA"]["code"])) {
 }
 
 $id = $_GET['editid'];
-$query = "SELECT * FROM pengunjung WHERE id=?";
+
+$query = "SELECT p.*, t.waktu_chekin AS waktu_checkin, t.waktu_chekout AS waktu_checkout, t.total_harga, tk.type_kamar AS nama_type_kamar, tk.harga_kamar
+          FROM pengunjung p LEFT JOIN transaksi t ON p.id_pengunjung = t.id_pengunjung 
+          LEFT JOIN type_kamar tk ON t.type_kamar = tk.type_kamar
+          WHERE p.id_pengunjung = ?";
+
 $stmt = mysqli_prepare($con, $query);
 mysqli_stmt_bind_param($stmt, "i", $id);
 mysqli_stmt_execute($stmt);
@@ -34,63 +40,60 @@ if (!$result) {
 }
 
 // Data dari database
-$nama_pengunjung = $row["name"];
-$email_pengunjung = $row["email"];
-$alamat_pengunjung = $row["alamat"];
-$tanggal_lahir_pengunjung = $row["tgl_lahir"];
-$no_telpon_pengunjung = $row["no_telpon"];
-$jkel_pengunjung = $row["jkel"];
-$region_pengunjung = $row["region"];
-$tgl_check_in = $row["tgl_check_in"];
-$tgl_check_out = $row["tgl_check_out"];
-$jenis_kamar = $row["jenis_kamar"];
-$jumlah_tamu = $row["jumlah_tamu"];
-$kategori = $row["kategori"];
-$fasilitas_tambahan = $row["fasilitas_tambahan"];
-$metode_pembayaran = $row["metode_pembayaran"];
-$nomor_kartu_kredit = $row["nomor_kartu_kredit"];
-$tgl_expired = $row["tgl_expired"];
-$pesan = $row["pesan"];
+$nama_pengunjung = $row["nama_pengunjung"];
+$email_pengunjung = $row["email_pengunjung"];
+$alamat_pengunjung = $row["alamat_pengunjung"];
+$no_telpon_pengunjung = $row["no_hp_pengunjung"];
+$tgl_check_in = $row["waktu_checkin"];
+$tgl_check_out = $row["waktu_checkout"];
+$jenis_kamar = $row["nama_type_kamar"];
+$total_harga = $row["total_harga"];
+
+$tgl_check_in = substr($tgl_check_in, 0, 10);
+$tgl_check_out = substr($tgl_check_out, 0, 10);
 // akhir data dari database
 
 if (isset($_POST["submit"])) {
     $nama_pengunjung = htmlspecialchars($_POST["nama_pengunjung"]);
     $email_pengunjung = htmlspecialchars($_POST["email_pengunjung"]);
     $alamat_pengunjung = htmlspecialchars($_POST['alamat_pengunjung']);
-    $tanggal_lahir_pengunjung = date('Y-m-d', strtotime($_POST['tgllahir']));
-    $no_telpon_pengunjung = $_POST['notlp'];
-    $jkel_pengunjung = $_POST['jenis_kelamin'];
-    $region_pengunjung = $_POST['kwg'];
+    $no_telpon_pengunjung = $_POST['no_hp_pengunjung'];
     $tgl_check_in = date('Y-m-d', strtotime($_POST['checkin']));
     $tgl_check_out = date('Y-m-d', strtotime($_POST['checkout']));
-    $jenis_kamar = $_POST['kamar'];
-    $jumlah_tamu = $_POST['jumlah_tamu'];
-    $kategori = $_POST['kategori'];
-    $fasilitas_tambahan = '';
-    if (isset($_POST['fasilitasBantal'])) {
-        $fasilitas_tambahan .= 'Bantal, ';
-    }
-    if (isset($_POST['fasilitasAcara'])) {
-        $fasilitas_tambahan .= 'Acara Spesial, ';
-    }
-    $fasilitas_tambahan = rtrim($fasilitas_tambahan, ', ');
-    $metode_pembayaran = $_POST["metode_pembayaran"];
-    $nomor_kartu_kredit = $_POST["nomor_kartu"];
-    $tgl_expired = $_POST["expiry"];
-    $pesan = $_POST["pesan"];
+    $jenis_kamar = $_POST['type_kamar'];
 
-    if ($metode_pembayaran != "Kartu Kredit") {
-        $nomor_kartu_kredit = '';
-        $tgl_expired = '';
-    }
+    $datetime1 = new DateTime($tgl_check_in);
+    $datetime2 = new DateTime($tgl_check_out);
+    $interval = $datetime1->diff($datetime2);
+    $selisih_hari = $interval->days;
 
-    $update_query = "UPDATE pengunjung SET name=?, email=?, alamat=?, tgl_lahir=?, no_telpon=?, jkel=?, region=?, tgl_check_in=?, tgl_check_out=?, jenis_kamar=?, jumlah_tamu=?, kategori=?, fasilitas_tambahan=?, metode_pembayaran=?, nomor_kartu_kredit=?, tgl_expired=?, pesan=? WHERE id=?";
-    $update_stmt = mysqli_prepare($con, $update_query);
-    mysqli_stmt_bind_param($update_stmt, "sssssssssssssssssi", $nama_pengunjung, $email_pengunjung, $alamat_pengunjung, $tanggal_lahir_pengunjung, $no_telpon_pengunjung, $jkel_pengunjung, $region_pengunjung, $tgl_check_in, $tgl_check_out, $jenis_kamar, $jumlah_tamu, $kategori, $fasilitas_tambahan, $metode_pembayaran, $nomor_kartu_kredit, $tgl_expired, $pesan, $id);
-    mysqli_stmt_execute($update_stmt);
+    $harga_per_hari_query = "SELECT harga_kamar FROM type_kamar WHERE type_kamar = ?";
+    $stmt = mysqli_prepare($con, $harga_per_hari_query);
+    mysqli_stmt_bind_param($stmt, "s", $jenis_kamar);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
-    if (mysqli_stmt_affected_rows($update_stmt) < 0) {
-        echo "Terjadi kesalahan dalam perbaruan data: " . mysqli_error($con);
+    $row = mysqli_fetch_assoc($result);
+    $harga_per_hari = $row['harga_kamar'];
+    $total_harga = $selisih_hari * $harga_per_hari;
+
+    $update_pengunjung_query = "UPDATE pengunjung SET nama_pengunjung=?, email_pengunjung=?, alamat_pengunjung=?, no_hp_pengunjung=? WHERE id_pengunjung=?";
+    $update_pengunjung_stmt = mysqli_prepare($con, $update_pengunjung_query);
+    mysqli_stmt_bind_param($update_pengunjung_stmt, "ssssi", $nama_pengunjung, $email_pengunjung, $alamat_pengunjung, $no_telpon_pengunjung, $id);
+    mysqli_stmt_execute($update_pengunjung_stmt);
+
+    $update_transaksi_query = "UPDATE transaksi SET waktu_chekin=?, waktu_chekout=?, total_harga=? WHERE id_pengunjung=?";
+    $update_transaksi_stmt = mysqli_prepare($con, $update_transaksi_query);
+    mysqli_stmt_bind_param($update_transaksi_stmt, "ssdi", $tgl_check_in, $tgl_check_out, $total_harga, $id);
+    mysqli_stmt_execute($update_transaksi_stmt);
+
+    $update_type_kamar_query = "UPDATE transaksi SET type_kamar=? WHERE id_pengunjung=?";
+    $update_type_kamar_stmt = mysqli_prepare($con, $update_type_kamar_query);
+    mysqli_stmt_bind_param($update_type_kamar_stmt, "si", $jenis_kamar, $id);
+    mysqli_stmt_execute($update_type_kamar_stmt);
+
+    if (mysqli_stmt_affected_rows($update_pengunjung_stmt) < 0 || mysqli_stmt_affected_rows($update_transaksi_stmt) < 0 || mysqli_stmt_affected_rows($update_type_kamar_stmt) < 0) {
+        echo "Data gagal diedit: " . mysqli_error($con);
     } else {
         echo '<script>
         Swal.fire({
@@ -104,3 +107,4 @@ if (isset($_POST["submit"])) {
         </script>';
     }
 }
+?>
