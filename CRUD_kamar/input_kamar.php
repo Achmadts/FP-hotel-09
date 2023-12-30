@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $fasilitas_kamar = rtrim($fasilitas_kamar, ',');
-    $kamarQuery = "INSERT INTO kamar (status, foto_kamar, type_kamar, fasilitas_kamar) VALUES ('Tersedia', '$pathToSaveInDatabase', '$type_kamar', '$fasilitas_kamar')";
+    $kamarQuery = "INSERT INTO kamar (ketersediaan, foto_kamar, type_kamar, fasilitas_kamar) VALUES ('Tersedia', '$pathToSaveInDatabase', '$type_kamar', '$fasilitas_kamar')";
 
     if (mysqli_query($con, $kamarQuery)) {
         echo '<script>

@@ -122,7 +122,22 @@ if (isset($_SESSION["TFA"]["code"])) {
         <div class="col-md-6">
             <div class="card mt-2">
                 <div class="card-body">
-                    <?php echo '<h5 class="card-title">Rp. ' . number_format($row['harga_kamar']) . '<p style="margin-top: 10px; font-size: 13px;">Permalam</p></h5>'; ?>
+                    <?php
+                    $statusLabel = '';
+                    if ($row["ketersediaan"] === "Tersedia") {
+                        $statusLabel = '<b class="text-primary" style="margin-top: -3rem; background-color: #f3f4f6; font-size: 12px; padding: 5px 5px 5px 5px; border-radius: 5px;">Tersedia</b>';
+                    } elseif ($row['ketersediaan'] === "Tidak tersedia") {
+                        $statusLabel = '<b class="text-danger" style="margin-top: -3rem; background-color: #f3f4f6; font-size: 12px; padding: 5px 5px 5px 5px; border-radius: 5px;">Tidak tersedia</b>';
+                    }
+                    ?>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Rp. <?php echo number_format($row['harga_kamar']); ?><p style="margin-top: 10px; font-size: 13px;">Permalam</p>
+                        </h5>
+                        <?php echo $statusLabel; ?>
+                    </div>
+
+
 
                     <?php
                     for ($i = 0; $i < $row['rating']; $i++) {
@@ -144,7 +159,16 @@ if (isset($_SESSION["TFA"]["code"])) {
                         <?php echo '<b class="ms-2" style="background-color: #f3f4f6; font-size: 12px; padding: 6px 7px 5px 7px; border-radius: 5px;">' . $row['kapasitas_pengunjung'] . ' orang anak</b>'; ?>
                     </div><br>
 
-                    <?php echo '<a href="checkout.php?no_kamar=' . $row['no_kamar'] . '" class="btn btn-primary w-100 mt-3" style="padding-bottom: 10px;">Booking</a>'; ?>
+                    <?php
+                    $statusLabel = '';
+                    if ($row["ketersediaan"] === "Tersedia") {
+                        $statusLabel = '<a href="checkout.php?no_kamar=' . $row['no_kamar'] . '&type_kamar=' . $row['type_kamar'] . '" class="btn btn-primary w-100 mt-3" style="padding-bottom: 10px;">Booking</a>';
+                    } elseif ($row['ketersediaan'] === "Tidak tersedia") {
+                        $statusLabel = '<a href="checkout.php?no_kamar=' . $row['no_kamar'] . '&type_kamar=' . $row['type_kamar'] . '" class="btn btn-danger w-100 mt-3 disabled" style="padding-bottom: 10px;">Tidak tersedia</a>';
+                    }
+                    ?>
+
+                    <?php echo $statusLabel; ?>
                 </div>
             </div>
         </div>

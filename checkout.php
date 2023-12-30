@@ -83,7 +83,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
     }
-
     // Jika semua kolom terisi, maka lanjutkan eksekusi query
     $query_insert_pengunjung = "INSERT INTO pengunjung (nama_pengunjung, email_pengunjung, alamat_pengunjung, no_hp_pengunjung) VALUES ('$nama', '$email', '$alamat', '$no_telpon')";
     mysqli_query($con, $query_insert_pengunjung);
@@ -92,17 +91,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $query_update_unit = "UPDATE type_kamar SET unit_tersedia = unit_tersedia - 1 WHERE type_kamar = '$type_kamar'";
     mysqli_query($con, $query_update_unit);
 
+    $query_check_unit_tersedia = "SELECT unit_tersedia FROM type_kamar WHERE type_kamar = '$type_kamar'";
+    $result_check_unit_tersedia = mysqli_query($con, $query_check_unit_tersedia);
+    $row_unit_tersedia = mysqli_fetch_assoc($result_check_unit_tersedia);
+
+    if ($row_unit_tersedia['unit_tersedia'] <= 0) {
+        $query_update_ketersediaan = "UPDATE kamar SET ketersediaan = 'Tidak tersedia' WHERE type_kamar = '$type_kamar'";
+        mysqli_query($con, $query_update_ketersediaan);
+    }
+
     $tgl_checkin = strtotime($checkin);
     $tgl_checkout = strtotime($checkout);
 
     $waktu_sekarang = date('Y-m-d H:i:s');
     $waktu_expire = date('Y-m-d H:i:s', strtotime($waktu_sekarang . ' + 1 hour'));
+    $type_kamar = isset($_GET['type_kamar']) ? $_GET['type_kamar'] : '';
 
     // Menghitung selisih hari check-in dan check-out
     $selisih = $tgl_checkout - $tgl_checkin;
     $lama_inap = floor($selisih / (60 * 60 * 24));
     $total_harga = $row['harga_kamar'] * $lama_inap;
-    $query_insert_transaksi = "INSERT INTO transaksi (id_pengunjung, id, no_kamar, waktu_chekin, waktu_chekout, lama_inap, total_harga, expire, status) VALUES ('$pengunjung_id', '$id', '$no_kamar', '$checkin', '$checkout', '$lama_inap', '$total_harga', '$waktu_expire', 'Belum Dibayar')";
+    $query_insert_transaksi = "INSERT INTO transaksi (id_pengunjung, id, no_kamar, type_kamar, waktu_chekin, waktu_chekout, lama_inap, total_harga, expire, status) VALUES ('$pengunjung_id', '$id', '$no_kamar', '$type_kamar', '$checkin', '$checkout', '$lama_inap', '$total_harga', '$waktu_expire', 'Belum Dibayar')";
     mysqli_query($con, $query_insert_transaksi);
 
     $_SESSION['session_id_pengunjung'] = $pengunjung_id;
@@ -197,7 +206,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="card" id="card-img" style="margin-top: .5rem; margin-left: 8rem;">
                         <?php echo '<img src="' . $row['foto_kamar'] . '" alt="foto kamar" class="card-img-top mt-3 rounded"/>'; ?>
                         <div class="card-body">
-                            <?php echo '<h4>' . $row['type_kamar'] . ' Room</h4>'; ?>
+
+                            <?php
+                            $statusLabel = '';
+                            if ($row["ketersediaan"] === "Tersedia") {
+                                $statusLabel = '<b class="text-primary" style="margin-top: -.5rem; background-color: #f3f4f6; font-size: 12px; padding: 5px 5px 5px 5px; border-radius: 5px;">Tersedia</b>';
+                            } elseif ($row['ketersediaan'] === "Tidak tersedia") {
+                                $statusLabel = '<b class="text-danger" style="margin-top: -.5rem; background-color: #f3f4f6; font-size: 12px; padding: 5px 5px 5px 5px; border-radius: 5px;">Tidak tersedia</b>';
+                            }
+                            ?>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <?php echo '<h4>' . $row['type_kamar'] . ' Room</h4>'; ?>
+                                <?php echo $statusLabel; ?>
+                            </div>
+
                             <?php echo '<h6 class="card-title">Rp. ' . number_format($row['harga_kamar']) . ' permalam</h6>'; ?>
                         </div>
                     </div>
@@ -256,7 +279,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <label for="floatingInput">Total Pembayaran</label>
                             </div>
                             <p class="text-danger mt-3 mb-0" id="pesan_error"></p>
-                            <button class="btn btn-primary w-100 mb-1 mt-2" id="tombol_booking">Booking sekarang!</button>
+
+                            <?php
+                            $statusLabel = '';
+                            if ($row["ketersediaan"] === "Tersedia") {
+                                $statusLabel = '<button class="btn btn-primary w-100 mb-1 mt-2" id="tombol_booking">Booking sekarang!</button>';
+                            } elseif ($row['ketersediaan'] === "Tidak tersedia") {
+                                $statusLabel = '<button class="btn btn-danger w-100 mb-1 mt-2" disabled>Tidak tersedia!</button>';
+                            }
+                            ?>
+                            <?php echo $statusLabel; ?>
                         </div>
                     </div>
                 </div>

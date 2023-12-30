@@ -263,31 +263,37 @@ if (isset($_GET['code'])) {
                 echo '<h4 style="margin-top: -40px;">' . $row['type_kamar'] . " Room" . '</h4>';
                 echo '<h4>Rp. ' . number_format($row['harga_kamar']) . '<p style="margin-top: 10px; font-size: 13px;">Permalam</p></h4>';
                 echo '</div>';
-                echo '<p style="margin-bottom: 10px; margin-top: -20px;">Fasilitas</p>';
-                echo '<div class="d-flex mb-4">';
+                echo '<p style="margin-top: -20px;">Fasilitas</p>';
+                echo '<div class="d-flex mb-0">';
 
                 $fasilitas = explode(',', $row['fasilitas_kamar']);
                 foreach ($fasilitas as $fasilitas_item) {
-                    echo '<b class="me-2" style="background-color: #f3f4f6; font-size: 12px; padding: 5px 5px 5px 5px; border-radius: 5px;">' . $fasilitas_item . '</b>';
+                    echo '<b class="me-2" style="background-color: #f3f4f6; margin-top: -5px; font-size: 12px; padding: 5px 5px 5px 5px; border-radius: 5px;">' . $fasilitas_item . '</b>';
                 }
                 echo '</div>';
 
-                echo '<p style="margin-top: 1.4rem;">Kapasitas tamu</p>';
-                echo '<div class="d-flex">
+                echo '<p style="margin-top: 1.2rem;">Kapasitas tamu</p>';
+                echo '<div class="d-flex" style="margin-top: -5px;">
                     <b class="me-2" style="background-color: #f3f4f6; font-size: 12px; padding: 5px 7px 5px 7px; border-radius: 5px;">' . $row['kapasitas_pengunjung'] . ' orang dewasa</b>
                     <p class="mx-2 my-1">atau</p>
                     <b class="ms-2" style="background-color: #f3f4f6; font-size: 12px; padding: 5px 7px 5px 7px; border-radius: 5px;">' . $row['kapasitas_pengunjung'] . ' orang anak</b>
-                </div><br>';
+                </div>';
 
-                echo '<p class="mb-1">Rating</p>';
-
+                echo '<p class="mb-1" style="margin-top: 1.2rem;">Rating</p>';
                 for ($i = 0; $i < $row['rating']; $i++) {
                     echo '<i class="bi bi-star-fill text-warning me-1"></i>';
                 }
 
+                $statusLabel = '';
+                if ($row["ketersediaan"] === "Tersedia") {
+                    $statusLabel = '<a href="checkout.php?no_kamar=' . $row['no_kamar'] . '&type_kamar=' . $row['type_kamar'] . '"><button class="btn btn-primary">Booking</button></a>';
+                } elseif ($row['ketersediaan'] === "Tidak tersedia") {
+                    $statusLabel = '<button class="btn btn-danger" disabled>Booking (Tidak tersedia)</button>';
+                }
+
                 echo '<div style="text-align: center; margin-top: 20px;">';
-                echo '<a href="checkout.php?no_kamar=' . $row['no_kamar'] . '"><button class="btn btn-primary">Booking</button></a>';
-                echo '<a href="room_details.php?no_kamar=' . $row['no_kamar'] . '"><button class="btn btn-secondary ms-1">Details</button></a>';
+                echo $statusLabel;
+                echo '<a href="room_details.php?no_kamar=' . $row['no_kamar'] . '&type_kamar=' . $row['type_kamar'] . '"><button class="btn btn-secondary ms-1">Details</button></a>';
                 echo '</div>';
                 echo '</div>';
                 echo '</div>';
